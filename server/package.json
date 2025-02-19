@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon src/app.js"
+    "dev": "nodemon --exec \"node --experimental-specifier-resolution=node --loader ts-node/esm\" src/app.ts",
+    "build": "tsc -p ."
   },
   "repository": {
     "type": "git",
@@ -20,13 +21,23 @@
   },
   "homepage": "https://github.com/JJDAM3712/aplicacion-web-uptt#readme",
   "dependencies": {
+    "@types/express": "^5.0.0",
+    "@types/node": "22.13.4",
+    "aplicacion-web-uptt": "file:",
     "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "jsonwebtoken": "^9.0.2",
     "morgan": "^1.10.0",
     "mysql2": "^3.12.0",
     "nodemon": "^3.1.9",
     "socket.io": "^4.8.1"
+  },
+  "devDependencies": {
+    "@types/morgan": "^1.9.9",
+    "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.7.3"
   }
 }
