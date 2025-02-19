@@ -1,0 +1,14 @@
+# Ignorar archivos de entorno
+.env
+
+# Ignorar la carpeta node_modules
+node_modules/
+
+# Ignorar archivos de build
+dist/
+
+# Ignorar archivos de log
+*.log
+
+# Ignorar directorios de sistema
+.DS_Store

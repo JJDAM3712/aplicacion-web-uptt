@@ -1,17 +1,23 @@
 // importando modulos
-import express from "express";
+import express, { Application } from "express";
 import morgan from "morgan";
 import cors from 'cors';
+import dotenv from 'dotenv';
 //import { Server } from "socket.io";
 //import { createServer } from "http";
 //import cookieParser from 'cookie-parser';
 
 // importando rutas
-import materiasRoutes from "./materias/routes/materias.routes.js";
-import notasRoutes from "./notas/routes/notas.routes.js";
+import router  from "./routes/routes";
+import { getDirname } from "./utils/dirname";
+
+// configuracion de dirname
+const __dirname = getDirname(import.meta.url);
+dotenv.config({ path: `${__dirname}/../.env` });
 
 // Inicializaciones
-const app = express();
+dotenv.config();
+const app: Application = express();
 //const httpServer = createServer(app);
 
 // middlewares
@@ -36,25 +42,29 @@ io.on('connection', (socket) => {
     })
 });*/
 
+// middlewares
 app.use(cors({
-    origin: 'http://localhost:3000', //permitir solicitudes desde tel cliente
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    origin: process.env.CORS_ORIGIN, //permitir solicitudes desde tel cliente
+    methods: process.env.CORS_METHODS, //permitir los metodos
     credentials: true //enviar cookies o headers de autenticación
 }));
+app.use(morgan('dev'));
 
 //app.use(cookieParser());
 
 // procesar los datos del cliente
 app.use(express.json());
 
+
+
 // rutas
-app.use("/api", materiasRoutes, notasRoutes);
+app.use(router);
 
 // validacion de token
 
 // configuraciones 
-app.use(morgan('dev'));
-app.set('port', process.env.PORT || 4000);
+
+app.set('port', process.env.PORT);
 
 
 app.listen(app.get('port'), () => {
