@@ -19,33 +19,19 @@ class MateriasSQL {
         this.getMateriasByMateriaUpdate = "SELECT * FROM materias WHERE materia = ? AND id_materia != ?";
     }
     // mostrar todos los datos de las materias
-    getMateriasQuery() {
-        return this.getMaterias;
-    }
+    getMateriasQuery() {return this.getMaterias;}
     // msotrar una materia por id
-    getMateriasByIdQuery() {
-        return this.getMateriasById;
-    }
+    getMateriasByIdQuery() {return this.getMateriasById;}
     // registrar una materia
-    insertMateriasQuery() {
-        return this.insertMaterias;
-    }
+    insertMateriasQuery() {return this.insertMaterias;}
     // actualizar una materia
-    updateMateriasQuery() {
-        return this.updateMaterias;
-    }
+    updateMateriasQuery() {return this.updateMaterias;}
     // eliminar una materia
-    deleteMateriasQuery() {
-        return this.deleteMaterias;
-    }
+    deleteMateriasQuery() {return this.deleteMaterias;}
     // validar si la materia existe
-    getMateriasByNombreQuery() {
-        return this.getMateriasByMateriaUpdate;
-    }
+    getMateriasByNombreQuery() {return this.getMateriasByMateriaUpdate;}
     // valiodar si la materia existe
-    getMateriasByMateriaQuery() {
-        return this.getMateriasByMateriaCreate;
-    }
+    getMateriasByMateriaQuery() {return this.getMateriasByMateriaCreate;}
 }
 
 export default new MateriasSQL();
