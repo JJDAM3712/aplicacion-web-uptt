@@ -1,26 +1,22 @@
 import { Request, Response } from "express";
-import { pool } from "../../database/db";
-import { RowDataPacket } from "mysql2";
-import MateriasSQL from "../querys/materias";
+import MateriaService from "../services/materias.service"
 
 
 class MateriaController {
     // mostrar todos los datos de las materias
     public async getMaterias(req:Request, res:Response): Promise<void>{
         try {
-            const sql = MateriasSQL.getMateriasQuery();
-            const [result] = await pool.query<RowDataPacket[]>(sql);
+            const result = await MateriaService.getMaterias();
             res.json(result);
         } catch (error) {
-            console.error(error);
+            res.status(500).json({ message: error });
         }
     }
     
     // mostrar una materia por id
     public async getMateriaById(req:Request, res:Response): Promise<void> {
         try {
-            const sql = MateriasSQL.getMateriasByIdQuery();
-            const [result] = await pool.query<RowDataPacket[]>(sql, [req.params.id]);
+            const result = await MateriaService.getMateriaById(req.params.id);
     
             // valida que la materia exista
             if(result.length == 0) {
@@ -38,47 +34,38 @@ class MateriaController {
     // insertar una materia
     public async postMaterias(req:Request, res:Response): Promise<void> {
         try {
-            const {materia, descripcion} = req.body;
-            const sql = MateriasSQL.insertMateriasQuery();
-            const sql1 = MateriasSQL.getMateriasByNombreQuery();
-    
             // valida que la materia no exista
-            const [result1] = await pool.query<RowDataPacket[]>(sql1, req.body.materia);
+            const result1 = await MateriaService.getMateriasNombre(req.body.materia, req.params.id);
             if (result1.length > 0) {
-                res.status(409).json({ message: "La materia ya existe" });
+                res.status(409).json({ message: "La materia ya existe"});
+                return;
             }
-    
-            const [result] = await pool.query<RowDataPacket[]>(sql, req.body);
-    
-            res.status(200).json({ message: "Materia insertada correctamente" , data: result });
+            // registra la materia
+            const result = await MateriaService.postMaterias(req.body);
+            res.status(200).json(result);
         }
         catch (error) {
-            res.status(500).json({ message: "Error al insertar la materia" });
+            res.status(500).json({ message: "Error al insertar la materia", data: error });
         }
     }
     
     // actualizar una materia
     public async putMaterias(req:Request, res:Response): Promise<void> {
         try {
-            const {materia, descripcion} = req.body;
-            const sql = MateriasSQL.updateMateriasQuery();
-            const sql1 = MateriasSQL.getMateriasByMateriaQuery();
-            const sql2 = MateriasSQL.getMateriasByIdQuery();
-    
             // valida que la materia exista
-            const [result2] = await pool.query<RowDataPacket[]>(sql2, req.params.id);
+            const result2 = await MateriaService.getMateriaById(req.params.id);
             if (result2.length == 0) {
                 res.status(404).json({ message: "Materia no encontrada" });
                 return;
             }
             // valida que la materia no este repetida
-            const [result1] = await pool.query<RowDataPacket[]>(sql1, [req.body.materia, req.params.id]);
+            const result1 = await MateriaService.getMateriasRepetida(req.body.materia, req.params.id);
             if (result1.length > 0) {
                 res.status(409).json({ message: "La materia ya existe" });
                 return;
             }
-    
-            const [result] = await pool.query<RowDataPacket[]>(sql, [req.body, req.params.id]);
+            // actualiza la materia
+            const result = await MateriaService.putMaterias(req.body, req.params.id);
     
             res.status(200).json({ message: "Materia actualizada correctamente" , data: result });
         }
@@ -89,18 +76,15 @@ class MateriaController {
     
     // eliminar una materia
     public async deleteMaterias(req:Request, res:Response): Promise<void> {
-        try {
-            const sql = MateriasSQL.deleteMateriasQuery();
-            const sql1 = MateriasSQL.getMateriasByIdQuery();
-    
+        try {    
             // valida que la materia exista
-            const [result1] = await pool.query<RowDataPacket[]>(sql1, req.params.id);
+            const result1 = await MateriaService.getMateriaById(req.params.id);
             if (result1.length == 0) {
                 res.status(404).json({ message: "Materia no encontrada" });
                 return;
             }
-    
-            const [result] = await pool.query<RowDataPacket[]>(sql, req.params.id);
+            // elimina la materia
+            const result = await MateriaService.deleteMaterias(req.params.id);
     
             res.status(200).json({ message: "Materia eliminada correctamente" , data: result });
         }

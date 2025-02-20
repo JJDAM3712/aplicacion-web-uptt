@@ -1,8 +1,8 @@
 import { Router } from "express";
 
 // importando rutas
-import materiasRoutes from "../materias/routes/materias.routes.js";
-import notasRoutes from "../notas/routes/notas.routes.js";
+import materiasRoutes from "../materias/routes/materias.routes";
+import notasRoutes from "../notas/routes/notas.routes";
 
 const router = Router();
 
