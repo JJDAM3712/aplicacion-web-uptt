@@ -20,7 +20,7 @@ class MateriasSQL {
     }
     // mostrar todos los datos de las materias
     getMateriasQuery() {return this.getMaterias;}
-    // msotrar una materia por id
+    // mostrar una materia por id
     getMateriasByIdQuery() {return this.getMateriasById;}
     // registrar una materia
     insertMateriasQuery() {return this.insertMaterias;}
