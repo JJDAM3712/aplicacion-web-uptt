@@ -12,7 +12,7 @@ const password: string | undefined = process.env.PASS_DATABASE;
 const database: string | undefined = process.env.DATABASE;
 
 // validacion de las variables de entorno
-if (!host || !user || !password || !database ) {
+if (!host || !user || !database ) {
     throw new Error("Variables de entorno no definidas")
 }
 
@@ -25,7 +25,7 @@ export const initPool = () => {
         pool = createPool({
             host: host,
             user: user,
-            password: password,
+            password: "",
             database: database,
         });
         console.log("Conexión a la base de datos exitosa");

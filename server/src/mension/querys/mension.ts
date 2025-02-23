@@ -11,13 +11,13 @@ class MensionSQL {
 
     // constructor con las consultas
     constructor() {
-        this.getMension = "SELECT * FROM mension";
-        this.getMensionById = "SELECT * FROM mension WHERE id_mension = ?";
-        this.insertMension = "INSERT INTO mension SET ?";
-        this.updateMension = "UPDATE mension SET ? WHERE id_mension = ?";
-        this.deleteMension = "DELETE FROM mension WHERE id_mension = ?";
-        this.getMensionByMensionCreate = "SELECT * FROM mension WHERE mension = ?";
-        this.getMensionByMensionUpdate = "SELECT * FROM mension WHERE mension = ? AND id_mension != ?";
+        this.getMension = "SELECT * FROM mensiones";
+        this.getMensionById = "SELECT * FROM mensiones WHERE id_mension = ?";
+        this.insertMension = "INSERT INTO mensiones SET ?";
+        this.updateMension = "UPDATE mensiones SET ? WHERE id_mension = ?";
+        this.deleteMension = "DELETE FROM mensiones WHERE id_mension = ?";
+        this.getMensionByMensionCreate = "SELECT * FROM mensiones WHERE mension = ?";
+        this.getMensionByMensionUpdate = "SELECT * FROM mensiones WHERE mension = ? AND id_mension != ?";
     }
     // mostrar todos los datos de las mension
     getMensionQuery() {return this.getMension;}

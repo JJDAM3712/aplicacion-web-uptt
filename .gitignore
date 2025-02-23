@@ -12,3 +12,6 @@ dist/
 
 # Ignorar directorios de sistema
 .DS_Store
+
+# Ignorar conexion de base de datos
+server/src/database/db.ts
