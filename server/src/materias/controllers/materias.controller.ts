@@ -1,10 +1,11 @@
 import { Request, Response } from "express";
 import MateriaService from "../services/materias.service"
+import { AppControllerBase } from "../../controller/app.controller";
 
 
-class MateriaController {
+class MateriaController extends AppControllerBase{
     // mostrar todos los datos de las materias
-    public async getMaterias(req:Request, res:Response): Promise<void>{
+    public async getController(req:Request, res:Response): Promise<void>{
         try {
             const result = await MateriaService.getMaterias();
             res.json(result);
@@ -14,7 +15,7 @@ class MateriaController {
     }
     
     // mostrar una materia por id
-    public async getMateriaById(req:Request, res:Response): Promise<void> {
+    public async getControllerById(req:Request, res:Response): Promise<void> {
         try {
             const result = await MateriaService.getMateriaById(req.params.id);
     
@@ -32,7 +33,7 @@ class MateriaController {
     }  
     
     // insertar una materia
-    public async postMaterias(req:Request, res:Response): Promise<void> {
+    public async postController(req:Request, res:Response): Promise<void> {
         try {
             // valida que la materia no exista
             const result1 = await MateriaService.getMateriasNombre(req.body.materia, req.params.id);
@@ -50,7 +51,7 @@ class MateriaController {
     }
     
     // actualizar una materia
-    public async putMaterias(req:Request, res:Response): Promise<void> {
+    public async putController(req:Request, res:Response): Promise<void> {
         try {
             // valida que la materia exista
             const result2 = await MateriaService.getMateriaById(req.params.id);
@@ -75,7 +76,7 @@ class MateriaController {
     }
     
     // eliminar una materia
-    public async deleteMaterias(req:Request, res:Response): Promise<void> {
+    public async deleteController(req:Request, res:Response): Promise<void> {
         try {    
             // valida que la materia exista
             const result1 = await MateriaService.getMateriaById(req.params.id);

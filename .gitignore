@@ -12,3 +12,6 @@ dist/
 
 # Ignorar directorios de sistema
 .DS_Store
+
+
+server/src/database/

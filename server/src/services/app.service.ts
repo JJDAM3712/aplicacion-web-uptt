@@ -1,0 +1,3 @@
+interface AppService {
+    getService()
+}

@@ -3,10 +3,10 @@ import NotasController from "../controllers/notas.controller";
 
 const router = Router();
 
-router.get('/notas', NotasController.getNotas);
-router.get('/notas/:id', NotasController.getNotasById);
-router.post('/notas', NotasController.postNotas);
-router.put('/notas/:id', NotasController.putNotas);
-router.delete('/notas/:id', NotasController.deleteNotas);
+router.get('/notas', NotasController.getController);
+router.get('/notas/:id', NotasController.getControllerById);
+router.post('/notas', NotasController.postController);
+router.put('/notas/:id', NotasController.putController);
+router.delete('/notas/:id', NotasController.deleteController);
 
 export default router;

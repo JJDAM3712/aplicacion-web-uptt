@@ -3,10 +3,11 @@ import MateriaController from "../controllers/materias.controller";
 
 const router = Router();
 
-router.get('/materias', MateriaController.getMaterias);
-router.get('/materias/:id', MateriaController.getMateriaById);
-router.post('/materias', MateriaController.postMaterias);
-router.put('/materias/:id', MateriaController.putMaterias);
-router.delete('/materias/:id', MateriaController.deleteMaterias);
+// rutas de materias
+router.get('/materias', MateriaController.getController);
+router.get('/materias/:id', MateriaController.getControllerById);
+router.post('/materias', MateriaController.postController);
+router.put('/materias/:id', MateriaController.putController);
+router.delete('/materias/:id', MateriaController.deleteController);
 
 export default router;
