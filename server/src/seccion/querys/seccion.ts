@@ -13,13 +13,13 @@ class SeccionSQL {
 
     // constructor con las consultas
     constructor() {
-        this.getSeccion = "SELECT * FROM seccion";
-        this.getSeccionById = "SELECT * FROM seccion WHERE id_seccion = ?";
-        this.insertSeccion = "INSERT INTO seccion SET ?";
-        this.updateSeccion = "UPDATE seccion SET ? WHERE id_seccion = ?";
-        this.deleteSeccion = "DELETE FROM seccion WHERE id_seccion = ?";
-        this.getSeccionBySeccionCreate = "SELECT * FROM seccion WHERE seccion = ?";
-        this.getSeccionBySeccionUpdate = "SELECT * FROM seccion WHERE seccion = ? AND id_seccion != ?";
+        this.getSeccion = "SELECT * FROM secciones";
+        this.getSeccionById = "SELECT * FROM secciones WHERE id_seccion = ?";
+        this.insertSeccion = "INSERT INTO secciones SET ?";
+        this.updateSeccion = "UPDATE secciones SET ? WHERE id_seccion = ?";
+        this.deleteSeccion = "DELETE FROM secciones WHERE id_seccion = ?";
+        this.getSeccionBySeccionCreate = "SELECT * FROM secciones WHERE seccion = ?";
+        this.getSeccionBySeccionUpdate = "SELECT * FROM secciones WHERE seccion = ? AND id_seccion != ?";
     }
     // mostrar todos los datos de las seccion
     getSeccionQuery() {return this.getSeccion;}

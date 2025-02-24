@@ -8,8 +8,8 @@ class SeccionController {
     public async getSeccion(req:Request, res:Response): Promise<void> {
         try {
             const sql = SeccionSQL.getSeccionQuery();
-            const result = await pool.query<RowDataPacket[]>(sql);
-            res.json(result[0]);
+            const [result] = await pool.query<RowDataPacket[]>(sql);
+            res.json(result);
         } catch (error) {
             res.status(500).json({message: error});
         }
@@ -21,8 +21,8 @@ class SeccionController {
             const sql2 = SeccionSQL.getSeccionByIdQuery();
             
             //valida si la seccion
-            const [result2] = await pool.query<RowDataPacket[]>(sql2, req.params);
-            if(result2.length == 0) {
+            const [result2] = await pool.query<RowDataPacket[]>(sql2, req.params.id);
+            if(result2.length === 0) {
                 res.status(404).json({message: "Seccion no encontrada"});
                 return;
             }
@@ -47,7 +47,7 @@ class SeccionController {
     // actualizar seccion
     public async putSeccion(req:Request, res:Response): Promise<void>{
         try {
-            const sql = SeccionSQL.putSeccionQuery();
+            const sql = SeccionSQL.updateSeccionQuery();
             
             const [result] = await pool.query<RowDataPacket[]>(sql, req.body);
 
