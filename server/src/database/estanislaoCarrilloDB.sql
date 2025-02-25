@@ -51,7 +51,7 @@ CREATE TABLE IF NOT EXISTS `estudiantes` (
   CONSTRAINT `secciones` FOREIGN KEY (`seccion`) REFERENCES `secciones` (`id_seccion`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_spanish_ci;
 
--- Volcando datos para la tabla estanislaocarrillodb.estudiantes: ~1 rows (aproximadamente)
+-- Volcando datos para la tabla estanislaocarrillodb.estudiantes: ~1estudiantesestudiantes rows (aproximadamente)
 INSERT INTO `estudiantes` (`id_estudiante`, `cedula`, `primer_nombre`, `segundo_nombre`, `primer_apellido`, `segundo_apellido`, `correo`, `telefono`, `foto_perfil`, `seccion`) VALUES
 	(1, '1234567', 'antonio', 'jose', 'matheus', 'contreras', 'mail@mail.com', '041233333333', '', NULL);
 
