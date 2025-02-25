@@ -1,13 +1,13 @@
 import { Request, Response } from "express";
 import MateriaService from "../services/materias.service"
-import { AppControllerBase } from "../../controller/app.controller";
+import { AppControllerBase } from "../../../controller/app.controller";
 
 
 class MateriaController extends AppControllerBase{
     // mostrar todos los datos de las materias
     public async getController(req:Request, res:Response): Promise<void>{
         try {
-            const result = await MateriaService.getMaterias();
+            const result = await MateriaService.getService();
             res.json(result);
         } catch (error) {
             res.status(500).json({ message: error });
@@ -17,7 +17,7 @@ class MateriaController extends AppControllerBase{
     // mostrar una materia por id
     public async getControllerById(req:Request, res:Response): Promise<void> {
         try {
-            const result = await MateriaService.getMateriaById(req.params.id);
+            const result = await MateriaService.getServiceById(req.params.id);
     
             // valida que la materia exista
             if(result.length == 0) {
@@ -36,13 +36,13 @@ class MateriaController extends AppControllerBase{
     public async postController(req:Request, res:Response): Promise<void> {
         try {
             // valida que la materia no exista
-            const result1 = await MateriaService.getMateriasNombre(req.body.materia, req.params.id);
+            const result1 = await MateriaService.getServiceExist(req.body.materia, req.params.id);
             if (result1.length > 0) {
                 res.status(409).json({ message: "La materia ya existe"});
                 return;
             }
             // registra la materia
-            const result = await MateriaService.postMaterias(req.body);
+            const result = await MateriaService.postService(req.body);
             res.status(200).json(result);
         }
         catch (error) {
@@ -54,19 +54,19 @@ class MateriaController extends AppControllerBase{
     public async putController(req:Request, res:Response): Promise<void> {
         try {
             // valida que la materia exista
-            const result2 = await MateriaService.getMateriaById(req.params.id);
+            const result2 = await MateriaService.getServiceById(req.params.id);
             if (result2.length == 0) {
                 res.status(404).json({ message: "Materia no encontrada" });
                 return;
             }
             // valida que la materia no este repetida
-            const result1 = await MateriaService.getMateriasRepetida(req.body.materia, req.params.id);
+            const result1 = await MateriaService.getServiceRepeat(req.body.materia, req.params.id);
             if (result1.length > 0) {
                 res.status(409).json({ message: "La materia ya existe" });
                 return;
             }
             // actualiza la materia
-            const result = await MateriaService.putMaterias(req.body, req.params.id);
+            const result = await MateriaService.putService(req.body, req.params.id);
     
             res.status(200).json({ message: "Materia actualizada correctamente" , data: result });
         }
@@ -79,13 +79,13 @@ class MateriaController extends AppControllerBase{
     public async deleteController(req:Request, res:Response): Promise<void> {
         try {    
             // valida que la materia exista
-            const result1 = await MateriaService.getMateriaById(req.params.id);
+            const result1 = await MateriaService.getServiceById(req.params.id);
             if (result1.length == 0) {
                 res.status(404).json({ message: "Materia no encontrada" });
                 return;
             }
             // elimina la materia
-            const result = await MateriaService.deleteMaterias(req.params.id);
+            const result = await MateriaService.deleteService(req.params.id);
     
             res.status(200).json({ message: "Materia eliminada correctamente" , data: result });
         }

@@ -1,8 +1,8 @@
-import { pool } from '../../database/db';
+import { pool } from '../../../database/db';
 import { Request, Response } from 'express';
 import { RowDataPacket } from 'mysql2';
-import NotasSQL from '../querys/notas';
-import { AppControllerBase } from '../../controller/app.controller';
+import NotasSQL from '../sql/notas';
+import { AppControllerBase } from '../../../controller/app.controller';
 import NotasService from '../services/notas.service';
 
 class NotasController extends AppControllerBase {
@@ -45,6 +45,14 @@ class NotasController extends AppControllerBase {
     // actualizar notas
     public async putController(req:Request, res:Response): Promise<void> {
         try {
+            //valida si la nota existe
+            const validacion = await NotasService.getServiceById(req.params.id) as RowDataPacket[];
+
+            if(validacion.length == 0) {
+                res.status(404).json({message: "Nota no encontrada"});
+                return;
+            }
+            // actualiza la nota
             const result = await NotasService.putService(req.body, req.params.id);
 
             res.status(200).json({messaje: "Nota actualizada Correctamente", data: result});

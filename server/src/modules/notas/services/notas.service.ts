@@ -1,8 +1,9 @@
-import { pool } from "../../database/db";
-import NotasSQL from "../querys/notas";
+import { pool } from "../../../database/db";
+import NotasSQL from "../sql/notas";
 import { RowDataPacket } from "mysql2";
+import { ServiceBase } from "../../../services/base.service";
 
-class NotasService {
+class NotasService extends ServiceBase {
     // obtener todas las notas
     public async getService() {
         try {
@@ -52,10 +53,6 @@ class NotasService {
         } catch (error) {
             return error;
         }
-    }
-    // validar si la nota existe
-    public async getServiceByIdNota(id:string){
-        console.log(id);
     }
 }
 
