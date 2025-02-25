@@ -19,7 +19,6 @@ class MateriaService extends ServiceBase {
     }
     // insertar una materia
     public async postService(data: any) {
-        const {materia, descripcion} = data;
         const sql = MateriasSQL.insertMateriasQuery();       
 
         const [result] = await pool.query<RowDataPacket[]>(sql, data);
