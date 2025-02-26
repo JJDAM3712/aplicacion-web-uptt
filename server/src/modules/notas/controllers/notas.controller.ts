@@ -34,9 +34,7 @@ class NotasController extends AppControllerBase {
     // insertar nota
     public async postController(req:Request, res:Response): Promise<void> {
         try {
-            const sql = NotasSQL.postNotasQuery();
-            
-            const [result] = await pool.query<RowDataPacket[]>(sql, req.body);
+            const result = await NotasService.postService(req.body);
             res.status(200).json({message: "Nota registrada correctamente", data: result});
         } catch (error) {
             res.status(500).json({message: error});
