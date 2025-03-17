@@ -1,7 +1,6 @@
 import  ProfesorService from "../service/profesor.service";
 import { Request, Response } from "express";
 import { AppControllerBase } from "../../../controller/app.controller";
-import { json } from "stream/consumers";
 
 class ProfesorController extends AppControllerBase {
     // mostrar todos los profesores
