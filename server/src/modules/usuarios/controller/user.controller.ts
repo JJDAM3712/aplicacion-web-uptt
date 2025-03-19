@@ -1,7 +1,7 @@
 import userService from "../services/user.service";
 import e, { Request, Response } from "express";
 import { AppControllerBase } from "../../../controller/app.controller";
-import bcrypt from "bcryptjs";
+import { EnviarMail } from "../../mail/mail";
 
 class UserController extends AppControllerBase {
     // mostrar todos los usuarios
@@ -28,7 +28,6 @@ class UserController extends AppControllerBase {
             res.status(500).json({message:error})
         }
     }
-
     // registrar un usuarios
     async postController(req: Request, res: Response): Promise<void> {
         try {
@@ -58,19 +57,21 @@ class UserController extends AppControllerBase {
                 throw new Error("El json no es correcto");
             }
             // validar si el usuario existe
-            const existUser = await userService.getServiceExist(data.usuario, req.params.id);
+            const existUser = await userService.getServiceExist(data.usuario, data.email);
             if (existUser.length > 0) {
-                res.status(409).json({message: "Ya existe un usuario con ese nombre"});
-                return;
+                if(existUser[0].usuario === data.usuario) {
+                    res.status(409).json({message: "Este nombre de usuario ya se encuentra en uso"});
+                    return; 
+                } else if (existUser[0].email === data.email) {
+                    res.status(408).json({message: "Este email ya se encuentra en uso"});
+                    return;
+                }
             }
-            // validar si el email existe
-            const existEmail = await userService.getServiceEmailExist(data.email, req.params.id);
-            if (existEmail.length > 0) {
-                res.status(408).json({message: "Este email ya se encuentra registrado"});
-                return;
-            }
-
+            
             const result = await userService.postService(data);
+            // enviar correo
+            await EnviarMail();
+
             res.status(200).json({message: "Usuario registrado", result});
         } catch (error) {
             console.error(error);
@@ -113,12 +114,17 @@ class UserController extends AppControllerBase {
                 return;
             }
             
-            // validar si el usuario y email este repetido
-
+            // validar si el usuario o email este repetido
             const repeat = await userService.getDataRepeat(data.usuario, data.email, req.params.id);
+
             if (repeat.length > 0) {
-                res.status(409).json({message: "Este nombre de usuario y/o email ya se encuentra en uso"});
-                return;
+                if(repeat[0].usuario === data.usuario) {
+                    res.status(409).json({message: "Este nombre de usuario ya se encuentra en uso"});
+                    return; 
+                } else if (repeat[0].email === data.email) {
+                    res.status(408).json({message: "Este email ya se encuentra en uso"});
+                    return;
+                }
             }
             
             const result = await userService.putService(data, req.params.id);
@@ -126,6 +132,25 @@ class UserController extends AppControllerBase {
         } catch (error) {
             console.error(error);
             res.status(500).json({message: error});
+        }
+    }
+    // eliminar un usuario
+    async deleteController(req: Request, res: Response): Promise<void> {
+        try {
+            const {id} = req.params;
+            
+            // validar si el usuario existe
+            const exist = await userService.getServiceById(id);
+            if (exist.length === 0) {
+                res.status(404).json({message: "El usuario no existe"});
+                return;
+            }
+
+            const result = await userService.deleteService(id);
+            res.status(200).json({message: "Usuario eliminado", result});
+        } catch (error) {
+            console.log(error);
+            res.status(500).json({message: "Error al eliminar el usuario", error});
         }
     }
 }

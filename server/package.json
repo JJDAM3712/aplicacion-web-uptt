@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/JJDAM3712/aplicacion-web-uptt#readme",
   "dependencies": {
+    "@payloadcms/email-nodemailer": "^3.28.1",
     "@types/express": "^5.0.0",
     "@types/node": "22.13.4",
     "aplicacion-web-uptt": "file:",
@@ -31,11 +32,13 @@
     "jsonwebtoken": "^9.0.2",
     "morgan": "^1.10.0",
     "mysql2": "^3.12.0",
+    "nodemailer": "^6.10.0",
     "nodemon": "^3.1.9",
     "socket.io": "^4.8.1"
   },
   "devDependencies": {
     "@types/morgan": "^1.9.9",
+    "@types/nodemailer": "^6.4.17",
     "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.7.3"

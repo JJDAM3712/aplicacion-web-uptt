@@ -37,28 +37,17 @@ class UserService extends ServiceBase {
         const [result] = await pool.query<RowDataPacket[]>(sql, [data, id]);
         return result;
     }
-    // validar que un usuario exista
-    async getServiceExist(data: any, id: string): Promise<any> {
-        const sql = userSql.existUserQuery();
-        const [result] = await pool.query<RowDataPacket[]>(sql, data);
-        return result;
-    }
-    // validar que un email exista
-    async getServiceEmailExist(data:any, id:string): Promise<any> {
-        const sql = userSql.existUserEmailQuery();
-        const [result] = await pool.query<RowDataPacket[]>(sql, data);
-        return result;
-    }
-    // validar usuario repetido
-    async getUserRepeat(user: string, id: string): Promise<any> {
+    // validar usuario y email repetido
+    async getDataRepeat(user: string, email:string, id: string): Promise<any> {
         const sql = userSql.repeatUserQuery();
-        const [result] = await pool.query<RowDataPacket[]>(sql, [user, id]);
+        const [result] = await pool.query<RowDataPacket[]>(sql, [user, email, id]);
         return result;
     }
-    // validar email repetido
-    async getEmailRepeat(email: string, id: string): Promise<any> {
-        const sql = userSql.repeatEmailQuery();
-        const [result] = await
+    // validar que un usuario exista
+    async getServiceExist(user: string, email: string): Promise<any> {
+        const sql = userSql.existUserQuery();
+        const [result] = await pool.query<RowDataPacket[]>(sql, [user, email]);
+        return result;
     }
     // eliminar un usuario
     async deleteService(id: string): Promise<any> {
