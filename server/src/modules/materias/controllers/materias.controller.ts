@@ -7,6 +7,7 @@ class MateriaController extends AppControllerBase{
     // mostrar todos los datos de las materias
     public async getController(req:Request, res:Response): Promise<void>{
         try {
+
             const result = await MateriaService.getService();
             res.json(result);
         } catch (error) {
