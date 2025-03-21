@@ -2,6 +2,7 @@ import { pool } from "../../../database/db";
 import { RowDataPacket } from "mysql2";
 import EstudiantesSQL from "../sql/estudiante.query"
 import { ServiceBase } from "../../../services/base.service";
+import { PoolConnection } from "mysql2/promise";
 
 // Servicio de estudiantes
 class EstudianteService extends ServiceBase {
@@ -26,10 +27,10 @@ class EstudianteService extends ServiceBase {
         }
     }
     // registrar estudiantes
-    public async postService(data: any): Promise<any> {
+    public async postServiceTransaction(data: any, Connection: PoolConnection): Promise<any> {
         try {
             const sql = EstudiantesSQL.postEstudianteQuery();
-            const [result] = await pool.query<RowDataPacket[]>(sql, data);
+            const [result] = await Connection.query<RowDataPacket[]>(sql, data);
             return result;
         } catch (error) {
             return `Error al registrar al estudiante ${error}`;

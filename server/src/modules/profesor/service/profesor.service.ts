@@ -2,6 +2,7 @@ import { pool } from "../../../database/db";
 import { ServiceBase } from "../../../services/base.service";
 import { RowDataPacket } from "mysql2";
 import ProfesorSQL from "../sql/profesor.query";
+import { PoolConnection } from "mysql2/promise";
 
 // Servicio de profesores
 class ProfesorService extends ServiceBase {
@@ -18,9 +19,9 @@ class ProfesorService extends ServiceBase {
         return result;
     }
     // registrar profesores
-    public async postService(data: any): Promise<any> {
+    public async postServiceTransaction(data: any, connection: PoolConnection): Promise<any> {
         const sql = ProfesorSQL.postProfQuery();
-        const [result] = await pool.query<RowDataPacket[]>(sql, data);
+        const [result] = await connection.query<RowDataPacket[]>(sql, data);
         return result;
     }
     // validar que el profesor exista

@@ -2,7 +2,7 @@ import { pool } from "../../../database/db";
 import { ServiceBase } from "../../../services/base.service";
 import { RowDataPacket } from "mysql2";
 import userSql from "../sql/user.sql";
-import { hashPass } from "../../../utils/hash";
+import { PoolConnection } from "mysql2/promise";
 
 class UserService extends ServiceBase {
     // mostrar todos los usuarios
@@ -18,35 +18,27 @@ class UserService extends ServiceBase {
         return result;
     }
     // registrar un usuario
-    async postService(data: any): Promise<any> {
-        // encriptar la contraseña
-        const pass = await hashPass(data.clave);
-        data.clave = pass;
-    
+    async postServiceTransaction(data: any, connection: PoolConnection): Promise<any> {
         const sql = userSql.postUserQuery();
-        const [result] = await pool.query<RowDataPacket[]>(sql, data);
+        const [result] = await connection.query<RowDataPacket[]>(sql, data);
         return result;
     }
     // actualizar un usuario
     async putService(data: any, id: string): Promise<any> {
-        // emcriptar la contraseña
-        const pass = await hashPass(data.clave);
-        data.clave = pass;
-
         const sql = userSql.putUserQuery();
         const [result] = await pool.query<RowDataPacket[]>(sql, [data, id]);
         return result;
     }
     // validar usuario y email repetido
-    async getDataRepeat(user: string, email:string, id: string): Promise<any> {
+    async getDataRepeat(cedula: string, email:string, id: string): Promise<any> {
         const sql = userSql.repeatUserQuery();
-        const [result] = await pool.query<RowDataPacket[]>(sql, [user, email, id]);
+        const [result] = await pool.query<RowDataPacket[]>(sql, [cedula, email, id]);
         return result;
     }
     // validar que un usuario exista
-    async getServiceExist(user: string, email: string): Promise<any> {
+    async getServiceExist(cedula: string, email: string): Promise<any> {
         const sql = userSql.existUserQuery();
-        const [result] = await pool.query<RowDataPacket[]>(sql, [user, email]);
+        const [result] = await pool.query<RowDataPacket[]>(sql, [cedula, email]);
         return result;
     }
     // eliminar un usuario

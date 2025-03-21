@@ -17,9 +17,9 @@ class UserQuery {
         // actualizar un usuario
         this.putUser = "UPDATE usuarios SET ? WHERE id_usuario = ?";
         // validar si existe un usuario
-        this.existUser = "SELECT usuario, email FROM usuarios WHERE (usuario = ? OR email = ?)";
+        this.existUser = "SELECT cedula, email FROM usuarios WHERE (cedula = ? OR email = ?)";
         // usuario y email repetido
-        this.repeatUser = "SELECT usuario, email FROM usuarios WHERE (usuario = ? OR email = ?) AND id_usuario != ?";
+        this.repeatUser = "SELECT cedula, email FROM usuarios WHERE (cedula = ? OR email = ?) AND id_usuario != ?";
         // eliminar un usuario
         this.deleteUser = "DELETE FROM usuarios WHERE id_usuario = ?";
     }

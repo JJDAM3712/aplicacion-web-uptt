@@ -1,7 +1,10 @@
 import userService from "../services/user.service";
-import e, { Request, Response } from "express";
+import profesorService from "../../profesor/service/profesor.service";
+import estudianteService from "../../Estudiantes/services/estudiante.service";
+import { Request, Response } from "express";
 import { AppControllerBase } from "../../../controller/app.controller";
-import { EnviarMail } from "../../mail/mail";
+import dataBody from "../utils/dataBody";
+import { pool } from "../../../database/db";
 
 class UserController extends AppControllerBase {
     // mostrar todos los usuarios
@@ -33,23 +36,6 @@ class UserController extends AppControllerBase {
         try {
             const data = req.body;
 
-            // validar que todos los campos existan en el objeto
-            if (
-                !data.hasOwnProperty("usuario") || 
-                !data.hasOwnProperty("email") || 
-                !data.hasOwnProperty("clave") ||
-                !data.hasOwnProperty("id_rol")
-            ) {
-                console.error("Hay un campo ausente");
-                res.status(400).json({message: "Hay un campo ausente"});
-                return;
-            }
-            // validar que no hayan campos vacios
-            if (data.usuario === "" || data.email === "" || data.clave === "" || data.id_rol === "") {
-                console.error("Hay un campo vacio");
-                res.status(400).json({message: "Hay un campo vacio"});
-                return;
-            }
             // validar si el json es correcto
             try {
                 JSON.stringify(data);
@@ -57,22 +43,91 @@ class UserController extends AppControllerBase {
                 throw new Error("El json no es correcto");
             }
             // validar si el usuario existe
-            const existUser = await userService.getServiceExist(data.usuario, data.email);
+            const existUser = await userService.getServiceExist(data.cedula, data.email);
             if (existUser.length > 0) {
-                if(existUser[0].usuario === data.usuario) {
-                    res.status(409).json({message: "Este nombre de usuario ya se encuentra en uso"});
+                if(existUser[0].cedula === data.cedula) {
+                    res.status(409).json({message: "Esta cedula ya se encuentra registrada"});
                     return; 
                 } else if (existUser[0].email === data.email) {
-                    res.status(408).json({message: "Este email ya se encuentra en uso"});
+                    res.status(408).json({message: "Este email ya se encuentra registrada"});
                     return;
                 }
             }
-            
-            const result = await userService.postService(data);
-            // enviar correo
-            await EnviarMail();
+            var result: any;
+            var resultUser: any;
+            var connection = pool.getConnection();
+            // seleccionar rol
+            const rol = data.id_rol;
+            // rol admin
+            switch(rol){
+                // rol administrador
+                case 1:
+                    result = await userService.postService(data);
+                    break;
+                // rol profesor
+                case 2:
+                    // ejecuta las consultas como transacción
+                    try {
+                        (await connection).beginTransaction();
+                        // separa los datos recibidos para usuarios
+                        const dataUser = dataBody.dataUser(data);
+                        
+                        // almacena los datos en sus respectivas tablas
+                        result = await userService.postServiceTransaction(dataUser, await connection);
+                        // obtiene el id generado en esta consulta
+                        const userId = result.insertId;
+                        
+                        // separa los datos de profesores
+                        const dataProf = dataBody.dataProfesor(data);
+                        // agrega el id generado anteriormente a profesores
+                        dataProf.id_user = userId;
+                    
+                        resultUser = await profesorService.postServiceTransaction(dataProf, await connection);
+                        // si no hubo problemas en ninguna consulta guarda los cambios en la bd
+                        (await connection).commit();
+                    } catch (error) {
+                        // si una consulta fallo cancela ambas consultas
+                        (await connection).rollback();
+                        res.status(500).json({message: "Error al registrar el profesor", error});
+                        return;
+                    } finally {
+                        // libera la conexion
+                        (await connection).release();
+                    }
+                    break;
+                // rol estudiante
+                case 3:
+                    try {
+                        (await connection).beginTransaction();
+                        // separa los datos recibidos para usuarios
+                        const dataUser = dataBody.dataUser(data);
+                        
+                        // almacena los datos en sus respectivas tablas
+                        result = await userService.postServiceTransaction(dataUser, await connection);
+                        // obtiene el id generado en esta consulta
+                        const userId = result.insertId;
+                        
+                        // separa los datos de profesores
+                        const dataEstudiante = dataBody.dataEstudiante(data);
+                        // agrega el id generado anteriormente a estudiantes
+                        dataEstudiante.id_user = userId;
+                    
+                        resultUser = await estudianteService.postServiceTransaction(dataEstudiante, await connection);
+                        // si no hubo problemas en ninguna consulta guarda los cambios en la bd
+                        (await connection).commit();
+                    } catch (error) {
+                        // si una consulta fallo cancela ambas consultas
+                        (await connection).rollback();
+                        res.status(500).json({message: "Error al registrar el estudiante", error});
+                        return;
+                    } finally {
+                        // libera la conexion
+                        (await connection).release();
+                    }
+                    break;
+            }
 
-            res.status(200).json({message: "Usuario registrado", result});
+            res.status(200).json({message: "Usuario registrado", resultUser, result});
         } catch (error) {
             console.error(error);
             res.status(500).json({message: error});
@@ -83,23 +138,6 @@ class UserController extends AppControllerBase {
         try {
             const data = req.body;
 
-            // validar que todos los campos existan en el objeto
-            if (
-                !data.hasOwnProperty("usuario") || 
-                !data.hasOwnProperty("email") || 
-                !data.hasOwnProperty("clave") ||
-                !data.hasOwnProperty("id_rol")
-            ) {
-                console.error("Hay un campo ausente");
-                res.status(400).json({message: "Hay un campo ausente"});
-                return;
-            }
-            // validar que no hayan campos vacios
-            if (data.usuario === "" || data.email === "" || data.clave === "" || data.id_rol === "") {
-                console.error("Hay un campo vacio");
-                res.status(400).json({message: "Hay un campo vacio"});
-                return;
-            }
             // validar si el json es correcto
             try {
                 JSON.stringify(data);
@@ -115,10 +153,10 @@ class UserController extends AppControllerBase {
             }
             
             // validar si el usuario o email este repetido
-            const repeat = await userService.getDataRepeat(data.usuario, data.email, req.params.id);
+            const repeat = await userService.getDataRepeat(data.cedula, data.email, req.params.id);
 
             if (repeat.length > 0) {
-                if(repeat[0].usuario === data.usuario) {
+                if(repeat[0].cedula === data.cedula) {
                     res.status(409).json({message: "Este nombre de usuario ya se encuentra en uso"});
                     return; 
                 } else if (repeat[0].email === data.email) {
