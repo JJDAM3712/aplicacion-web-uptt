@@ -10,51 +10,6 @@ import socketIOClient from 'socket.io-client';
 import { ServidorURL } from "../config/config";
 
 export function Asistencias() {
-  const [datos, setDatos] = useState([]);
-  const [fechaMin, setFechaMin] = useState(null);
-  const [fechaMax, setFechaMax] = useState(null);
-
-  useEffect(() => {
-    const socket = socketIOClient(ServidorURL);
-
-    socket.on('ActualizatTable', (nuevasAsistencias) => {
-      setDatos(nuevasAsistencias);
-    });
-
-    return () => {
-      socket.disconnect();
-    };
-  }, []);
-
-  useEffect(() => {
-    ShowDepart();
-  }, [fechaMin, fechaMax]);
-  const ShowDepart = async () => {
-    const res = await axios.get(`${ServidorURL}/asistencia`);
-    setDatos(res.data);
-  };
-
-  // Filtra los datos de asistencia por fecha
-  const datosFiltrados = datos.filter(asistencia => {
-    const fechaAsistencia = new Date(asistencia.fecha);
-    if (fechaMin && fechaAsistencia < new Date(fechaMin)) {
-      return false;
-    }
-    if (fechaMax && fechaAsistencia > new Date(fechaMax)) {
-      return false;
-    }
-    return true;
-  });
-
-  // exporta los datos a un archivo excel
-  const TablaAsistencia = useRef(null);
-
-  const { onDownload } = useDownloadExcel({
-    currentTableRef: TablaAsistencia.current,
-    filename: 'Asistencias',
-    sheet: 'Hoja 1'
-  });
-
   return (
     <Container>
       <h1>Asistencias</h1>
@@ -62,9 +17,7 @@ export function Asistencias() {
         <div className="ContRep">
           <form>
             <div className="flex gap-1 justify-between">
-              <Datepicker language="es-ES" label="Fecha Min" className="w-2\/4" onChange={setFechaMin}/>
-              <Datepicker language="es-ES" label="Fecha Max" className="w-2\/4" onChange={setFechaMax}/>
-              <Button color="success" type="submit" onClick={onDownload}>
+              <Button color="success" type="submit">
                 Generar Reporte
                 <HiOutlineArrowRight className="ml-2 h-5 w-5" />
               </Button>
@@ -73,7 +26,7 @@ export function Asistencias() {
           </form>
         </div>
       </Container>
-      <TablaAsistencias datos={datosFiltrados} innerRef={TablaAsistencia}/>
+      <TablaAsistencias/>
     </Container>
   );
 }

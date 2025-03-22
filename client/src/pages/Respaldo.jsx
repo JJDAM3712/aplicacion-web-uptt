@@ -1,6 +1,7 @@
 import { HiOutlineRefresh } from "react-icons/hi";
 import styled from "styled-components";
-import logo from "../assets/img/CNE_logo.svg";
+//import logo from "../assets/img/CNE_logo.svg";
+import logo from"../assets/img/logo.jpg";
 import "../css/login.css";
 import "../css/respaldo.css";
 import { MdCloudDownload } from "react-icons/md";

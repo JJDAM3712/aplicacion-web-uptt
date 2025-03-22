@@ -1,7 +1,8 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import styled from "styled-components";
-import logo from "../assets/img/CNE_logo.svg";
+//import logo from "../assets/img/CNE_logo.svg";
+import logo from"../assets/img/logo.jpg";
 import { Button, Modal, Radio, Label, TextInput, Select } from "flowbite-react";
 import { FaEraser, FaEdit } from "react-icons/fa";
 import {

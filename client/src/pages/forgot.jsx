@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import "../css/output.css";
-import logo from "../assets/img/CNE_logo.svg";
+//import logo from "../assets/img/CNE_logo.svg";
+import logo from"../assets/img/logo.jpg";
 import "../css/login.css";
 import { HiUser } from "react-icons/hi";
 import { useState, useEffect } from "react";

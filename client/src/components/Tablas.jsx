@@ -88,7 +88,7 @@ export function TablaAsistencias({innerRef, datos}) {
   // Calcula los elementos que se mostrarán en la página actual
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = datos.slice(indexOfFirstItem, indexOfLastItem);
+  //const currentItems = datos.slice(indexOfFirstItem, indexOfLastItem);
 
   // Función para cambiar la página actual
   const changePage = (event) => {
@@ -98,39 +98,35 @@ export function TablaAsistencias({innerRef, datos}) {
   return (
     <Container>
       <div className="ContenedorTabla">
-        <h1>Asistencias:</h1>
-        <Table ref={innerRef}>
+        <h1>Estudiantes:</h1>
+        <Table>
           <Table.Head className="border-b-2 uppercase">
             <Table.HeadCell>Nombre</Table.HeadCell>
             <Table.HeadCell>Apellido</Table.HeadCell>
             <Table.HeadCell>Cedula</Table.HeadCell>
-            <Table.HeadCell>Fecha</Table.HeadCell>
-            <Table.HeadCell>Hora Entrada</Table.HeadCell>
-            <Table.HeadCell>Hora Salida</Table.HeadCell>
+            <Table.HeadCell>Año</Table.HeadCell>
+            <Table.HeadCell>Sección</Table.HeadCell>
+            <Table.HeadCell>Mension</Table.HeadCell>
             <Table.HeadCell></Table.HeadCell>
           </Table.Head>
           <Table.Body className="divide-y uppercase">
             {/* mostrar los datos */}
-            {currentItems.map((asistencias) => 
-              <Table.Row className="bg-white" key={asistencias.id_asistencia}>
-                <Table.Cell className="whitespace-nowrap">
-                  {asistencias.nombre}
-                </Table.Cell>
-                <Table.Cell>{asistencias.apellido}</Table.Cell>
-                <Table.Cell>{asistencias.cedula}</Table.Cell>
-                <Table.Cell>{asistencias.fecha}</Table.Cell>
-                <Table.Cell>{asistencias.entrada}</Table.Cell>
-                <Table.Cell>{asistencias.salida}</Table.Cell>
+              <Table.Row className="bg-white">
+                <Table.Cell className="whitespace-nowrap">juanito</Table.Cell>
+                <Table.Cell>perez</Table.Cell>
+                <Table.Cell>1234567</Table.Cell>
+                <Table.Cell>2do</Table.Cell>
+                <Table.Cell>C</Table.Cell>
+                <Table.Cell>informatica</Table.Cell>
                 <Table.Cell>
-                  <EliminaAsist id={asistencias.id_asistencia}/>
+                  <EliminaAsist/>
                 </Table.Cell>
               </Table.Row>
-            )}
           </Table.Body>
         </Table>
         <Pagination
           itemsPerPage={itemsPerPage}
-          totalItems={datos.length}
+          //totalItems={datos.length}
           paginate={setCurrentPage}
           currentPage={currentPage}
         />
