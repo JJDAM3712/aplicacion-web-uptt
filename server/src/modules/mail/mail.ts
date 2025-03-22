@@ -5,9 +5,7 @@ import { getDirname } from '../../utils/dirname';
 const __dirname = getDirname(import.meta.url);
 dotenv.config({ path: `${__dirname}/../../../.env` });
 
-
-
-
+// conexion con el servidor smtp/gmail
 const createTransporter = (): Transporter => {
     return nodemailer.createTransport({
         host: process.env.HOST_MAIL,
@@ -20,19 +18,29 @@ const createTransporter = (): Transporter => {
     });
 } 
 
-// async..await is not allowed in global scope, must use a wrapper
+// enviar email
 export const EnviarMail = async (data: any): Promise<any> => {
     try {
         const transporter = createTransporter();
         const info = await transporter.sendMail({
-            from: `TEST ${process.env.USER_MAIL}`, // sender address
-            to: data.email, // list of receivers
-            subject: `${data.p_nombre} ${data.p_apellido}`,
-            text: "Este es un correo de prueba",
-            html: "<h1 style='color: red'>Probando correo con APÏ</h1>",
+            // correo de origen
+            from: `TEST ${process.env.USER_MAIL}`,
+            // correo destino
+            to: data.email,
+            // nombre del mensajero
+            subject: `Liceo Etanislao Carrillo`,
+            // asunto
+            text: `${data.p_nombre} ${data.p_apellido}`,
+            // texto
+            html: `<h2>Datos de sesion</h2>
+                   <p>
+                       Los datos de inicio de sesión del alumno
+                       ${data.p_nombre} ${data.p_apellido}.
+                       usuario: <b>${data.cedula}</b>
+                       contraseña: <b>${data.clave}</b>
+                   </p>`,
         });
-        
-        console.log("Message sent: %s", info.response);
+        return info;
     } catch (error) {
         console.error(error);
         throw new Error("Error al enviar el correo");
