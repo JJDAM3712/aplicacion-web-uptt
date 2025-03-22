@@ -17,7 +17,7 @@ import { alert, PeticionAxios } from "../utils/generic";
 import { ServidorURL } from "../config/config";
 
 // ----------------------------------------
-// registrar personal
+// registrar profesor
 export function ModalRegis() {
   const [openModal, setOpenModal] = useState(false);
   
@@ -96,14 +96,28 @@ export function ModalRegis() {
                   shadow
                 />
               </div>
-              {/*----- cargo ------- */}
+              {/*----- correo ------- */}
               <div>
                 <div className="mb-2 block">
-                  <Label htmlFor="id_cargo" value="Selecciona un Cargo" />
+                  <Label htmlFor="correo" value="Correo:" />
+                </div>
+                <TextInput
+                  id="correo"
+                  name="correo"
+                  type="text"
+                  placeholder="correo"
+                  required
+                  shadow
+                />
+              </div>
+              {/*----- materia ------- */}
+              <div>
+                <div className="mb-2 block">
+                  <Label htmlFor="id_materia" value="Selecciona la materia" />
                 </div>
                 <Select
-                  id="id_cargo"
-                  name="id_cargo"
+                  id="id_materia"
+                  name="id_materia"
                 >
                   <option value="Selecciona:" disabled>
                     Selecciona:
@@ -112,25 +126,8 @@ export function ModalRegis() {
                   <option>Conciencia</option>
                 </Select>
               </div>
-              {/*----- departamento ------- */}
-              <div>
-                <div className="mb-2 block">
-                  <Label
-                    htmlFor="departamento"
-                    value="Selecciona un Departamento"
-                  />
-                </div>
-                <Select
-                  id="id_departamento"
-                  name="id_departamento"
-                >
-                  <option value="Selecciona:" disabled>
-                    Selecciona
-                  </option>
-                  
-                </Select>
-              </div>
-              <Button type="submit">Registrar Nuevo Usuario</Button>
+              
+              <Button type="submit">Registrar Profesor</Button>
             </form>
           </Modal.Body>
           <Modal.Footer>
@@ -943,11 +940,11 @@ export function EliminaVisita({ id }) {
 }
 
 // ---------------------------------------
-// modal departamentos
+// modal materias
 export function ModalDep() {
   const [openModal, setOpenModal] = useState(false);
   const [data, setData] = useState({
-    departamento: "",
+    materias: "",
   });
 
   const handleChange = (e) => {
@@ -958,7 +955,7 @@ export function ModalDep() {
   // limpiar campos del formulario
   const limpiarCampos = () => {
     setData({
-      departamento: "",
+      materias: "",
     });
   };
   const handleCloseModal = () => {
@@ -979,7 +976,7 @@ export function ModalDep() {
           },
         });
         handleCloseModal();
-        alert("Departamento", "Registro exitoso!", "success");
+        alert("Materia", "Registro exitoso!", "success");
       } catch (error) {
         alert("Oops...", "Ha ocurrido un error al registrar!", "error");
         return console.log(error);
@@ -991,10 +988,10 @@ export function ModalDep() {
     <Container>
       <>
         <Button onClick={() => setOpenModal(true)}>
-          Registrar Departameto
+          Registrar Materia
         </Button>
         <Modal show={openModal} onClose={handleCloseModal}>
-          <Modal.Header>Registrar un Nuevo Departamento</Modal.Header>
+          <Modal.Header>Registrar una Materia</Modal.Header>
           <Modal.Body>
             <form
               className="flex flex-col gap-4 max-w-full uppercase"
@@ -1002,15 +999,13 @@ export function ModalDep() {
             >
               <div>
                 <div className="mb-2 block">
-                  <Label htmlFor="departamento" value="Departamento:" />
+                  <Label htmlFor="materia" value="Materia:" />
                 </div>
                 <TextInput
-                  id="departamento"
+                  id="id_materia"
                   type="text"
-                  placeholder="Nombre del Departamento"
-                  onChange={handleChange}
-                  name="departamento"
-                  value={data.departamento}
+                  placeholder="Nombre de la Materia"
+                  name="materia"
                   shadow
                   className="uppercase"
                 />
@@ -1028,18 +1023,18 @@ export function ModalDep() {
     </Container>
   );
 }
-// modal eliminar departamentos
+// modal eliminar materia
 export function EliminarDep({ id }) {
   const [openModal, setOpenModal] = useState(false);
 
   const deleteDepa = async () => {
     try {
       const res = await axios.delete(`${ServidorURL}/task/${id}`);
-      alert("Departamento", "Eliminado exitosamente!", "success");
+      alert("Materia", "Eliminado exitosamente!", "success");
       setOpenModal(false);
     } catch (error) {
       console.error("error", error);
-      alert("Departamento", "Error en la eliminación!", "error");
+      alert("Materia", "Error en la eliminación!", "error");
       setOpenModal(false);
     }
   };

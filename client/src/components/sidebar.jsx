@@ -130,7 +130,7 @@ const linksArray = [
     to: "/app/home",
   },
   {
-    label: "Personal",
+    label: "Profesores",
     icon: <PiUsersFourFill />,
     to: "/app/personal",
   },
@@ -150,7 +150,7 @@ const linksArray = [
     to: "/app/inventario",
   },
   {
-    label: "Departamentos",
+    label: "Materias",
     icon: <PiBankBold />,
     to: "/app/departamentos",
   },

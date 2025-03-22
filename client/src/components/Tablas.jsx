@@ -46,8 +46,8 @@ export function TablaPersonal({ innerRef, datos }) {
             <Table.HeadCell>Apellido</Table.HeadCell>
             <Table.HeadCell>Cedula</Table.HeadCell>
             <Table.HeadCell>Teléfono</Table.HeadCell>
-            <Table.HeadCell>Cargo</Table.HeadCell>
-            <Table.HeadCell>Departamento</Table.HeadCell>
+            <Table.HeadCell>Correo</Table.HeadCell>
+            <Table.HeadCell>Materias</Table.HeadCell>
             <Table.HeadCell></Table.HeadCell>
           </Table.Head>
           <Table.Body className="divide-y uppercase">
@@ -58,8 +58,8 @@ export function TablaPersonal({ innerRef, datos }) {
                 <Table.Cell>Matos</Table.Cell>
                 <Table.Cell>11329525</Table.Cell>
                 <Table.Cell>04120268520</Table.Cell>
-                <Table.Cell>1</Table.Cell>
-                <Table.Cell>A</Table.Cell>
+                <Table.Cell>a@a</Table.Cell>
+                <Table.Cell>Matematicas</Table.Cell>
                 <Table.Cell>
                   <Button.Group>
                     <EditarPersona />
@@ -198,7 +198,7 @@ export const TablaVisitas = ({ innerRef, datos }) => {
   );
 }
 //-------------------------------------------------
-// tabla de departamento
+// tabla de materia
 export function TablaDepartamento() {
   const [datos, setDatos] = useState([]);
   const [currentPage, setCurrentPage] = useState(1); 
@@ -233,10 +233,10 @@ export function TablaDepartamento() {
   return (
     <Container>
       <div className="ContenedorTabla ">
-        <h1>Departamentos:</h1>
+        <h1>Materias:</h1>
         <Table className="uppercase">
           <Table.Head className="border-b-2 uppercase">
-            <Table.HeadCell>Departamento</Table.HeadCell>
+            <Table.HeadCell>Materia</Table.HeadCell>
             <Table.HeadCell></Table.HeadCell>
           </Table.Head>
           <Table.Body className="divide-y">
