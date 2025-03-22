@@ -160,7 +160,7 @@ const linksArray = [
     to: "/app/cargos",
   },
   {
-    label: "Categorias",
+    label: "Mensiones",
     icon: <MdCategory />,
     to: "/app/categoria",
   },

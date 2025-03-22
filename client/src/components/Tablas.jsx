@@ -478,7 +478,7 @@ export function TablaUsuario() {
   );
 }
 //-------------------------------------------------
-// tabla de categorias
+// tabla de mensiones
 export function TablaCategoria() {
   const [data, setData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1); 
@@ -514,10 +514,10 @@ export function TablaCategoria() {
   return (
     <Container>
       <div className="ContenedorTabla ">
-        <h1>Categorias:</h1>
+        <h1>Mensiones:</h1>
         <Table className="uppercase">
           <Table.Head className="border-b-2">
-            <Table.HeadCell>Nombre de Categoria</Table.HeadCell>
+            <Table.HeadCell>Nombre de las Mensiones</Table.HeadCell>
             <Table.HeadCell></Table.HeadCell>
           </Table.Head>
           <Table.Body className="divide-y">

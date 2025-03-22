@@ -2357,13 +2357,13 @@ export function ModalCatg() {
   return (
     <Container>
       <>
-        <Button onClick={() => setOpenModal(true)}>Registrar Categoria</Button>
+        <Button onClick={() => setOpenModal(true)}>Registrar Mension</Button>
         <Modal
           show={openModal}
           onClose={handleCloseModal}
           position="top-center"
         >
-          <Modal.Header>Registrar Categoria</Modal.Header>
+          <Modal.Header>Registrar Mension</Modal.Header>
           <Modal.Body>
             <form
               className="flex flex-col gap-4 max-w-full"
@@ -2371,16 +2371,14 @@ export function ModalCatg() {
             >
               <div>
                 <div className="mb-2 block">
-                  <Label htmlFor="categoria" value="Categoria:" />
+                  <Label htmlFor="mension" value="Mension:" />
                 </div>
                 <TextInput
-                  id="categoria"
-                  name="categoria"
+                  id="id_mension"
+                  name="mension"
                   type="text"
                   rightIcon={HiPencil}
-                  placeholder="Nombre categoria"
-                  onChange={handleChange}
-                  value={data.categoria}
+                  placeholder="Nombre Mension"
                   required
                   shadow
                 />
