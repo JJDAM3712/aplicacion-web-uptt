@@ -9,21 +9,20 @@ import { ThemeContext } from "../App";
 import {
   AiOutlineMenuFold,
   AiOutlineHome,
-  AiOutlineSetting,
+  AiOutlineTeam,
+  AiOutlineProfile,
+  AiOutlineForm,
 } from "react-icons/ai";
 import {
   PiUsersFourFill,
   PiBankBold,
-  PiCalendarFill,
   PiUsersFill,
 } from "react-icons/pi";
 import {
-  MdSupervisedUserCircle,
   MdInventory,
   MdLogout,
   MdCategory,
 } from "react-icons/md";
-import { RiOrganizationChart } from "react-icons/ri";
 import { useAuth } from "../auth/AuthProvided";
 
 // #region Sidebar
@@ -49,7 +48,7 @@ export function Sidebar({ sidebarOpen, setSidebarOpen }) {
     <Container isOpen={sidebarOpen} themeUse={theme}>
       <div className="Logocontent">
         <div className="imgcontent">
-            <img src={logo} alt="" width="200px"/>
+            <img src={logo} alt="" width="150px"/>
         </div>
       </div>
       <button className="Sidebarbutton" onClick={ModSidebaropen}>
@@ -93,30 +92,21 @@ const linksArray = [
     to: "/app/personal",
   },
   {
-    label: "Asistencias",
-    icon: <PiCalendarFill />,
+    label: "Estudiantes",
+    icon: <AiOutlineTeam />,
     to: "/app/asistencias",
   },
   {
-    label: "Visitas",
-    icon: <MdSupervisedUserCircle />,
-    to: "/app/visitas",
-  },
-  {
-    label: "Inventario",
-    icon: <MdInventory />,
+    label: "Notas",
+    icon: <AiOutlineProfile />,
     to: "/app/inventario",
   },
   {
     label: "Materias",
-    icon: <PiBankBold />,
+    icon: <AiOutlineForm />,
     to: "/app/departamentos",
   },
-  {
-    label: "Cargos",
-    icon: <RiOrganizationChart />,
-    to: "/app/cargos",
-  },
+ 
   {
     label: "Mensiones",
     icon: <MdCategory />,
@@ -127,11 +117,7 @@ const linksArray = [
     icon: <PiUsersFill />,
     to: "/app/usuario",
   },
-  {
-    label: "Respaldo",
-    icon: <AiOutlineSetting />,
-    to: "/app/respaldo",
-  },
+ 
 ];
 
 //#region STYLED COMPONENTS

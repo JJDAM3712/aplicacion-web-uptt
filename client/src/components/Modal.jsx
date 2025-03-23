@@ -1,8 +1,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import styled from "styled-components";
-//import logo from "../assets/img/CNE_logo.svg";
-import logo from"../assets/img/logo.jpg";
+import logo from "../assets/img/logo.jpg";
 import { Button, Modal, Radio, Label, TextInput, Select } from "flowbite-react";
 import { FaEraser, FaEdit } from "react-icons/fa";
 import {
@@ -41,16 +40,16 @@ export function ModalRegis() {
             <form
               className="flex flex-col gap-4 max-w-full"
             >
-              {/*----- nombre ------- */}
+              {/*----- nombres ------- */}
               <div>
                 <div className="mb-2 block">
-                  <Label htmlFor="nombres" value="Nombre:" />
+                  <Label htmlFor="nombre" value="Nombres:" />
                 </div>
                 <TextInput
-                  id="nombres"
+                  id="nombre"
                   name="nombre"
                   type="text"
-                  placeholder="Nombre"
+                  placeholder="Nombres"
                   required
                   shadow
                 />
@@ -554,13 +553,13 @@ export function RegisAsist() {
 
   return (
     <>
-      <Button onClick={() => setOpenModal(true)}>Registrar Asistencia</Button>
+      <Button onClick={() => setOpenModal(true)}>Registrar Estudiante</Button>
       <Modal show={openModal} size="md" popup onClose={handleCloseModal}>
         <Modal.Header />
         <Modal.Body>
           <div className="flex justify-center align-middle">
             <div className="flex ">
-              <img src={logo} alt="Logo CNE" className="w-20" />
+              <img src={logo} alt="Logo" className="w-20" />
             </div>
           </div>
           <form
@@ -568,46 +567,123 @@ export function RegisAsist() {
             onSubmit={handleSubmit}
           >
             <h3 className="text-xl font-medium text-gray-900 text-center ">
-              REGISTRAR ASISTENCIA
+              Registrar Estudiante
             </h3>
-            {/*---- cedula -----*/}
+            {/*----- nombre ------- */}
             <div>
-              <div className="mb-2 block">
-                <Label htmlFor="id_personal" value="Cedula:" />
-              </div>
-              <TextInput
-                id="cedula"
-                name="cedula"
-                placeholder="Ingrese su Cedula de identidad"
-                onChange={handleChange}
-                value={data.cedula}
-              />
-            </div>
-            {/*---- checkbox -----*/}
-            <fieldset className="flex max-w-md gap-4">
-              <legend className="mb-4">Selecciona el tipo de Registro</legend>
-              <div className="flex items-center gap-2">
-                <Radio
-                  id="entrada"
-                  name="asistencia"
-                  value="entrada"
-                  checked={data.asistencia === "entrada"}
-                  onChange={handleChange}
+                <div className="mb-2 block">
+                  <Label htmlFor="nombre" value="Nombres:" />
+                </div>
+                <TextInput
+                  id="nombre"
+                  name="nombre"
+                  type="text"
+                  placeholder="Nombres"
+                  required
+                  shadow
                 />
-                <Label htmlFor="entrada">ENTRADA</Label>
               </div>
-              <div className="flex items-center gap-2">
-                <Radio
-                  id="salida"
-                  name="asistencia"
-                  value="salida"
-                  checked={data.asistencia === "salida"}
-                  onChange={handleChange}
+              {/*----- apellido ------- */}
+              <div>
+                <div className="mb-2 block">
+                  <Label htmlFor="apellido" value="Apellidos:" />
+                </div>
+                <TextInput
+                  id="apellido"
+                  name="apellido"
+                  type="text"
+                  placeholder="Apellidos"
+                  required
+                  shadow
                 />
-                <Label htmlFor="salida">SALIDA</Label>
               </div>
-            </fieldset>
-            {/*---- checkbox -----*/}
+              {/*----- cedula ------- */}
+              <div>
+                <div className="mb-2 block">
+                  <Label htmlFor="cedula" value="Cedula:" />
+                </div>
+                <TextInput
+                  id="cedula"
+                  name="cedula"
+                  type="text"
+                  placeholder="1234567890"
+                  required
+                  shadow
+                />
+              </div>
+              {/*----- telefono ------- */}
+              <div>
+                <div className="mb-2 block">
+                  <Label htmlFor="telefono" value="Teléfono:" />
+                </div>
+                <TextInput
+                  id="telefono"
+                  name="telefono"
+                  type="text"
+                  placeholder="Teléfono"
+                  required
+                  shadow
+                />
+              </div>
+              {/*----- correo ------- */}
+              <div>
+                <div className="mb-2 block">
+                  <Label htmlFor="correo" value="Correo:" />
+                </div>
+                <TextInput
+                  id="correo"
+                  name="correo"
+                  type="text"
+                  placeholder="correo"
+                  required
+                  shadow
+                />
+              </div>
+              {/*----- Año ------- */}
+              <div>
+                <div className="mb-2 block">
+                  <Label htmlFor="año" value="Año:" />
+                </div>
+                <TextInput
+                  id="año"
+                  name="año"
+                  type="text"
+                  placeholder="año"
+                  required
+                  shadow
+                />
+              </div>
+              {/*----- Seccion ------- */}
+              <div>
+                <div className="mb-2 block">
+                  <Label htmlFor="seccion" value="Seccion:" />
+                </div>
+                <TextInput
+                  id="seccion"
+                  name="seccion"
+                  type="text"
+                  placeholder="seccion"
+                  required
+                  shadow
+                />
+              </div>
+              {/*----- Mension ------- */}
+              <div>
+                <div className="mb-2 block">
+                  <Label htmlFor="id_mension" value="Selecciona la Mension" />
+                </div>
+                <Select
+                  id="id_mension"
+                  name="id_mension"
+                >
+                  <option value="Selecciona:" disabled>
+                    Selecciona:
+                  </option>
+
+                  <option>Conciencia</option>
+                </Select>
+              </div>
+                                  
             <div className="w-full flex justify-between">
               <Button type="submit">Registrar</Button>
               <Button color="failure" onClick={handleCloseModal}>
@@ -1320,14 +1396,12 @@ export function RegisInv({ id }) {
   //---------------------------------
   // regsitrar datos
   const [datos, setDatos] = useState({
-    nombre: "",
-    marca: "",
-    codigo: "",
-    modelo: "",
-    estatus: "Selecciona:",
-    cantidad: "",
-    id_departamento: "Selecciona:",
-    id_categoria: "Selecciona:",
+    cedula: "",
+    nombres: "",
+    apellidos: "",
+    año: "Selecciona:",
+    id_materias: "Selecciona:",
+    id_mension: "Selecciona:",
   });
   const handleChange = (e) => {
     let names = e.target.name;
@@ -1338,14 +1412,12 @@ export function RegisInv({ id }) {
   // limpiar campos del formulario
   const limpiarCampos = () => {
     setDatos({
-      nombre: "",
-      marca: "",
-      codigo: "",
-      modelo: "",
-      estatus: "Selecciona:",
-      cantidad: "",
-      id_departamento: "Selecciona:",
-      id_categoria: "Selecciona:",
+      cedula: "",
+      nombres: "",
+      apellidos: "",
+      año: "Selecciona:",
+      id_materias: "Selecciona:",
+      id_mension: "Selecciona:",
     });
   };
   const handleCloseModal = () => {
@@ -1388,152 +1460,108 @@ export function RegisInv({ id }) {
             onSubmit={handleSend}
           >
             <h3 className="text-xl font-medium text-gray-900 text-center ">
-              REGISTRAR PRODUCTO
+              Ingresar Notas
             </h3>
-            {/* ------ nombre --------- */}
-            <div>
+                {/* ------ año --------- */}
+                <div>
               <div className="mb-2 block">
-                <Label htmlFor="nombre" value="Nombre:" />
-              </div>
-              <TextInput
-                id="nombre"
-                type="text"
-                placeholder="Nombre Producto"
-                shadow
-                name="nombre"
-                value={datos.nombre}
-                onChange={handleChange}
-              />
-            </div>
-            {/* ------ marca --------- */}
-            <div>
-              <div className="mb-2 block">
-                <Label htmlFor="marca" value="Marca:" />
-              </div>
-              <TextInput
-                id="marca"
-                type="text"
-                placeholder="Marca Producto"
-                shadow
-                name="marca"
-                value={datos.marca}
-                onChange={handleChange}
-              />
-            </div>
-            {/* ------ codigo --------- */}
-            <div>
-              <div className="mb-2 block">
-                <Label htmlFor="codigo" value="Codigo:" />
-              </div>
-              <TextInput
-                id="codigo"
-                type="text"
-                placeholder="Codigo del Producto"
-                shadow
-                name="codigo"
-                value={datos.codigo}
-                onChange={handleChange}
-              />
-            </div>
-            {/* ------ modelo --------- */}
-            <div>
-              <div className="mb-2 block">
-                <Label htmlFor="modelo" value="Modelo:" />
-              </div>
-              <TextInput
-                id="modelo"
-                type="text"
-                placeholder="Modelo del Producto"
-                shadow
-                name="modelo"
-                value={datos.modelo}
-                onChange={handleChange}
-              />
-            </div>
-            {/* ------ cantidad --------- */}
-            <div>
-              <div className="mb-2 block">
-                <Label htmlFor="cantidad" value="Cantidad:" />
-              </div>
-              <TextInput
-                id="cantidad"
-                type="number"
-                min="0"
-                name="cantidad"
-                placeholder="Cantidad"
-                value={datos.cantidad}
-                onChange={handleChange}
-                shadow
-              />
-            </div>
-            {/* ------ estatus --------- */}
-            <div>
-              <div className="mb-2 block">
-                <Label htmlFor="estatus" value="Estado del Producto" />
+                <Label htmlFor="año" value="Año:" />
               </div>
               <Select
-                id="estatus"
-                name="estatus"
-                onChange={handleChange}
-                value={datos.estatus}
+                id="año"
+                name="año"
               >
                 <option value="Selecciona:" disabled>
                   Selecciona:
                 </option>
-                <option value="NUEVO">NUEVO</option>
-                <option value="USADO">USADO</option>
-                <option value="DETERIORADO">DETERIORADO</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
               </Select>
-            </div>
-            {/* ------ departamento -------- */}
+            </div>            
+            {/* ------ seccion --------- */}
             <div>
               <div className="mb-2 block">
-                <Label htmlFor="Departamento" value="Departamento:" />
+                <Label htmlFor="seccion" value="Seccion:" />
               </div>
               <Select
-                id="id_departamento"
-                name="id_departamento"
-                onChange={handleChange}
-                value={datos.id_departamento}
+                id="seccion"
+                name="seccion"
               >
                 <option value="Selecciona:" disabled>
                   Selecciona:
                 </option>
-                {datosDep.map((depart) => (
-                  <option
-                    value={depart.id_departamento}
-                    key={depart.id_departamento}
-                  >
-                    {depart.departamento}
-                  </option>
-                ))}
+                <option value="A">A</option>
+                <option value="B">B</option>
+                <option value="C">C</option>
+                <option value="D">D</option>
+                <option value="E">E</option>
+                <option value="F">F</option>
               </Select>
-            </div>
-            {/* ------ categoria --------- */}
+            </div>    
+            {/* ------ materia --------- */}
             <div>
               <div className="mb-2 block">
-                <Label htmlFor="id_categoria" value="Categoria:" />
+                <Label htmlFor="materia" value="Materia:" />
               </div>
               <Select
-                id="id_categoria"
-                name="id_categoria"
-                onChange={handleChange}
-                value={datos.id_categoria}
+                id="materia"
+                name="materia"
               >
                 <option value="Selecciona:" disabled>
                   Selecciona:
                 </option>
-                {datosCat.map((category) => (
-                  <option
-                    value={category.id_categoria}
-                    key={category.id_categoria}
-                  >
-                    {category.categoria}
-                  </option>
-                ))}
+                <option value="1">1</option>
+                <option value="2">2</option>
               </Select>
+            </div>                    
+            {/* ------ mension --------- */}
+            <div>
+              <div className="mb-2 block">
+                <Label htmlFor="mension" value="Mension:" />
+              </div>
+              <Select
+                id="mension"
+                name="mension"
+              >
+                <option value="Selecciona:" disabled>
+                  Selecciona:
+                </option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+              </Select>
+            </div>            
+            {/* ------ notas --------- */}
+            <div>
+              <div className="mb-2 block">
+                <Label htmlFor="evaluacion" value="Describa la Evaluacion:" />
+              </div>
+              <TextInput
+                id="evaluacion"
+                type="text"
+                placeholder="evaluacion"
+                shadow
+                name="evaluacion"
+              />
             </div>
-            <Button type="submit">Registrar</Button>
+            {/* ------ nota --------- */}
+            <div>
+              <div className="mb-2 block">
+                <Label htmlFor="nota" value="Nota:" />
+              </div>
+              <TextInput
+                id="nota"
+                type="text"
+                placeholder="Nota"
+                shadow
+                name="Nota"
+              />
+            </div>          
+            <Button type="submit">Guardar</Button>
           </form>
         </Modal.Body>
         <Modal.Footer>
@@ -2316,7 +2344,7 @@ export function EditarUsr({ id }) {
   );
 }
 //----------------------------------------------
-// registrar categorias
+// registrar mension
 export function ModalCatg() {
   const [openModal, setOpenModal] = useState(false);
   const [data, setData] = useState({

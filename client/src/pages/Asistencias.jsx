@@ -12,11 +12,11 @@ import { ServidorURL } from "../config/config";
 export function Asistencias() {
   return (
     <Container>
-      <h1>Asistencias</h1>
+      <h1>Estudiantes</h1>
       <Container>
-        <div className="ContRep">
+
           <form>
-            <div className="flex gap-1 justify-between">
+            <div className="flex flex-wrap gap-2 mb-1">
               <Button color="success" type="submit">
                 Generar Reporte
                 <HiOutlineArrowRight className="ml-2 h-5 w-5" />
@@ -24,7 +24,7 @@ export function Asistencias() {
               <RegisAsist />
             </div>
           </form>
-        </div>
+
       </Container>
       <TablaAsistencias/>
     </Container>
