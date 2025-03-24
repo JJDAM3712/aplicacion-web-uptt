@@ -36,6 +36,7 @@ export const EnviarMail = async (data: any): Promise<any> => {
                    <p>
                        Los datos de inicio de sesión del alumno
                        ${data.p_nombre} ${data.p_apellido}.
+                       <br>
                        usuario: <b>${data.cedula}</b>
                        contraseña: <b>${data.clave}</b>
                    </p>`,

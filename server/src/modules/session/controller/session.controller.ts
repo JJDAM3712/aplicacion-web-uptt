@@ -1,9 +1,10 @@
-import { Response, Request } from "express";
+import { Response, Request, NextFunction } from "express";
 import { AppControllerBase } from "../../../controller/app.controller";
 import sessionService from "../service/session.service";
 import { randomPassword } from "../../../utils/generate.pass";
 import userService from "../../usuarios/services/user.service";
 import { EnviarMail } from "../../mail/mail";
+import bcrypt from "bcryptjs";
 
 class SessionController extends AppControllerBase {
     // generar contraseña de usuario
@@ -34,7 +35,7 @@ class SessionController extends AppControllerBase {
             console.log(`Email enviado exitosamente: ${info.messageId}`);
 
             
-            const result = await sessionService.PassGenerateService("12345", id);
+            const result = await sessionService.PassGenerateService(clave, id);
 
             res.status(200).json({message: "contraseña generada exitosamente!", result});
 
@@ -44,47 +45,69 @@ class SessionController extends AppControllerBase {
         }
     }
     // autenticacion de login
-    // autenticar usuario / login
-    async AuthenticLogin(req: Request, res: Response) => {
+    async autenticateController(req: Request, res: Response): Promise<void> {
         try {
-            // recibe datos del servidor
-            const datos = req.body;
-            // Verifica las credenciales contra el usuario predeterminado
-            if (usuario === DefaultUser.usuario && password === DefaultUser.password) {
-                const token = generateToken(DefaultUser.id);
-                res.cookie('access_token', token, {
-                    httpOnly: true,
+            const {cedula, clave} = req.body;
+
+            // validar si los datos vienen vacios
+            if (cedula == "" || clave == "") {
+                res.status(409).json({
+                    message: "Falta algún dato"
                 });
-                return res.status(200).json({ mensaje: 'Inicio de sesión exitoso para el usuario predeterminado.' });
+                return;
             }
-            let result;
-            try {
-                result = await BuscarUser(usuario);
-            } catch (error) {
-                if (error.message === "usuario incorrecto") {
-                    return res.status(401).json({mensaje: "usuario o contraseña incorrecto"});
-                } else {
-                    throw error;
-                }
+
+            const result = await sessionService.loginService(cedula);
+            // valida si el usuario existe
+            if (result.length === 0) {
+                res.status(404).json({
+                    message: "Usuario o contraseña incorrecto"
+                });
+                return;
             }
-            // compara la contraseña con el hash almacenado en la base de datos
-            const match = await bcrypt.compare(password, result[0].password);
+            
+            // valida si la contraseña es correcta
+            const match = await bcrypt.compare(clave, result[0].clave);
             if (!match) {
-                return res.status(401).json({mensaje: "usuario o contraseña incorrecto"})
+                res.status(404).json({mensaje: "usuario o contraseña incorrecto"});
+                return;
             }
-            // Después de verificar la contraseña
-            const userId = result[0].id; // Obtén el ID del usuario desde result
-            const token = generateToken(userId);
-            // Configura el token en una cookie
-            res.cookie('access_token', token, {
-                httpOnly: true,
-            });
-            // muestra el resultado
-            return res.status(200).json({ mensaje: "Inicio de sesión exitoso" });
+            const token = await sessionService.tokenGenerate(result[0].id_usuario, result[0].id_rol);
+            console.log(token)
+            // exito si todo es valido
+            res.status(200).json({
+                message: "Login exitoso!",
+                result: result
+            })
         } catch (error) {
-            return res.status(500).json({mensaje: error.message});
+            console.error(error)
+            res.status(500).json({
+                message: "Error al autenticar el usuario",
+                error: error
+            })
         }
     }
+    // comprobar token
+    async autenticateToken(req: Request, res: Response, next: NextFunction): Promise<void> {
+        try {
+            const authHeader = req.headers['authorization'];
+            // Validar si el encabezado de autorización está presente
+            if (!authHeader || !authHeader.startsWith('Bearer ')) {
+                res.status(401).json({ message: "Token no proporcionado" });
+                return;
+            }
+            // Extraer el token
+            const token = authHeader.split(' ')[1];
+            // Llamar a la función tokenVerify
+            const decoded = await sessionService.validateToken(token);
+            req.user = decoded;
+            next();
+            res.status(200).json({ message: "Acceso permitido", data: decoded });
+        } catch (error) {
+            res.status(401).json({message: "token invalido"})
+        }
+    }
+    
 }
 
 export default new SessionController();

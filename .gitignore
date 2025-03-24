@@ -13,5 +13,6 @@ dist/
 # Ignorar directorios de sistema
 .DS_Store
 
+.vscode/
 
 server/src/database/
