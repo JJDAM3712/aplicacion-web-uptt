@@ -5,10 +5,11 @@ import logo from "../assets/img/fachada.jpg"
 export function HomePage() {
   return (
     <Container>
-        <BackgroundImage src={logo} alt="Fachada del edificio" />
       <Header>
         <LoginButton>Inicio de Sesión</LoginButton>
       </Header>
+        <BackgroundImage src={logo} alt="Fachada del edificio" />
+      
       <Main>
         <Section>
           <h2>Reseña Historica</h2>
@@ -64,7 +65,6 @@ export function HomePage() {
 const Container = styled.div`
   display: flex;
   flex-direction: column;
-  height: 100vh;
   margin: 0;
   padding: 0;
   font-family: Arial, sans-serif;
@@ -72,9 +72,10 @@ const Container = styled.div`
 `;
 const BackgroundImage = styled.img`
 /* Fondo con imagen */
-   background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+  height: 80vh;
+  object-fit:cover;
+  width: 100%;
+
 
   /* Capa de opacidad */
   position: relative;
@@ -85,8 +86,8 @@ const BackgroundImage = styled.img`
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.4); /* Ajusta el nivel de opacidad */
-    z-index: -1; /* Coloca la capa detrás del contenido */
+    background-color: rgba(0, 0, 0, 1); 
+   
 `;
 const Header = styled.header`
   display: flex;

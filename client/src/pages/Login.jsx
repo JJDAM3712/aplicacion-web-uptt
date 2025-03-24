@@ -1,6 +1,5 @@
 import styled from "styled-components";
 import "../css/output.css";
-//import logo from "../assets/img/CNE_logo.svg";
 import logo from"../assets/img/logo.jpg";
 import "../css/login.css";
 import { HiLockClosed, HiUser } from "react-icons/hi";
@@ -10,6 +9,10 @@ import { useNavigate } from "react-router-dom";
 import { alert } from "../utils/generic"
 import { ServidorURL } from "../config/config";
 import { useAuth } from "../auth/AuthProvided";
+import { HomePage } from "./principal";
+import { TarjetaMension } from "../components/mansion";
+import "../css/st.css";
+import Imagenes from "../assets/imagenes";
 
 
 function Login() {
@@ -66,42 +69,34 @@ function Login() {
 
   return (
     <Container>
-      <form action="" className="form_main" onSubmit={handleSend}>
-        <div className="flex ">
-          <img src={logo} alt="Logo CNE" className="w-24" />
-        </div>
-        <p className="heading">Ingresar al Sistema</p>
-        <div className="inputContainer">
-          <HiUser className="inputIcon" />
-          <input
-            type="text"
-            className="inputField"
-            id="usuario"
-            name="usuario"
-            value={datos.usuario}
-            placeholder="Usuario"
-            onChange={handleChange}
-          />
-        </div>
+      
 
-        <div className="inputContainer">
-          <HiLockClosed className="inputIcon" />
-          <input
-            type="password"
-            className="inputField"
-            id="password"
-            name="password"
-            value={datos.password}
-            onChange={handleChange}
-            placeholder="Contraseña"
-          />
-        </div>
+      <HomePage />
 
-        <button id="button">Ingresar</button>
-        <a className="forgotLink" href="/forgot">
-          Olvidó su contraseña?
-        </a>
-      </form>
+      <div className="tarjetasDeMension">
+
+        <TarjetaMension 
+          estilo="rgb(51, 169, 204)" 
+          texto="Administracion" 
+          descripcion="hacer de secretaria porq si XD" 
+          imag={Imagenes.imagen1}
+        />
+
+        <TarjetaMension 
+          estilo="red"
+          texto="Informatica" 
+          descripcion="Arreglar canaimitas con güindous siete" 
+          imag={Imagenes.imagen2}
+        />
+        <TarjetaMension
+          estilo="rgb(132, 18, 30)"
+          texto="Servicio de enfermeria super especial purucito" 
+          descripcion="hacer de secretaria porq si XD" 
+          imag={Imagenes.imagen2}
+        />
+      </div>
+      
+
     </Container>
   );
 }
@@ -110,8 +105,8 @@ const Container = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
   background-color: #ccc;
+  flex-direction: column
 `;
 
 export default Login;

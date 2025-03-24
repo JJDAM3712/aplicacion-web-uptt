@@ -17,6 +17,48 @@ import { alert, PeticionAxios } from "../utils/generic";
 import { ServidorURL } from "../config/config";
 
 // ----------------------------------------
+// login
+export function Login() {
+  return (
+    <form action="" className="form_main" onSubmit={handleSend}>
+            <div className="flex ">
+              <img src={logo} alt="Logo CNE" className="w-24" />
+            </div>
+            <p className="heading">Ingresar al Sistema</p>
+            <div className="inputContainer">
+              <HiUser className="inputIcon" />
+              <input
+                type="text"
+                className="inputField"
+                id="usuario"
+                name="usuario"
+                value={datos.usuario}
+                placeholder="Usuario"
+                onChange={handleChange}
+              />
+            </div>
+    
+            <div className="inputContainer">
+              <HiLockClosed className="inputIcon" />
+              <input
+                type="password"
+                className="inputField"
+                id="password"
+                name="password"
+                value={datos.password}
+                onChange={handleChange}
+                placeholder="Contraseña"
+              />
+            </div>
+    
+            <button id="button">Ingresar</button>
+            <a className="forgotLink" href="/forgot">
+              Olvidó su contraseña?
+            </a>
+          </form>
+  )
+}
+
 // registrar profesor
 export function ModalRegis() {
   const [openModal, setOpenModal] = useState(false);
