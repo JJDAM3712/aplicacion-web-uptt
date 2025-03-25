@@ -36,13 +36,13 @@ export function Inventario() {
 
   const { onDownload } = useDownloadExcel({
     currentTableRef: TablaInvent.current,
-    filename: 'Inventario',
+    filename: 'Notas',
     sheet: 'Hoja 1'
   });
 
   return (
     <Container>
-      <h1>Inventario</h1>
+      <h1>Notas</h1>
       <div className="flex flex-wrap gap-2 mb-1">
         <RegisInv />
         {/* --- exportar excel */}
@@ -50,7 +50,7 @@ export function Inventario() {
           Generar Reporte
           <HiOutlineArrowRight className="ml-2 h-5 w-5" />
         </Button>
-        {/* --- tabla personal */}
+        {/* --- tabla  */}
       </div>
       <TablaInv  innerRef={TablaInvent} datos={datos} setDatos={setDatos}/>
     </Container>

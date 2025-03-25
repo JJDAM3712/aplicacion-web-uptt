@@ -108,7 +108,7 @@ const linksArray = [
   },
  
   {
-    label: "Mensiones",
+    label: "Menciones",
     icon: <MdCategory />,
     to: "/app/categoria",
   },

@@ -1,8 +1,6 @@
 import styled from "styled-components";
 import "../css/output.css";
-import logo from"../assets/img/logo.jpg";
 import "../css/login.css";
-import { HiLockClosed, HiUser } from "react-icons/hi";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -69,28 +67,32 @@ function Login() {
 
   return (
     <Container>
-      
-
       <HomePage />
 
       <div className="tarjetasDeMension">
 
         <TarjetaMension 
           estilo="rgb(51, 169, 204)" 
-          texto="Administracion" 
+          texto="Laboratorio Clinico" 
           descripcion="hacer de secretaria porq si XD" 
           imag={Imagenes.imagen1}
         />
 
         <TarjetaMension 
           estilo="red"
-          texto="Informatica" 
+          texto="Telematica" 
           descripcion="Arreglar canaimitas con güindous siete" 
           imag={Imagenes.imagen2}
         />
         <TarjetaMension
           estilo="rgb(132, 18, 30)"
-          texto="Servicio de enfermeria super especial purucito" 
+          texto="Registro de Estadistica y Salud" 
+          descripcion="hacer de secretaria porq si XD" 
+          imag={Imagenes.imagen2}
+        />
+           <TarjetaMension
+          estilo="rgb(132, 18, 30)"
+          texto="Deporte" 
           descripcion="hacer de secretaria porq si XD" 
           imag={Imagenes.imagen2}
         />

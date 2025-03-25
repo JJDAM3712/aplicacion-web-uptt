@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import "../css/App.css";
 import logo from "../assets/img/fachada.jpg"
 
 
@@ -13,12 +12,13 @@ export function Home() {
 
 
 const Container = styled.div`
-  width: 80vw; /* Ocupa todo el ancho de la pantalla */
-  height: 120vh; /* Ocupa todo el alto de la pantalla */
+  width: 100%; /* Ocupa todo el ancho de la pantalla */
+  height: 100%; /* Ocupa todo el alto de la pantalla */
   position: relative;
   overflow: hidden; /* Garantiza que no haya elementos desbordados */
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
 `;
 
 const BackgroundImage = styled.img`
@@ -27,9 +27,11 @@ const BackgroundImage = styled.img`
   left: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover; /* Esto asegura que la imagen se recorte para llenar el contenedor */
-  margin: 0; /* Elimina cualquier margen alrededor de la imagen */
-  border: none; /* Asegúrate de que no haya bordes adicionales */
+  object-fit: cover; /* Ajusta la imagen para que cubra */
+  margin: 0;
+  border: none;
   padding: 0;
+  box-sizing: border-box; /* Incluye padding y bordes en el tamaño */
 `;
+
 

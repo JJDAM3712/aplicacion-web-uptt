@@ -5,7 +5,7 @@ import { TablaDepartamento } from "../components/Tablas";
 export function Departamentos() {
   return (
     <Container>
-      <h1>Departamentos</h1>
+      <h1>Materias</h1>
       <div className="flex flex-wrap gap-2 mb-1 uppercase">
         <ModalDep />
       </div>

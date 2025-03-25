@@ -9,6 +9,7 @@ import { HiOutlineArrowRight } from "react-icons/hi";
 import socketIOClient from 'socket.io-client';
 import { ServidorURL } from "../config/config";
 
+
 export function Asistencias() {
   return (
     <Container>

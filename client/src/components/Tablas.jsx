@@ -39,7 +39,7 @@ export function TablaPersonal({ innerRef, datos }) {
   return (
     <Container>
       <div className="ContenedorTabla">
-        <h1>Profesores Registrado:</h1>
+        <h1>Profesores:</h1>
         <Table ref={innerRef}>
           <Table.Head className="border-b-2 uppercase">
             <Table.HeadCell>Nombre</Table.HeadCell>
@@ -106,7 +106,7 @@ export function TablaAsistencias({innerRef, datos}) {
             <Table.HeadCell>Cedula</Table.HeadCell>
             <Table.HeadCell>Año</Table.HeadCell>
             <Table.HeadCell>Sección</Table.HeadCell>
-            <Table.HeadCell>Mension</Table.HeadCell>
+            <Table.HeadCell>Mencion</Table.HeadCell>
             <Table.HeadCell></Table.HeadCell>
           </Table.Head>
           <Table.Body className="divide-y uppercase">
@@ -357,7 +357,7 @@ export function TablaInv({ innerRef, datos }) {
   return (
     <Container>
       <div className="ContenedorTabla">
-        <h1>Inventario:</h1>
+        <h1>Notas:</h1>
         <Table className="uppercase" ref={innerRef}>
           <Table.Head className="border-b-2">
             <Table.HeadCell>Nombre</Table.HeadCell>
@@ -474,7 +474,7 @@ export function TablaUsuario() {
   );
 }
 //-------------------------------------------------
-// tabla de mensiones
+// tabla de menciones
 export function TablaCategoria() {
   const [data, setData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1); 
@@ -510,10 +510,10 @@ export function TablaCategoria() {
   return (
     <Container>
       <div className="ContenedorTabla ">
-        <h1>Mensiones:</h1>
+        <h1>Menciones:</h1>
         <Table className="uppercase">
           <Table.Head className="border-b-2">
-            <Table.HeadCell>Nombre de las Mensiones</Table.HeadCell>
+            <Table.HeadCell>Nombre de las Menciones</Table.HeadCell>
             <Table.HeadCell></Table.HeadCell>
           </Table.Head>
           <Table.Body className="divide-y">

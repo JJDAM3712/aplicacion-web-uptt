@@ -611,36 +611,8 @@ export function RegisAsist() {
             <h3 className="text-xl font-medium text-gray-900 text-center ">
               Registrar Estudiante
             </h3>
-            {/*----- nombre ------- */}
+            {/*----- cedula ------- */}
             <div>
-                <div className="mb-2 block">
-                  <Label htmlFor="nombre" value="Nombres:" />
-                </div>
-                <TextInput
-                  id="nombre"
-                  name="nombre"
-                  type="text"
-                  placeholder="Nombres"
-                  required
-                  shadow
-                />
-              </div>
-              {/*----- apellido ------- */}
-              <div>
-                <div className="mb-2 block">
-                  <Label htmlFor="apellido" value="Apellidos:" />
-                </div>
-                <TextInput
-                  id="apellido"
-                  name="apellido"
-                  type="text"
-                  placeholder="Apellidos"
-                  required
-                  shadow
-                />
-              </div>
-              {/*----- cedula ------- */}
-              <div>
                 <div className="mb-2 block">
                   <Label htmlFor="cedula" value="Cedula:" />
                 </div>
@@ -649,6 +621,62 @@ export function RegisAsist() {
                   name="cedula"
                   type="text"
                   placeholder="1234567890"
+                  required
+                  shadow
+                />
+              </div>
+            {/*----- primer nombre ------- */}
+            <div>
+                <div className="mb-2 block">
+                  <Label htmlFor="primer nombre" value="Primer Nombre:" />
+                </div>
+                <TextInput
+                  id="p_nonmbre"
+                  name="p_nombbre"
+                  type="text"
+                  placeholder="Primer Nombre"
+                  required
+                  shadow
+                />
+              </div>
+              {/*----- segundo nombre ------- */}
+            <div>
+                <div className="mb-2 block">
+                  <Label htmlFor="segundo nombre" value="Segundo Nombre:" />
+                </div>
+                <TextInput
+                  id="s_segundo"
+                  name="s_segundo"
+                  type="text"
+                  placeholder="Segundo Nombre"
+                  required
+                  shadow
+                />
+              </div>
+              {/*----- primer apellido ------- */}
+              <div>
+                <div className="mb-2 block">
+                  <Label htmlFor="primer apellido" value="Primer Nombre:" />
+                </div>
+                <TextInput
+                  id="p_nombre"
+                  name="p_nombre"
+                  type="text"
+                  placeholder="Primer Nombre"
+                  required
+                  shadow
+                />
+              </div>
+              {/*----- segundo apellido ------- */}
+              <div>
+                <div className="mb-2 block">
+                  <Label htmlFor="segundo apellido" value="Segundo Nombre:" />
+                </div>
+                <TextInput
+                  id="s_nombre"
+                  name="s_nombre"
+                  type="text"
+                  placeholder="Segundo Nombre"
                   required
                   shadow
                 />
@@ -1398,7 +1426,7 @@ export function EliminarCargo({ id }) {
 }
 
 //----------------------------------------------
-// registrar inventario
+// registrar notas
 export function RegisInv({ id }) {
   const [openModal, setOpenModal] = useState(false);
 
@@ -2386,7 +2414,7 @@ export function EditarUsr({ id }) {
   );
 }
 //----------------------------------------------
-// registrar mension
+// registrar mencion
 export function ModalCatg() {
   const [openModal, setOpenModal] = useState(false);
   const [data, setData] = useState({
@@ -2428,13 +2456,13 @@ export function ModalCatg() {
   return (
     <Container>
       <>
-        <Button onClick={() => setOpenModal(true)}>Registrar Mension</Button>
+        <Button onClick={() => setOpenModal(true)}>Registrar Mencion</Button>
         <Modal
           show={openModal}
           onClose={handleCloseModal}
           position="top-center"
         >
-          <Modal.Header>Registrar Mension</Modal.Header>
+          <Modal.Header>Registrar Mencion</Modal.Header>
           <Modal.Body>
             <form
               className="flex flex-col gap-4 max-w-full"
@@ -2442,14 +2470,14 @@ export function ModalCatg() {
             >
               <div>
                 <div className="mb-2 block">
-                  <Label htmlFor="mension" value="Mension:" />
+                  <Label htmlFor="mencion" value="Mencion:" />
                 </div>
                 <TextInput
-                  id="id_mension"
-                  name="mension"
+                  id="id_mencion"
+                  name="mencion"
                   type="text"
                   rightIcon={HiPencil}
-                  placeholder="Nombre Mension"
+                  placeholder="Nombre Mencion"
                   required
                   shadow
                 />
