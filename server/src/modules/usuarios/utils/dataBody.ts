@@ -25,7 +25,8 @@ class dataBody {
         return data = {
             id_seccion: data.id_seccion,
             id_user: data.id_user,
-            id_year: data.id_year
+            id_year: data.id_year,
+            id_mension: data.id_mension
         }
     }
 }

@@ -17,7 +17,13 @@ class UserService extends ServiceBase {
         const [result] = await pool.query<RowDataPacket[]>(sql, id);
         return result;
     }
-    // registrar un usuario
+    // registrar profesores y usuario admin
+    async postService(data: any): Promise<any> {
+        const sql = userSql.postUserQuery();
+        const [result] = await pool.query<RowDataPacket[]>(sql, data);
+        return result;
+    }
+    // registrar un estudiante (transaccion)
     async postServiceTransaction(data: any, connection: PoolConnection): Promise<any> {
         const sql = userSql.postUserQuery();
         const [result] = await connection.query<RowDataPacket[]>(sql, data);
@@ -36,7 +42,7 @@ class UserService extends ServiceBase {
         return result;
     }
     // validar que un usuario exista
-    async getServiceExist(cedula: string, email: string): Promise<any> {
+    async getUserServiceExist(cedula: string, email: string): Promise<any> {
         const sql = userSql.existUserQuery();
         const [result] = await pool.query<RowDataPacket[]>(sql, [cedula, email]);
         return result;

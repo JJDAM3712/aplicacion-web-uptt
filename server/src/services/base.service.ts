@@ -22,7 +22,7 @@ export class ServiceBase implements ServiceInterface {
         throw new Error("Method not implemented.");
     }
     // servicio para validar datos existentes
-    public async getServiceExist(data: any, id: string): Promise<any> {
+    public async getServiceExist(data: any): Promise<any> {
         throw new Error("Method not implemented");
     }
     // servicio para validar datos repetidos

@@ -24,10 +24,16 @@ class ProfesorService extends ServiceBase {
         const [result] = await connection.query<RowDataPacket[]>(sql, data);
         return result;
     }
+    // registrar clase de profesores
+    public async postClaseService(data: any){
+        const sql = ProfesorSQL.postProfQuery();
+        const [result] = await pool.query<RowDataPacket[]>(sql, data);
+        return result;
+    }
     // validar que el profesor exista
-    public async getServiceExist(data: any, id: string): Promise<any> {
-        const sql = ProfesorSQL.getProfExistQuery();
-        const [result] = await pool.query<RowDataPacket[]>(sql, [data, id]);
+    public async getServiceExist(data: any): Promise<any> {
+        const sql = ProfesorSQL.getClaseExistQuery();
+        const [result] = await pool.query<RowDataPacket[]>(sql, [data]);
         return result;
     }
     // actualizar el profesor

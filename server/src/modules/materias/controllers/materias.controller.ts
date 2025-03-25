@@ -7,7 +7,6 @@ class MateriaController extends AppControllerBase{
     // mostrar todos los datos de las materias
     public async getController(req:Request, res:Response): Promise<void>{
         try {
-
             const result = await MateriaService.getService();
             res.json(result);
         } catch (error) {
@@ -37,7 +36,7 @@ class MateriaController extends AppControllerBase{
     public async postController(req:Request, res:Response): Promise<void> {
         try {
             // valida que la materia no exista
-            const result1 = await MateriaService.getServiceExist(req.body.materia, req.params.id);
+            const result1 = await MateriaService.getServiceExist(req.body.materia);
             if (result1.length > 0) {
                 res.status(409).json({ message: "La materia ya existe"});
                 return;

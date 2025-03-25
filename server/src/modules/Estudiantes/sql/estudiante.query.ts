@@ -10,14 +10,19 @@ class EstudiantesSQL {
 
     constructor() {
         // mostrar todos los estudiantes   
-        this.getStudent = `SELECT cedula, primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, telefono, foto_perfil, seccion, mension, anno 
-                  				FROM estudiantes
-                  				LEFT JOIN secciones ON secciones.id_seccion = estudiantes.id_seccion
-                  				LEFT JOIN mensiones ON mensiones.id_mension = secciones.id_mension
-                  				LEFT JOIN year ON year.id_anno = estudiantes.id_year`;
+        this.getStudent = `SELECT cedula, p_nombre, s_nombre, p_apellido, s_apellido, telefono, email, anno, seccion, mension
+                            FROM estudiantes al
+                            JOIN usuarios u ON al.id_user = u.id_usuario
+                            JOIN year y ON al.id_year = y.id_anno
+                            JOIN secciones s ON al.id_seccion = s.id_seccion
+                            JOIN mensiones m ON s.id_mension = m.id_mension
+                            WHERE (? IS NULL OR y.anno = ?)
+                                    AND (? IS NULL OR s.seccion = ?)
+                                    AND (? IS NULL OR m.mension = ?)`;
         // mostrar un estudiante por id
-        this.getStudentById = `SELECT cedula, primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, telefono, foto_perfil, seccion, mension, anno 
-                  				FROM estudiantes
+        this.getStudentById = `SELECT cedula, p_nombre, s_nombre, p_apellido, s_apellido, telefono, seccion, mension, anno 
+                  				FROM usuarios
+                                LEFT JOIN estudiantes ON estudiantes.id_user = usuarios.id_usuario
                   				LEFT JOIN secciones ON secciones.id_seccion = estudiantes.id_seccion
                   				LEFT JOIN mensiones ON mensiones.id_mension = secciones.id_mension
                   				LEFT JOIN year ON year.id_anno = estudiantes.id_year WHERE id_estudiante = ?`;

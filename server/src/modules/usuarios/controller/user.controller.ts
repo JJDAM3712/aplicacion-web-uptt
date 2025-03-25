@@ -1,10 +1,6 @@
 import userService from "../services/user.service";
-import profesorService from "../../profesor/service/profesor.service";
-import estudianteService from "../../Estudiantes/services/estudiante.service";
 import { Request, Response } from "express";
 import { AppControllerBase } from "../../../controller/app.controller";
-import dataBody from "../utils/dataBody";
-import { pool } from "../../../database/db";
 
 class UserController extends AppControllerBase {
     // mostrar todos los usuarios
@@ -43,7 +39,7 @@ class UserController extends AppControllerBase {
                 throw new Error("El json no es correcto");
             }
             // validar si el usuario existe
-            const existUser = await userService.getServiceExist(data.cedula, data.email);
+            const existUser = await userService.getUserServiceExist(data.cedula, data.email);
             if (existUser.length > 0) {
                 if(existUser[0].cedula === data.cedula) {
                     res.status(409).json({message: "Esta cedula ya se encuentra registrada"});
@@ -53,81 +49,13 @@ class UserController extends AppControllerBase {
                     return;
                 }
             }
-            var result: any;
-            var resultUser: any;
-            var connection = pool.getConnection();
             // seleccionar rol
-            const rol = data.id_rol;
+            data.id_rol = 1;
             // rol admin
-            switch(rol){
-                // rol administrador
-                case 1:
-                    result = await userService.postService(data);
-                    break;
-                // rol profesor
-                case 2:
-                    // ejecuta las consultas como transacción
-                    try {
-                        (await connection).beginTransaction();
-                        // separa los datos recibidos para usuarios
-                        const dataUser = dataBody.dataUser(data);
-                        
-                        // almacena los datos en sus respectivas tablas
-                        result = await userService.postServiceTransaction(dataUser, await connection);
-                        // obtiene el id generado en esta consulta
-                        const userId = result.insertId;
-                        
-                        // separa los datos de profesores
-                        const dataProf = dataBody.dataProfesor(data);
-                        // agrega el id generado anteriormente a profesores
-                        dataProf.id_user = userId;
+            const result = await userService.postService(data);
                     
-                        resultUser = await profesorService.postServiceTransaction(dataProf, await connection);
-                        // si no hubo problemas en ninguna consulta guarda los cambios en la bd
-                        (await connection).commit();
-                    } catch (error) {
-                        // si una consulta fallo cancela ambas consultas
-                        (await connection).rollback();
-                        res.status(500).json({message: "Error al registrar el profesor", error});
-                        return;
-                    } finally {
-                        // libera la conexion
-                        (await connection).release();
-                    }
-                    break;
-                // rol estudiante
-                case 3:
-                    try {
-                        (await connection).beginTransaction();
-                        // separa los datos recibidos para usuarios
-                        const dataUser = dataBody.dataUser(data);
-                        
-                        // almacena los datos en sus respectivas tablas
-                        result = await userService.postServiceTransaction(dataUser, await connection);
-                        // obtiene el id generado en esta consulta
-                        const userId = result.insertId;
-                        
-                        // separa los datos de profesores
-                        const dataEstudiante = dataBody.dataEstudiante(data);
-                        // agrega el id generado anteriormente a estudiantes
-                        dataEstudiante.id_user = userId;
-                    
-                        resultUser = await estudianteService.postServiceTransaction(dataEstudiante, await connection);
-                        // si no hubo problemas en ninguna consulta guarda los cambios en la bd
-                        (await connection).commit();
-                    } catch (error) {
-                        // si una consulta fallo cancela ambas consultas
-                        (await connection).rollback();
-                        res.status(500).json({message: "Error al registrar el estudiante", error});
-                        return;
-                    } finally {
-                        // libera la conexion
-                        (await connection).release();
-                    }
-                    break;
-            }
 
-            res.status(200).json({message: "Usuario registrado", resultUser, result});
+            res.status(200).json({message: "Usuario registrado",  result});
         } catch (error) {
             console.error(error);
             res.status(500).json({message: error});

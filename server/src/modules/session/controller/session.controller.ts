@@ -100,7 +100,7 @@ class SessionController extends AppControllerBase {
             const token = authHeader.split(' ')[1];
             // Llamar a la función tokenVerify
             const decoded = await sessionService.validateToken(token);
-            req.user = decoded;
+            //req.user = decoded;
             next();
             res.status(200).json({ message: "Acceso permitido", data: decoded });
         } catch (error) {
