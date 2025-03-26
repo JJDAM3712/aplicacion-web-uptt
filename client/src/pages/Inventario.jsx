@@ -43,14 +43,17 @@ export function Inventario() {
   return (
     <Container>
       <h1>Notas</h1>
-      <div className="flex flex-wrap gap-2 mb-1">
+      <div className="flex flex-wrap gap-2 mb-1" >
         <RegisInv />
-        {/* --- exportar excel */}
+         {/* --- agregar nota */}      
         <Button color="success" onClick={onDownload}>
           Generar Reporte
           <HiOutlineArrowRight className="ml-2 h-5 w-5" />
         </Button>
         {/* --- tabla  */}
+      </div>
+      <div className="flex ">
+        Modalnots
       </div>
       <TablaInv  innerRef={TablaInvent} datos={datos} setDatos={setDatos}/>
     </Container>

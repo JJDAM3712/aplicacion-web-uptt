@@ -1471,7 +1471,7 @@ export function RegisInv({ id }) {
     apellidos: "",
     año: "Selecciona:",
     id_materias: "Selecciona:",
-    id_mension: "Selecciona:",
+    id_mencion: "Selecciona:",
   });
   const handleChange = (e) => {
     let names = e.target.name;
@@ -1487,7 +1487,7 @@ export function RegisInv({ id }) {
       apellidos: "",
       año: "Selecciona:",
       id_materias: "Selecciona:",
-      id_mension: "Selecciona:",
+      id_mencion: "Selecciona:",
     });
   };
   const handleCloseModal = () => {
@@ -1515,7 +1515,7 @@ export function RegisInv({ id }) {
 
   return (
     <>
-      <Button onClick={() => setOpenModal(true)}>Registrar Producto</Button>
+      <Button onClick={() => setOpenModal(true)}>Buscar Clase</Button>
       <Modal
         show={openModal}
         size="md"
@@ -1530,7 +1530,7 @@ export function RegisInv({ id }) {
             onSubmit={handleSend}
           >
             <h3 className="text-xl font-medium text-gray-900 text-center ">
-              Ingresar Notas
+              Buscar Clase
             </h3>
                 {/* ------ año --------- */}
                 <div>
@@ -1588,14 +1588,14 @@ export function RegisInv({ id }) {
                 <option value="2">2</option>
               </Select>
             </div>                    
-            {/* ------ mension --------- */}
+            {/* ------ mencion --------- */}
             <div>
               <div className="mb-2 block">
-                <Label htmlFor="mension" value="Mension:" />
+                <Label htmlFor="mencion" value="Mencion:" />
               </div>
               <Select
-                id="mension"
-                name="mension"
+                id="mencion"
+                name="mencion"
               >
                 <option value="Selecciona:" disabled>
                   Selecciona:
@@ -1604,34 +1604,8 @@ export function RegisInv({ id }) {
                 <option value="2">2</option>
                 <option value="3">3</option>
               </Select>
-            </div>            
-            {/* ------ notas --------- */}
-            <div>
-              <div className="mb-2 block">
-                <Label htmlFor="evaluacion" value="Describa la Evaluacion:" />
-              </div>
-              <TextInput
-                id="evaluacion"
-                type="text"
-                placeholder="evaluacion"
-                shadow
-                name="evaluacion"
-              />
-            </div>
-            {/* ------ nota --------- */}
-            <div>
-              <div className="mb-2 block">
-                <Label htmlFor="nota" value="Nota:" />
-              </div>
-              <TextInput
-                id="nota"
-                type="text"
-                placeholder="Nota"
-                shadow
-                name="Nota"
-              />
-            </div>          
-            <Button type="submit">Guardar</Button>
+            </div>         
+            <Button type="submit">Buscar</Button>
           </form>
         </Modal.Body>
         <Modal.Footer>
@@ -1968,6 +1942,87 @@ export function EliminarInv({ id }) {
         </Modal.Body>
       </Modal>
     </>
+  );
+}
+// agregar notas
+export function Modalnots() {
+  const [openModal, setOpenModal] = useState(false);
+  const [data, setData] = useState({
+    categoria: "",
+  });
+  // limpiar campos del formulario
+  const limpiarCampos = () => {
+    setData({ categoria: "" });
+  };
+  const handleCloseModal = () => {
+    limpiarCampos();
+    setOpenModal(false);
+  };
+
+  const handleChange = (e) => {
+    let names = e.target.name;
+    let value = e.target.value.toUpperCase();
+    setData({ ...data, [names]: value });
+  };
+  // enviar datos al servidor
+  const handleSend = async (e) => {
+    e.preventDefault();
+    // validar que los campos no esten vacios
+    if (data.categoria.trim() === "") {
+      alert("Campo vacio", "Debes llenar todos los campos", "warning");
+    } else {
+      try {
+        PeticionAxios("categoria", "post", data);
+        setData({ categoria: "" });
+        setOpenModal(false);
+        alert("Categoria", "Registro exitoso!", "success");
+      } catch (error) {
+        alert("Oops...", "Ha ocurrido un error al registrar!", "error");
+        return console.log(error);
+      }
+    }
+  };
+
+  return (
+    <Container>
+      <>
+        <Button onClick={() => setOpenModal(true)}>Insertar Notas</Button>
+        <Modal
+          show={openModal}
+          onClose={handleCloseModal}
+          position="top-center"
+        >
+          <Modal.Header>Insertar Notas</Modal.Header>
+          <Modal.Body>
+            <form
+              className="flex flex-col gap-4 max-w-full"
+              onSubmit={handleSend}
+            >
+              <div>
+                <div className="mb-2 block">
+                  <Label htmlFor="evaluacion" value="Evaluacion:" />
+                </div>
+                <TextInput
+                  id="evaluacion"
+                  name="evaluacion"
+                  type="text"
+                  rightIcon={HiPencil}
+                  placeholder="Describa la Evaluación"
+                  required
+                  shadow
+                />
+              </div>
+              <Button type="submit">Ingresar</Button>
+            </form>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button color="dark" onClick={handleCloseModal}>
+              Cerrar
+            </Button>
+          </Modal.Footer>
+        </Modal>
+      </>
+    </Container>
   );
 }
 //---------------------------------------------
