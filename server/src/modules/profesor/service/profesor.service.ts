@@ -18,6 +18,13 @@ class ProfesorService extends ServiceBase {
         const [result] = await pool.query<RowDataPacket[]>(sql, [id]);
         return result;
     }
+    // mostrar una clase por id
+    public async getClaseByService(id: string): Promise<any> {
+        const sql = ProfesorSQL.getClaseByQuery();
+        const [result] = await pool.query<RowDataPacket[]>(sql, id);
+        return result;
+    }
+
     // registrar profesores
     public async postServiceTransaction(data: any, connection: PoolConnection): Promise<any> {
         const sql = ProfesorSQL.postProfQuery();
@@ -33,7 +40,11 @@ class ProfesorService extends ServiceBase {
     // validar que el profesor exista
     public async getServiceExist(data: any): Promise<any> {
         const sql = ProfesorSQL.getClaseExistQuery();
-        const [result] = await pool.query<RowDataPacket[]>(sql, [data]);
+        
+        const value = [data.id_user, data.id_materias, data.id_seccion, data.id_anno, data.id_mension];
+
+
+        const [result] = await pool.query<RowDataPacket[]>(sql, value);
         return result;
     }
     // actualizar el profesor
@@ -52,6 +63,12 @@ class ProfesorService extends ServiceBase {
     public async deleteService(id: string): Promise<any> {
         const sql = ProfesorSQL.deleteProfQuery();
         const [result] = await pool.query<RowDataPacket[]>(sql, [id]);
+        return result;
+    }
+    // borrar clase
+    public async deleteClaseService(id: string): Promise<any> {
+        const sql = ProfesorSQL.deleteClaseQuery();
+        const [result] = await pool.query(sql, id);
         return result;
     }
 }

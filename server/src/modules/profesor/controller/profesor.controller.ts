@@ -119,6 +119,25 @@ class ProfesorController extends AppControllerBase {
             res.status(500).json({ message: "Error al borrar el profesor", error });
         }
     }
+    // borrar clase
+    public async deleteClaseController(req: Request, res: Response): Promise<void> {
+        try {
+            // validar que la clase exista
+            const exist = await ProfesorService.getClaseByService(req.params.id);
+            if (exist.length === 0) {
+                res.status(404).json({ message: "La clase no existe "});
+                return
+            }
+
+            const result = await 
+            res.status(200).json({
+                message: "Clase eliminada",
+                data: exist
+            });
+        } catch (error) {
+            res.status(500).json({ message: "error al eliminar la clase", error}); 
+        }
+    }
 }
 
 export default new ProfesorController();
