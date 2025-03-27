@@ -22,7 +22,7 @@ import Pagination from "./Pagination";
 import { ServidorURL } from "../config/config";
 
 //-------------------------------------------------
-// tabla personal
+// tabla profesores
 export function TablaPersonal({ innerRef, datos }) {
   const [currentPage, setCurrentPage] = useState(1); 
   const itemsPerPage = 10;
@@ -47,7 +47,6 @@ export function TablaPersonal({ innerRef, datos }) {
             <Table.HeadCell>Cedula</Table.HeadCell>
             <Table.HeadCell>Teléfono</Table.HeadCell>
             <Table.HeadCell>Correo</Table.HeadCell>
-            <Table.HeadCell>Materias</Table.HeadCell>
             <Table.HeadCell></Table.HeadCell>
           </Table.Head>
           <Table.Body className="divide-y uppercase">
@@ -59,7 +58,6 @@ export function TablaPersonal({ innerRef, datos }) {
                 <Table.Cell>11329525</Table.Cell>
                 <Table.Cell>04120268520</Table.Cell>
                 <Table.Cell>a@a</Table.Cell>
-                <Table.Cell>Matematicas</Table.Cell>
                 <Table.Cell>
                   <Button.Group>
                     <EditarPersona />
@@ -81,7 +79,7 @@ export function TablaPersonal({ innerRef, datos }) {
   );
 }
 //-------------------------------------------------
-// tabla asistencias
+// tabla estudiantes
 export function TablaAsistencias({innerRef, datos}) {
   const [currentPage, setCurrentPage] = useState(1); 
   const itemsPerPage = 10; 
@@ -343,16 +341,16 @@ export function TablaCargos() {
 // tabla de notas
 export function TablaInv({ innerRef, datos }) {
   const [alumnos, setAlumnos] = useState([
-    { id: 1, nombre: "Juan", apellido: "Perez", nota: 15, nota2: "0" },
-    { id: 2, nombre: "María", apellido: "Gonzales", nota: 18, nota2: "0" },
-    { id: 3, nombre: "Carlos", apellido: "Yonson", nota: 12, nota2: "0" },
+    { id: 1, nombre: "Juan", apellido: "Perez", nota1: "0", nota2: "0", nota3: "0", nota4: "0" },
+    { id: 2, nombre: "María", apellido: "Gonzales", nota1: "0", nota2: "0", nota3: "0", nota4: "0" },
+    { id: 3, nombre: "Carlos", apellido: "Yonson", nota1: "0", nota2: "0", nota3: "0", nota4: "0" },
   ])
   // editar datos en la tabla
   const [editando, setEditando] = useState(null);
 
   const manejarCambio = (id, valor) => {
     const nuevosAlumnos = alumnos.map((alumno) =>
-      alumno.id === id ? { ...alumno, nota: valor } : alumno
+      alumno.id === id ? { ...alumno, nota1: valor } : alumno
     );
     setAlumnos(nuevosAlumnos);
   };
@@ -388,10 +386,10 @@ export function TablaInv({ innerRef, datos }) {
             <Table.HeadCell>Cedula</Table.HeadCell>
             <Table.HeadCell>Nombre</Table.HeadCell>
             <Table.HeadCell>Apellido</Table.HeadCell>
-            <Table.HeadCell>Nota</Table.HeadCell>
-            <Table.HeadCell>Nota</Table.HeadCell>
-            <Table.HeadCell>Nota</Table.HeadCell>
-            <Table.HeadCell>Nota</Table.HeadCell>
+            <Table.HeadCell>1er Nota</Table.HeadCell>
+            <Table.HeadCell>2da Nota</Table.HeadCell>
+            <Table.HeadCell>3er Nota</Table.HeadCell>
+            <Table.HeadCell>4ta Nota</Table.HeadCell>
             <Table.HeadCell></Table.HeadCell>
           </Table.Head>
           <Table.Body className="divide-y">
@@ -400,7 +398,23 @@ export function TablaInv({ innerRef, datos }) {
                 <Table.Cell className="whitespace-nowrap">{alumno.id}</Table.Cell>
                 <Table.Cell>{alumno.nombre}</Table.Cell>
                 <Table.Cell>{alumno.apellido}</Table.Cell>
-                <Table.Cell>{alumno.nota}</Table.Cell>
+                <Table.Cell>
+                  {editando === alumno.id ? (
+                      <TextInput 
+                        type="number"
+                        value={alumno.nota1}
+                        onChange={(e) => manejarCambio(alumno.id, e.target.value)}
+                        style={{
+                          cursor: "pointer"
+                        }}
+                      />
+                    ) : (
+                      <span onDoubleClick={() => manejarDobleClick(alumno.id)} style={{
+                        cursor: "pointer"
+                      }}>
+                        {alumno.nota1}
+                      </span>
+                    )}{alumno.nota1}</Table.Cell>
                 <Table.Cell>
                     {editando === alumno.id ? (
                       <TextInput 
@@ -410,7 +424,6 @@ export function TablaInv({ innerRef, datos }) {
                         style={{
                           cursor: "pointer"
                         }}
-
                       />
                     ) : (
                       <span onDoubleClick={() => manejarDobleClick(alumno.id)} style={{
@@ -420,9 +433,42 @@ export function TablaInv({ innerRef, datos }) {
                       </span>
                     )}
                 </Table.Cell>
-                <Table.Cell><TextInput /></Table.Cell>
-                <Table.Cell><TextInput /></Table.Cell>
-                <Table.Cell><TextInput /></Table.Cell>
+                <Table.Cell>
+                    {editando === alumno.id ? (
+                      <TextInput 
+                        type="number"
+                        value={alumno.nota3}
+                        onChange={(e) => manejarCambio(alumno.id, e.target.value)}
+                        style={{
+                          cursor: "pointer"
+                        }}
+                      />
+                    ) : (
+                      <span onDoubleClick={() => manejarDobleClick(alumno.id)} style={{
+                        cursor: "pointer"
+                      }}>
+                        {alumno.nota3}
+                      </span>
+                    )}
+                </Table.Cell>
+                <Table.Cell>
+                    {editando === alumno.id ? (
+                      <TextInput 
+                        type="number"
+                        value={alumno.nota4}
+                        onChange={(e) => manejarCambio(alumno.id, e.target.value)}
+                        style={{
+                          cursor: "pointer"
+                        }}
+                      />
+                    ) : (
+                      <span onDoubleClick={() => manejarDobleClick(alumno.id)} style={{
+                        cursor: "pointer"
+                      }}>
+                        {alumno.nota4}
+                      </span>
+                    )}
+                </Table.Cell>
               </Table.Row>
             ))}
           </Table.Body>
@@ -438,7 +484,7 @@ export function TablaInv({ innerRef, datos }) {
   );
 }
 //-------------------------------------------------
-// tabla de usuarios
+// tabla de clases
 export function TablaUsuario() {
   const [datos, setDatos] = useState([]);
   const [currentPage, setCurrentPage] = useState(1); 
@@ -474,11 +520,14 @@ export function TablaUsuario() {
   return (
     <Container>
       <div className="ContenedorTabla ">
-        <h1>Usuarios:</h1>
+        <h1>Clases:</h1>
         <Table>
           <Table.Head className="border-b-2">
-            <Table.HeadCell>Nombre de Usuario</Table.HeadCell>
-            <Table.HeadCell></Table.HeadCell>
+            <Table.HeadCell>Profesor</Table.HeadCell>
+            <Table.HeadCell>Materia</Table.HeadCell>
+            <Table.HeadCell>Año</Table.HeadCell>
+            <Table.HeadCell>Seccion</Table.HeadCell>
+            <Table.HeadCell>Mencion</Table.HeadCell>            
           </Table.Head>
           <Table.Body className="divide-y">
             {currentItems.map((users) => (

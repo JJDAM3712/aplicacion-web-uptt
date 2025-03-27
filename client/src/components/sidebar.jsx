@@ -113,8 +113,8 @@ const linksArray = [
     to: "/app/categoria",
   },
   {
-    label: "Usuarios",
-    icon: <PiUsersFill />,
+    label: "Clases",
+    icon: <PiBankBold />,
     to: "/app/usuario",
   },
  

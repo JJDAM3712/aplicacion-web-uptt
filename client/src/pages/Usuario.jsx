@@ -5,7 +5,7 @@ import { TablaUsuario } from "../components/Tablas";
 export function Usuario() {
   return (
     <Container>
-      <h1>Usuarios</h1>
+      <h1>Clases</h1>
       <div className="flex flex-wrap gap-2 mb-1">
         <ModalUsr />
       </div>

@@ -82,30 +82,58 @@ export function ModalRegis() {
             <form
               className="flex flex-col gap-4 max-w-full"
             >
-              {/*----- nombres ------- */}
+              {/*----- primer nombre ------- */}
               <div>
                 <div className="mb-2 block">
-                  <Label htmlFor="nombre" value="Nombres:" />
+                  <Label htmlFor="primer nombre" value="Primer Nombre:" />
                 </div>
                 <TextInput
-                  id="nombre"
-                  name="nombre"
+                  id="p_nombre"
+                  name="p_nombre"
                   type="text"
-                  placeholder="Nombres"
+                  placeholder="Primer Nombre"
                   required
                   shadow
                 />
               </div>
-              {/*----- apellido ------- */}
+                   {/*----- segundo nombre ------- */}
               <div>
                 <div className="mb-2 block">
-                  <Label htmlFor="apellido" value="Apellidos:" />
+                  <Label htmlFor="segundo nombre" value="Segundo Nombre:" />
                 </div>
                 <TextInput
-                  id="apellido"
-                  name="apellido"
+                  id="s_nombre"
+                  name="s_nombre"
                   type="text"
-                  placeholder="Apellidos"
+                  placeholder="Segundo Nombre"
+                  required
+                  shadow
+                />
+              </div>
+              {/*----- primer apellido ------- */}
+              <div>
+                <div className="mb-2 block">
+                  <Label htmlFor="primer apellido" value="Primer Apellido:" />
+                </div>
+                <TextInput
+                  id="p_apellido"
+                  name="p_apellido"
+                  type="text"
+                  placeholder="Primer Apellido"
+                  required
+                  shadow
+                />
+              </div>
+               {/*----- segundo apellido ------- */}
+               <div>
+                <div className="mb-2 block">
+                  <Label htmlFor="segundo apelldio" value="Segundo Apellido:" />
+                </div>
+                <TextInput
+                  id="s_apellido"
+                  name="s_apellido"
+                  type="text"
+                  placeholder="Segundo Apellido"
                   required
                   shadow
                 />
@@ -151,23 +179,6 @@ export function ModalRegis() {
                   required
                   shadow
                 />
-              </div>
-              {/*----- materia ------- */}
-              <div>
-                <div className="mb-2 block">
-                  <Label htmlFor="id_materia" value="Selecciona la materia" />
-                </div>
-                <Select
-                  id="id_materia"
-                  name="id_materia"
-                >
-                  <option value="Selecciona:" disabled>
-                    Selecciona:
-                  </option>
-
-                  <option>Conciencia</option>
-                  <option value={["1234567","Juan", "Perez"]}>{["1234567"," ","Juan"," ", "Perez"]}</option>
-                </Select>
               </div>
               
               <Button type="submit">Registrar Profesor</Button>
@@ -1135,7 +1146,7 @@ export function ModalDep() {
           Registrar Materia
         </Button>
         <Modal show={openModal} onClose={handleCloseModal}>
-          <Modal.Header>Registrar una Materia</Modal.Header>
+          <Modal.Header>Registrar Materia</Modal.Header>
           <Modal.Body>
             <form
               className="flex flex-col gap-4 max-w-full uppercase"
@@ -1464,8 +1475,8 @@ export function RegisInv({ id }) {
   // regsitrar datos
   const [datos, setDatos] = useState({
     cedula: "",
-    nombres: "",
-    apellidos: "",
+    nombre: "",
+    apellido: "",
     año: "Selecciona:",
     id_materias: "Selecciona:",
     id_mencion: "Selecciona:",
@@ -1529,79 +1540,24 @@ export function RegisInv({ id }) {
             <h3 className="text-xl font-medium text-gray-900 text-center ">
               Buscar Clase
             </h3>
-                {/* ------ año --------- */}
-                <div>
-              <div className="mb-2 block">
-                <Label htmlFor="año" value="Año:" />
+                 {/* ------ clase --------- */}
+              <div>
+                <div className="mb-2 block">
+                  <Label htmlFor="id_profesor" value="Selecciona el Profesor" />
+                </div>
+                <Select
+                  id="id_profesor"
+                  name="id_profesor"
+                >
+                  <option value="Selecciona:" disabled>
+                    Selecciona:
+                  </option>
+                  <option value={["1234567","Juan", "Perez"]}>{["1234567"," ","Juan"," ", "Perez"]}</option>
+                  <option value={["2134445","Jose", "Mendez"]}>{["2134445"," ","Jose"," ", "Mendez"]}</option>
+                  <option value={["5232134","Pedro", "Aguilar"]}>{["5232134"," ","Pedro"," ", "Aguilar"]}</option>
+                  <option value={["5213333","Carlos", "Martinez"]}>{["5213333"," ","Carlos"," ", "Martinez"]}</option>
+                </Select>
               </div>
-              <Select
-                id="año"
-                name="año"
-              >
-                <option value="Selecciona:" disabled>
-                  Selecciona:
-                </option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
-                <option value="6">6</option>
-              </Select>
-            </div>            
-            {/* ------ seccion --------- */}
-            <div>
-              <div className="mb-2 block">
-                <Label htmlFor="seccion" value="Seccion:" />
-              </div>
-              <Select
-                id="seccion"
-                name="seccion"
-              >
-                <option value="Selecciona:" disabled>
-                  Selecciona:
-                </option>
-                <option value="A">A</option>
-                <option value="B">B</option>
-                <option value="C">C</option>
-                <option value="D">D</option>
-                <option value="E">E</option>
-                <option value="F">F</option>
-              </Select>
-            </div>    
-            {/* ------ materia --------- */}
-            <div>
-              <div className="mb-2 block">
-                <Label htmlFor="materia" value="Materia:" />
-              </div>
-              <Select
-                id="materia"
-                name="materia"
-              >
-                <option value="Selecciona:" disabled>
-                  Selecciona:
-                </option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-              </Select>
-            </div>                    
-            {/* ------ mencion --------- */}
-            <div>
-              <div className="mb-2 block">
-                <Label htmlFor="mencion" value="Mencion:" />
-              </div>
-              <Select
-                id="mencion"
-                name="mencion"
-              >
-                <option value="Selecciona:" disabled>
-                  Selecciona:
-                </option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-              </Select>
-            </div>         
             <Button type="submit">Buscar</Button>
           </form>
         </Modal.Body>
@@ -1943,7 +1899,7 @@ export function EliminarInv({ id }) {
 }
 //---------------------------------------------
 
-// registrar usuarios
+// registrar clases
 export function ModalUsr() {
   const [openModal, setOpenModal] = useState(false);
   const [data, setData] = useState({
@@ -2004,107 +1960,111 @@ export function ModalUsr() {
     <Container>
       <>
         <Button onClick={() => setOpenModal(true)} className="m-auto">
-          Registrar Usuario
+          Registrar Clase
         </Button>
         <Modal
           show={openModal}
           onClose={() => setOpenModal(false)}
           position="top-center"
         >
-          <Modal.Header>Registrar un Nuevo Usuario</Modal.Header>
+          <Modal.Header>Registrar Clase</Modal.Header>
           <Modal.Body>
             <form
               onSubmit={handleSend}
               className="flex flex-col gap-4 max-w-full"
             >
-              {/*-------- usuario ---------*/}
+              {/* ------ profesor --------- */}
               <div>
                 <div className="mb-2 block">
-                  <Label htmlFor="usuario" value="Usuario:" />
-                </div>
-                <TextInput
-                  id="usuario"
-                  name="usuario"
-                  onChange={handleChange}
-                  value={data.usuario}
-                  type="text"
-                  rightIcon={HiUser}
-                  placeholder="Nombre Usuario"
-                  required
-                  shadow
-                />
-              </div>
-              {/*------- contraseña -------*/}
-              <div>
-                <div className="mb-2 block">
-                  <Label htmlFor="password" value="Contraseña: " />
-                </div>
-                <TextInput
-                  id="pass"
-                  name="pass"
-                  onChange={handleChange}
-                  value={data.pass}
-                  type="password"
-                  required
-                  shadow
-                  rightIcon={HiKey}
-                />
-              </div>
-              {/*--- confirmar contraseña ---*/}
-              <div>
-                <div className="mb-2 block">
-                  <Label htmlFor="password2" value="Repita su Contraseña: " />
-                </div>
-                <TextInput
-                  id="secondPass"
-                  name="secondPass"
-                  onChange={handleChange}
-                  value={secondPass}
-                  type="password"
-                  required
-                  shadow
-                  rightIcon={HiKey}
-                />
-              </div>
-              {/*------- pregunta --------- */}
-              <div>
-                <div className="mb-2 block">
-                  <Label htmlFor="quest" value="Pregunta de Seguridad:" />
+                  <Label htmlFor="id_profesor" value="Selecciona el Profesor" />
                 </div>
                 <Select
-                  id="quest"
-                  name="quest"
-                  value={data.quest}
-                  onChange={handleChange}
+                  id="id_profesor"
+                  name="id_profesor"
                 >
                   <option value="Selecciona:" disabled>
-                    Seleccione:
+                    Selecciona:
                   </option>
-                  <option value="1">¿Color Favorito?</option>
-                  <option value="2">¿Nombre de mi Perro?</option>
-                  <option value="3">¿Nombre de mi Madre?</option>
-                  <option value="4">¿Lugar de Nacimiento?</option>
-                  <option value="5">¿Primer auto?</option>
+                  <option value={["1234567","Juan", "Perez"]}>{["1234567"," ","Juan"," ", "Perez"]}</option>
+                  <option value={["2134445","Jose", "Mendez"]}>{["2134445"," ","Jose"," ", "Mendez"]}</option>
+                  <option value={["5232134","Pedro", "Aguilar"]}>{["5232134"," ","Pedro"," ", "Aguilar"]}</option>
+                  <option value={["5213333","Carlos", "Martinez"]}>{["5213333"," ","Carlos"," ", "Martinez"]}</option>
                 </Select>
               </div>
-              {/*------- respuesta ---------*/}
-              <div>
-                <div className="mb-2 block">
-                  <Label htmlFor="respuesta" value="Respuesta:" />
-                </div>
-                <TextInput
-                  id="resp"
-                  name="resp"
-                  onChange={handleChange}
-                  value={data.resp}
-                  type="text"
-                  rightIcon={HiPencil}
-                  placeholder="Ingrese su Respuesta"
-                  required
-                  shadow
-                />
+                {/* ------ año --------- */}
+            <div>
+              <div className="mb-2 block">
+                <Label htmlFor="año" value="Año:" />
               </div>
-              <Button type="submit">Registrar</Button>
+              <Select
+                id="año"
+                name="año"
+              >
+                <option value="Selecciona:" disabled>
+                  Selecciona:
+                </option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+              </Select>
+            </div>            
+            {/* ------ seccion --------- */}
+            <div>
+              <div className="mb-2 block">
+                <Label htmlFor="seccion" value="Seccion:" />
+              </div>
+              <Select
+                id="seccion"
+                name="seccion"
+              >
+                <option value="Selecciona:" disabled>
+                  Selecciona:
+                </option>
+                <option value="A">A</option>
+                <option value="B">B</option>
+                <option value="C">C</option>
+                <option value="D">D</option>
+                <option value="E">E</option>
+                <option value="F">F</option>
+              </Select>
+            </div>    
+            {/* ------ materia --------- */}
+            <div>
+              <div className="mb-2 block">
+                <Label htmlFor="materia" value="Materia:" />
+              </div>
+              <Select
+                id="materia"
+                name="materia"
+              >
+                <option value="Selecciona:" disabled>
+                  Selecciona:
+                </option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+              </Select>
+            </div>                    
+            {/* ------ mencion --------- */}
+            <div>
+              <div className="mb-2 block">
+                <Label htmlFor="mencion" value="Mencion:" />
+              </div>
+              <Select
+                id="mencion"
+                name="mencion"
+              >
+                <option value="Selecciona:" disabled>
+                  Selecciona:
+                </option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+              </Select>
+            </div>         
+            <Button type="submit">Guardar</Button>
             </form>
           </Modal.Body>
           <Modal.Footer>
