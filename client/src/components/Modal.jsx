@@ -166,6 +166,7 @@ export function ModalRegis() {
                   </option>
 
                   <option>Conciencia</option>
+                  <option value={["1234567","Juan", "Perez"]}>{["1234567"," ","Juan"," ", "Perez"]}</option>
                 </Select>
               </div>
               
@@ -476,6 +477,7 @@ export function EliminarPersona({ id }) {
 }
 
 // -----------------------------------------
+// registrar estudiantes
 export function EliminaAsist({ id }) {
   const [openModal, setOpenModal] = useState(false);
   const deleteAsistence = async () => {
@@ -596,16 +598,11 @@ export function RegisAsist() {
   return (
     <>
       <Button onClick={() => setOpenModal(true)}>Registrar Estudiante</Button>
-      <Modal show={openModal} size="md" popup onClose={handleCloseModal}>
+      <Modal show={openModal} size="md" position="top-center" popup onClose={handleCloseModal}>
         <Modal.Header />
-        <Modal.Body>
-          <div className="flex justify-center align-middle">
-            <div className="flex ">
-              <img src={logo} alt="Logo" className="w-20" />
-            </div>
-          </div>
+        <Modal.Body className="mt-2">
           <form
-            className="space-y-6 flex max-w-md flex-col gap-4"
+            className="space-y-6 flex max-w-md flex-col gap-4 uppercase"
             onSubmit={handleSubmit}
           >
             <h3 className="text-xl font-medium text-gray-900 text-center ">
@@ -1942,87 +1939,6 @@ export function EliminarInv({ id }) {
         </Modal.Body>
       </Modal>
     </>
-  );
-}
-// agregar notas
-export function Modalnots() {
-  const [openModal, setOpenModal] = useState(false);
-  const [data, setData] = useState({
-    categoria: "",
-  });
-  // limpiar campos del formulario
-  const limpiarCampos = () => {
-    setData({ categoria: "" });
-  };
-  const handleCloseModal = () => {
-    limpiarCampos();
-    setOpenModal(false);
-  };
-
-  const handleChange = (e) => {
-    let names = e.target.name;
-    let value = e.target.value.toUpperCase();
-    setData({ ...data, [names]: value });
-  };
-  // enviar datos al servidor
-  const handleSend = async (e) => {
-    e.preventDefault();
-    // validar que los campos no esten vacios
-    if (data.categoria.trim() === "") {
-      alert("Campo vacio", "Debes llenar todos los campos", "warning");
-    } else {
-      try {
-        PeticionAxios("categoria", "post", data);
-        setData({ categoria: "" });
-        setOpenModal(false);
-        alert("Categoria", "Registro exitoso!", "success");
-      } catch (error) {
-        alert("Oops...", "Ha ocurrido un error al registrar!", "error");
-        return console.log(error);
-      }
-    }
-  };
-
-  return (
-    <Container>
-      <>
-        <Button onClick={() => setOpenModal(true)}>Insertar Notas</Button>
-        <Modal
-          show={openModal}
-          onClose={handleCloseModal}
-          position="top-center"
-        >
-          <Modal.Header>Insertar Notas</Modal.Header>
-          <Modal.Body>
-            <form
-              className="flex flex-col gap-4 max-w-full"
-              onSubmit={handleSend}
-            >
-              <div>
-                <div className="mb-2 block">
-                  <Label htmlFor="evaluacion" value="Evaluacion:" />
-                </div>
-                <TextInput
-                  id="evaluacion"
-                  name="evaluacion"
-                  type="text"
-                  rightIcon={HiPencil}
-                  placeholder="Describa la Evaluación"
-                  required
-                  shadow
-                />
-              </div>
-              <Button type="submit">Ingresar</Button>
-            </form>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button color="dark" onClick={handleCloseModal}>
-              Cerrar
-            </Button>
-          </Modal.Footer>
-        </Modal>
-      </>
-    </Container>
   );
 }
 //---------------------------------------------

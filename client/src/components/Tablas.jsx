@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { Table, Button } from "flowbite-react";
+import { Table, Button, TextInput } from "flowbite-react";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import {
@@ -340,8 +340,33 @@ export function TablaCargos() {
   );
 }
 //-------------------------------------------------
-// tabla de inventario
+// tabla de notas
 export function TablaInv({ innerRef, datos }) {
+  const [alumnos, setAlumnos] = useState([
+    { id: 1, nombre: "Juan", apellido: "Perez", nota: 15, nota2: "0" },
+    { id: 2, nombre: "María", apellido: "Gonzales", nota: 18, nota2: "0" },
+    { id: 3, nombre: "Carlos", apellido: "Yonson", nota: 12, nota2: "0" },
+  ])
+  // editar datos en la tabla
+  const [editando, setEditando] = useState(null);
+
+  const manejarCambio = (id, valor) => {
+    const nuevosAlumnos = alumnos.map((alumno) =>
+      alumno.id === id ? { ...alumno, nota: valor } : alumno
+    );
+    setAlumnos(nuevosAlumnos);
+  };
+
+  const manejarDobleClick = (id) => {
+    setEditando(id);
+  };
+
+  const manejarGuardar = () => {
+    setEditando(null);
+  };
+
+
+  // paginacion de la tabla
   const [currentPage, setCurrentPage] = useState(1); 
   const itemsPerPage = 10; 
   // Calcula los elementos que se mostrarán en la página actual
@@ -360,36 +385,44 @@ export function TablaInv({ innerRef, datos }) {
         <h1>Notas:</h1>
         <Table className="uppercase" ref={innerRef}>
           <Table.Head className="border-b-2">
+            <Table.HeadCell>Cedula</Table.HeadCell>
             <Table.HeadCell>Nombre</Table.HeadCell>
-            <Table.HeadCell>Marca</Table.HeadCell>
-            <Table.HeadCell>Código</Table.HeadCell>
-            <Table.HeadCell>Modelo</Table.HeadCell>
-            <Table.HeadCell>Departamento</Table.HeadCell>
-            <Table.HeadCell>Estado</Table.HeadCell>
-            <Table.HeadCell>Cantidad</Table.HeadCell>
-            <Table.HeadCell>Categoria</Table.HeadCell>
+            <Table.HeadCell>Apellido</Table.HeadCell>
+            <Table.HeadCell>Nota</Table.HeadCell>
+            <Table.HeadCell>Nota</Table.HeadCell>
+            <Table.HeadCell>Nota</Table.HeadCell>
+            <Table.HeadCell>Nota</Table.HeadCell>
             <Table.HeadCell></Table.HeadCell>
           </Table.Head>
           <Table.Body className="divide-y">
-            {currentItems.map((inventary) => (
-              // eslint-disable-next-line react/jsx-key
-              <Table.Row className="bg-white">
-                <Table.Cell className="whitespace-nowrap">
-                  {inventary.nombre}
-                </Table.Cell>
-                <Table.Cell>{inventary.marca}</Table.Cell>
-                <Table.Cell>{inventary.codigo}</Table.Cell>
-                <Table.Cell>{inventary.modelo}</Table.Cell>
-                <Table.Cell>{inventary.departamento}</Table.Cell>
-                <Table.Cell>{inventary.estatus}</Table.Cell>
-                <Table.Cell>{inventary.cantidad}</Table.Cell>
-                <Table.Cell>{inventary.categoria}</Table.Cell>
+            {alumnos.map((alumno) => (
+              <Table.Row className="bg-white" key={alumno.id}>
+                <Table.Cell className="whitespace-nowrap">{alumno.id}</Table.Cell>
+                <Table.Cell>{alumno.nombre}</Table.Cell>
+                <Table.Cell>{alumno.apellido}</Table.Cell>
+                <Table.Cell>{alumno.nota}</Table.Cell>
                 <Table.Cell>
-                  <Button.Group>
-                    <EditInv id={inventary.id_inventario} />
-                    <EliminarInv id={inventary.id_inventario} />
-                  </Button.Group>
+                    {editando === alumno.id ? (
+                      <TextInput 
+                        type="number"
+                        value={alumno.nota2}
+                        onChange={(e) => manejarCambio(alumno.id, e.target.value)}
+                        style={{
+                          cursor: "pointer"
+                        }}
+
+                      />
+                    ) : (
+                      <span onDoubleClick={() => manejarDobleClick(alumno.id)} style={{
+                        cursor: "pointer"
+                      }}>
+                        {alumno.nota2}
+                      </span>
+                    )}
                 </Table.Cell>
+                <Table.Cell><TextInput /></Table.Cell>
+                <Table.Cell><TextInput /></Table.Cell>
+                <Table.Cell><TextInput /></Table.Cell>
               </Table.Row>
             ))}
           </Table.Body>

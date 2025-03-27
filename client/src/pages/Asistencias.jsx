@@ -18,11 +18,13 @@ export function Asistencias() {
 
           <form>
             <div className="flex flex-wrap gap-2 mb-1">
+              <RegisAsist />
+
               <Button color="success" type="submit">
                 Generar Reporte
                 <HiOutlineArrowRight className="ml-2 h-5 w-5" />
               </Button>
-              <RegisAsist />
+              
             </div>
           </form>
 
