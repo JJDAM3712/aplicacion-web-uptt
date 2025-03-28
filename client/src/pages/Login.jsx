@@ -73,28 +73,28 @@ function Login() {
 
         <TarjetaMension 
           estilo="rgb(51, 169, 204)" 
-          texto="Laboratorio Clinico" 
-          descripcion="hacer de secretaria porq si XD" 
+          texto="Profesional en Telemática" 
+          descripcion="El Profesional formado en la mención de Telemática estará preparado para desempeñarse por cuenta propia u ocupando un puesto de trabajo en el sector comercial o administrativo, específicamente relacionado al manejo eficiente de equipos de información  y telecomunicaciones." 
           imag={Imagenes.imagen1}
         />
 
         <TarjetaMension 
           estilo="red"
-          texto="Telematica" 
-          descripcion="Arreglar canaimitas con güindous siete" 
+          texto="Profesional  en  Deporte y Recreación" 
+          descripcion="El Profesional  en  Deporte y Recreación debe estar preparado para desempeñarse en diversos contextos educativos, promoviendo no solo la actividad física, sino también una cultura de salud y bienestar integral en la comunidad." 
           imag={Imagenes.imagen2}
         />
         <TarjetaMension
           estilo="rgb(132, 18, 30)"
-          texto="Registro de Estadistica y Salud" 
-          descripcion="hacer de secretaria porq si XD" 
-          imag={Imagenes.imagen2}
+          texto="Profesional en Laboratorio Clínico" 
+          descripcion="El Profesional en Laboratorio Clínico es un profesional de carrera corta con alto sentido, capacitado para el desempeño eficiente de las funciones y tareas propias en el Laboratorio Clínico, donde su función principal es ayudar y facilitar el trabajo del Licenciado en Bioanálisis. " 
+          imag={Imagenes.imagen3}
         />
            <TarjetaMension
           estilo="rgb(132, 18, 30)"
-          texto="Deporte" 
-          descripcion="hacer de secretaria porq si XD" 
-          imag={Imagenes.imagen2}
+          texto="Profesional en  Farmacia." 
+          descripcion="El asistente de farmacia desempeña un papel crucial en el sistema de salud, actuando como un puente entre los pacientes y los medicamentos." 
+          imag={Imagenes.imagen4}
         />
       </div>
       
@@ -108,7 +108,7 @@ const Container = styled.div`
   justify-content: center;
   align-items: center;
   background-color: #ccc;
-  flex-direction: column
+  flex-direction: column;
 `;
 
 export default Login;

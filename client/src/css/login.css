@@ -4,7 +4,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background-color: rgb(255, 255, 255);
+  background-color: rgba(86, 7, 12);
   padding: 30px 30px 30px 30px;
   box-shadow: 0px 0px 40px rgba(0, 0, 0, 0.062);
   position: relative;
@@ -16,7 +16,7 @@
   content: "";
   width: 300px;
   height: 300px;
-  background-color: rgb(193, 197, 255);
+  background-color: rgb(86  , 197, 255);
   transform: rotate(45deg);
   left: -180px;
   bottom: 30px;
