@@ -1,10 +1,10 @@
-
 .tarjetasDeMension {
 	width: 100%;
 	height: 100%;
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	background-color: #fff;
 }
 
 .tarjeta_mension {
@@ -77,14 +77,23 @@
 	display: block;
 }
 .titleBar {
-	background-color: #fff; /* Color de fondo de la franja */
-	color: rgba(87, 7, 12);
-	padding: 20px 0;
+	background-color: rgba(87, 7, 12); /* Color de fondo de la franja */
 	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-	font-size: 2rem;
-	font-family: Georgia, 'Times New Roman', Times, serif;
+	font-size: 2.4rem;
+	font-family: sans-serif;
 	width: 100%;
-	border-radius: 15px;
 	text-align: center;
-  }
+	height: 140px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	& h1{
+		color: #fff;
+		font-weight: 700;
+		letter-spacing: 2px;
+	}
+}
+
+/* footer de la pagina */
+
   

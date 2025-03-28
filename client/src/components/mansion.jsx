@@ -18,3 +18,23 @@ export const TarjetaMension = (props) => {
         </div>
     );
 }
+
+export const DivisionPag = (props) => {
+    return (
+        <div className="titleBar">
+            <h1>{props.texto}</h1>
+        </div>
+    )
+}
+
+export const FooterPag = () => {
+    return (
+        <footer className="content_footer">
+            <div className="text_footer">
+                <p>Todos los derechos reservados</p>
+                <p className="title"> © Copyright</p>
+            </div>
+            
+        </footer>
+    )
+}

@@ -8,7 +8,7 @@ import { alert } from "../utils/generic"
 import { ServidorURL } from "../config/config";
 import { useAuth } from "../auth/AuthProvided";
 import { HomePage } from "./principal";
-import { TarjetaMension } from "../components/mansion";
+import { TarjetaMension, DivisionPag, FooterPag } from "../components/mansion";
 import "../css/st.css";
 import Imagenes from "../assets/imagenes";
 
@@ -68,9 +68,7 @@ function Login() {
   return (
     <Container>
       <HomePage />
-      <div className="titleBar">
-        <h1>Oferta Académica</h1>
-     </div>
+      <DivisionPag texto="Menciones" />
      <div className="tarjetasDeMension">
       <TarjetaMension 
           estilo="rgb(51, 169, 204)" 
@@ -98,7 +96,7 @@ function Login() {
         />
       </div>
       
-
+      <FooterPag />
     </Container>
   );
 }
