@@ -2,8 +2,8 @@ import { Routes, Route } from "react-router-dom";
 import { lazy } from "react";
 
 import { Home } from "../pages/Home";
-import { Personal } from "../pages/Personal";
-import { Asistencias } from "../pages/Asistencias";
+import { Profesores } from "../pages/Profesores";
+import { Estudiantes } from "../pages/Estudiantes";
 import { Departamentos } from "../pages/Departamentos";
 import { Inventario } from "../pages/Inventario";
 import { Usuario } from "../pages/Usuario";
@@ -15,8 +15,8 @@ import { Respaldo } from "../pages/Respaldo";
 // eslint-disable-next-line react-refresh/only-export-components
 export const routes = [
   { name: "Home", path: "/", component: Home },
-  { name: "Personal", path: "/personal", component: Personal },
-  { name: "Asistencias", path: "/asistencias", component: Asistencias },
+  { name: "Profesores", path: "/profesores", component: Profesores },
+  { name: "Estudiantes", path: "/estudiantes", component: Estudiantes },
   { name: "Visitas", path: "/visitas", component: Visitas },
   { name: "Inventario", path: "/inventario", component: Inventario },
   { name: "Departamentos", path: "/departamentos", component: Departamentos },

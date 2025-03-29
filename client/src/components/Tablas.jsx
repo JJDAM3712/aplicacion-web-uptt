@@ -23,7 +23,7 @@ import { ServidorURL } from "../config/config";
 
 //-------------------------------------------------
 // tabla profesores
-export function TablaPersonal({ innerRef, datos }) {
+export function TablaProfesores({ innerRef, datos }) {
   const [currentPage, setCurrentPage] = useState(1); 
   const itemsPerPage = 10;
   // Calcula los elementos que se mostrarán en la página actual
@@ -80,7 +80,7 @@ export function TablaPersonal({ innerRef, datos }) {
 }
 //-------------------------------------------------
 // tabla estudiantes
-export function TablaAsistencias({innerRef, datos}) {
+export function TablaEstudiantes({innerRef, datos}) {
   const [currentPage, setCurrentPage] = useState(1); 
   const itemsPerPage = 10; 
   // Calcula los elementos que se mostrarán en la página actual
@@ -350,7 +350,10 @@ export function TablaInv({ innerRef, datos }) {
 
   const manejarCambio = (id, valor) => {
     const nuevosAlumnos = alumnos.map((alumno) =>
-      alumno.id === id ? { ...alumno, nota1: valor } : alumno
+      alumno.id === id ? { ...alumno, nota1: valor } : alumno,
+      alumno.id === id ? { ...alumno, nota2: valor } : alumno,
+      alumno.id === id ? { ...alumno, nota3: valor } : alumno,
+      alumno.id === id ? { ...alumno, nota4: valor } : alumno
     );
     setAlumnos(nuevosAlumnos);
   };
@@ -398,6 +401,7 @@ export function TablaInv({ innerRef, datos }) {
                 <Table.Cell className="whitespace-nowrap">{alumno.id}</Table.Cell>
                 <Table.Cell>{alumno.nombre}</Table.Cell>
                 <Table.Cell>{alumno.apellido}</Table.Cell>
+
                 <Table.Cell>
                   {editando === alumno.id ? (
                       <TextInput 
@@ -414,7 +418,9 @@ export function TablaInv({ innerRef, datos }) {
                       }}>
                         {alumno.nota1}
                       </span>
-                    )}{alumno.nota1}</Table.Cell>
+                    )}
+                </Table.Cell>
+
                 <Table.Cell>
                     {editando === alumno.id ? (
                       <TextInput 

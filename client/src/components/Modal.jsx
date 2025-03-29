@@ -1552,10 +1552,10 @@ export function RegisInv({ id }) {
                   <option value="Selecciona:" disabled>
                     Selecciona:
                   </option>
-                  <option value={["1234567","Juan", "Perez"]}>{["1234567"," ","Juan"," ", "Perez"]}</option>
-                  <option value={["2134445","Jose", "Mendez"]}>{["2134445"," ","Jose"," ", "Mendez"]}</option>
-                  <option value={["5232134","Pedro", "Aguilar"]}>{["5232134"," ","Pedro"," ", "Aguilar"]}</option>
-                  <option value={["5213333","Carlos", "Martinez"]}>{["5213333"," ","Carlos"," ", "Martinez"]}</option>
+                  <option value="3">{["1234567"," ","Juan"," ", "Perez"]}</option>
+                  <option value="3">{["2134445"," ","Jose"," ", "Mendez"]}</option>
+                  <option value="2">{["5232134"," ","Pedro"," ", "Aguilar"]}</option>
+                  <option value="1">{["5213333"," ","Carlos"," ", "Martinez"]}</option>
                 </Select>
               </div>
             <Button type="submit">Buscar</Button>

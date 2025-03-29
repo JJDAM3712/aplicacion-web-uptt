@@ -89,12 +89,12 @@ const linksArray = [
   {
     label: "Profesores",
     icon: <PiUsersFourFill />,
-    to: "/app/personal",
+    to: "/app/profesores",
   },
   {
     label: "Estudiantes",
     icon: <AiOutlineTeam />,
-    to: "/app/asistencias",
+    to: "/app/estudiantes",
   },
   {
     label: "Notas",

@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { TablaAsistencias } from "../components/Tablas";
+import { TablaEstudiantes } from "../components/Tablas";
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { useDownloadExcel } from "react-export-table-to-excel";
@@ -10,7 +10,7 @@ import socketIOClient from 'socket.io-client';
 import { ServidorURL } from "../config/config";
 
 
-export function Asistencias() {
+export function Estudiantes() {
   return (
     <Container>
       <h1>Estudiantes</h1>
@@ -29,7 +29,7 @@ export function Asistencias() {
           </form>
 
       </Container>
-      <TablaAsistencias/>
+      <TablaEstudiantes/>
     </Container>
   );
 }
