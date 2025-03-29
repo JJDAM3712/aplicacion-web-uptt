@@ -1,0 +1,22 @@
+.content_search{
+    display: flex;
+    width: 250px;
+    border-radius: 10px;
+    overflow: hidden;
+}
+.input_search{
+    width: 220px;
+    border: none;
+}
+.buton_seach{
+    width: 30px;
+    background-color: #5521B5;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.2rem;
+    &:hover {
+        background-color: #401a86;
+    }
+}
