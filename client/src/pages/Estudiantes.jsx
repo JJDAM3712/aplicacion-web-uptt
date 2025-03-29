@@ -8,6 +8,7 @@ import { RegisAsist } from "../components/Modal";
 import { HiOutlineArrowRight } from "react-icons/hi";
 import socketIOClient from 'socket.io-client';
 import { ServidorURL } from "../config/config";
+import { Buscador } from "../components/buscador";
 
 
 export function Estudiantes() {
@@ -24,7 +25,7 @@ export function Estudiantes() {
                 Generar Reporte
                 <HiOutlineArrowRight className="ml-2 h-5 w-5" />
               </Button>
-              
+              <Buscador />
             </div>
           </form>
 

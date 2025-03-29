@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { Button, TextInput } from "flowbite-react";
-import { RegisInv } from "../components/Modal";
+import { RegisInv, ModalUsr } from "../components/Modal";
 import { HiOutlineArrowRight } from "react-icons/hi";
 import { TablaInv } from "../components/Tablas";
 import axios from "axios";
@@ -45,7 +45,7 @@ export function Inventario() {
     <Container>
       <h1>Notas</h1>
       <div className="flex flex-wrap gap-2 mb-1" >
-        <RegisInv /> 
+        <ModalUsr /> 
         <Button color="success" onClick={onDownload}>
           Generar Reporte
           <HiOutlineArrowRight className="ml-2 h-5 w-5" />

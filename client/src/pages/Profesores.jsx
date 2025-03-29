@@ -9,6 +9,7 @@ import { useDownloadExcel } from 'react-export-table-to-excel';
 import axios from "axios";
 import socketIOClient from 'socket.io-client';
 import { ServidorURL } from "../config/config";
+import { Buscador } from "../components/buscador";
 
 
 export function Profesores() {
@@ -58,6 +59,7 @@ export function Profesores() {
             Generar Reporte
             <HiOutlineArrowRight className="ml-2 h-5 w-5" />
           </Button>
+          <Buscador />
         {/* --- tabla personal */}
       </div>
       <Suspense fallback={<div>Cargando...</div>}>

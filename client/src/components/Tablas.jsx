@@ -1,6 +1,8 @@
 import styled from "styled-components";
 import { Table, Button, TextInput } from "flowbite-react";
 import { useEffect, useState } from "react";
+import React from "react";
+import CheckboxVeri from "./checkbox";
 import axios from "axios";
 import {
   EditarPersona,
@@ -42,6 +44,7 @@ export function TablaProfesores({ innerRef, datos }) {
         <h1>Profesores:</h1>
         <Table ref={innerRef}>
           <Table.Head className="border-b-2 uppercase">
+            <Table.HeadCell>Activar</Table.HeadCell>
             <Table.HeadCell>Nombre</Table.HeadCell>
             <Table.HeadCell>Apellido</Table.HeadCell>
             <Table.HeadCell>Cedula</Table.HeadCell>
@@ -51,6 +54,7 @@ export function TablaProfesores({ innerRef, datos }) {
           </Table.Head>
           <Table.Body className="divide-y uppercase">
               <Table.Row className="bg-white">
+              <Table.Cell><CheckboxVeri /></Table.Cell>
                 <Table.Cell className="whitespace-nowrap font-medium text-gray-900 ">
                   Juan
                 </Table.Cell>
@@ -99,6 +103,7 @@ export function TablaEstudiantes({innerRef, datos}) {
         <h1>Estudiantes:</h1>
         <Table>
           <Table.Head className="border-b-2 uppercase">
+            <Table.HeadCell>Activar</Table.HeadCell>
             <Table.HeadCell>Nombre</Table.HeadCell>
             <Table.HeadCell>Apellido</Table.HeadCell>
             <Table.HeadCell>Cedula</Table.HeadCell>
@@ -110,6 +115,7 @@ export function TablaEstudiantes({innerRef, datos}) {
           <Table.Body className="divide-y uppercase">
             {/* mostrar los datos */}
               <Table.Row className="bg-white">
+                <Table.Cell><CheckboxVeri /></Table.Cell>
                 <Table.Cell className="whitespace-nowrap">juanito</Table.Cell>
                 <Table.Cell>perez</Table.Cell>
                 <Table.Cell>1234567</Table.Cell>
@@ -117,7 +123,10 @@ export function TablaEstudiantes({innerRef, datos}) {
                 <Table.Cell>C</Table.Cell>
                 <Table.Cell>informatica</Table.Cell>
                 <Table.Cell>
-                  <EliminaAsist/>
+                <Button.Group>
+                    <EditarPersona />
+                    <EliminarPersona />
+                </Button.Group>
                 </Table.Cell>
               </Table.Row>
           </Table.Body>
@@ -536,19 +545,19 @@ export function TablaUsuario() {
             <Table.HeadCell>Mencion</Table.HeadCell>            
           </Table.Head>
           <Table.Body className="divide-y">
-            {currentItems.map((users) => (
-              <Table.Row className="bg-white" key={users.id}>
-                <Table.Cell className="whitespace-nowrap">
-                  {users.usuario}
-                </Table.Cell>
+              <Table.Row className="bg-white">
+                <Table.Cell className="whitespace-nowrap">juan</Table.Cell>
+                <Table.Cell>Matematica</Table.Cell>
+                <Table.Cell>1</Table.Cell>
+                <Table.Cell>A</Table.Cell>
+                <Table.Cell>Telematica</Table.Cell>
                 <Table.Cell>
                   <Button.Group>
-                    <EditarUsr id={users.id} />
-                    <EliminarUsr className="left-4" id={users.id} />
+                    <EditarUsr />
+                    <EliminarUsr />
                   </Button.Group>
                 </Table.Cell>
               </Table.Row>
-            ))}
           </Table.Body>
         </Table>
         <Pagination

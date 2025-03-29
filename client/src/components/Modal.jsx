@@ -82,6 +82,20 @@ export function ModalRegis() {
             <form
               className="flex flex-col gap-4 max-w-full"
             >
+               {/*----- cedula ------- */}
+              <div>
+                <div className="mb-2 block">
+                  <Label htmlFor="cedula" value="Cedula:" />
+                </div>
+                <TextInput
+                  id="cedula"
+                  name="cedula"
+                  type="text"
+                  placeholder="1234567890"
+                  required
+                  shadow
+                />
+              </div>
               {/*----- primer nombre ------- */}
               <div>
                 <div className="mb-2 block">
@@ -138,20 +152,7 @@ export function ModalRegis() {
                   shadow
                 />
               </div>
-              {/*----- cedula ------- */}
-              <div>
-                <div className="mb-2 block">
-                  <Label htmlFor="cedula" value="Cedula:" />
-                </div>
-                <TextInput
-                  id="cedula"
-                  name="cedula"
-                  type="text"
-                  placeholder="1234567890"
-                  required
-                  shadow
-                />
-              </div>
+             
               {/*----- telefono ------- */}
               <div>
                 <div className="mb-2 block">
@@ -632,7 +633,7 @@ export function RegisAsist() {
                   required
                   shadow
                 />
-              </div>
+            </div>
             {/*----- primer nombre ------- */}
             <div>
                 <div className="mb-2 block">
@@ -640,13 +641,13 @@ export function RegisAsist() {
                 </div>
                 <TextInput
                   id="p_nonmbre"
-                  name="p_nombbre"
+                  name="p_nombre"
                   type="text"
                   placeholder="Primer Nombre"
                   required
                   shadow
                 />
-              </div>
+            </div>
               {/*----- segundo nombre ------- */}
             <div>
                 <div className="mb-2 block">
@@ -660,17 +661,17 @@ export function RegisAsist() {
                   required
                   shadow
                 />
-              </div>
+            </div>
               {/*----- primer apellido ------- */}
               <div>
                 <div className="mb-2 block">
-                  <Label htmlFor="primer apellido" value="Primer Nombre:" />
+                  <Label htmlFor="primer apellido" value="Primer Apellido:" />
                 </div>
                 <TextInput
-                  id="p_nombre"
-                  name="p_nombre"
+                  id="p_apellido"
+                  name="p_apellido"
                   type="text"
-                  placeholder="Primer Nombre"
+                  placeholder="Primer Apellido"
                   required
                   shadow
                 />
@@ -678,13 +679,13 @@ export function RegisAsist() {
               {/*----- segundo apellido ------- */}
               <div>
                 <div className="mb-2 block">
-                  <Label htmlFor="segundo apellido" value="Segundo Nombre:" />
+                  <Label htmlFor="segundo apellido" value="Segundo Apellido:" />
                 </div>
                 <TextInput
-                  id="s_nombre"
-                  name="s_nombre"
+                  id="s_apellido"
+                  name="s_apellido"
                   type="text"
-                  placeholder="Segundo Nombre"
+                  placeholder="Segundo Apellido"
                   required
                   shadow
                 />
@@ -720,30 +721,42 @@ export function RegisAsist() {
               {/*----- Año ------- */}
               <div>
                 <div className="mb-2 block">
-                  <Label htmlFor="año" value="Año:" />
+                  <Label htmlFor="id_anno" value="Selecciona el Año" />
                 </div>
-                <TextInput
-                  id="año"
-                  name="año"
-                  type="text"
-                  placeholder="año"
-                  required
-                  shadow
-                />
+                <Select
+                  id="id_anno"
+                  name="id_anno"
+                >
+                  <option value="Selecciona:" disabled>
+                    Selecciona:
+                  </option>
+                  <option>1</option>
+                  <option>2</option>
+                  <option>3</option>
+                  <option>4</option>
+                  <option>5</option>
+                  <option>6</option>
+                </Select>
               </div>
               {/*----- Seccion ------- */}
               <div>
                 <div className="mb-2 block">
-                  <Label htmlFor="seccion" value="Seccion:" />
+                  <Label htmlFor="seccion" value="Selecciona la Seccion" />
                 </div>
-                <TextInput
-                  id="seccion"
-                  name="seccion"
-                  type="text"
-                  placeholder="seccion"
-                  required
-                  shadow
-                />
+                <Select
+                  id="id_seccion"
+                  name="id_seccion"
+                >
+                  <option value="Selecciona:" disabled>
+                    Selecciona:
+                  </option>
+                  <option>A</option>
+                  <option>B</option>
+                  <option>C</option>
+                  <option>D</option>
+                  <option>E</option>
+                  <option>F</option>
+                </Select>
               </div>
               {/*----- Mension ------- */}
               <div>
@@ -1973,8 +1986,8 @@ export function ModalUsr() {
               onSubmit={handleSend}
               className="flex flex-col gap-4 max-w-full"
             >
-              {/* ------ profesor --------- */}
-              <div>
+            {/* ------ profesor --------- */}
+            <div>
                 <div className="mb-2 block">
                   <Label htmlFor="id_profesor" value="Selecciona el Profesor" />
                 </div>
@@ -1990,8 +2003,24 @@ export function ModalUsr() {
                   <option value={["5232134","Pedro", "Aguilar"]}>{["5232134"," ","Pedro"," ", "Aguilar"]}</option>
                   <option value={["5213333","Carlos", "Martinez"]}>{["5213333"," ","Carlos"," ", "Martinez"]}</option>
                 </Select>
+            </div>
+            {/* ------ materia --------- */}
+            <div>
+              <div className="mb-2 block">
+                <Label htmlFor="materia" value="Materia:" />
               </div>
-                {/* ------ año --------- */}
+              <Select
+                id="materia"
+                name="materia"
+              >
+                <option value="Selecciona:" disabled>
+                  Selecciona:
+                </option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+              </Select>
+            </div> 
+            {/* ------ año --------- */}
             <div>
               <div className="mb-2 block">
                 <Label htmlFor="año" value="Año:" />
@@ -2030,23 +2059,7 @@ export function ModalUsr() {
                 <option value="E">E</option>
                 <option value="F">F</option>
               </Select>
-            </div>    
-            {/* ------ materia --------- */}
-            <div>
-              <div className="mb-2 block">
-                <Label htmlFor="materia" value="Materia:" />
-              </div>
-              <Select
-                id="materia"
-                name="materia"
-              >
-                <option value="Selecciona:" disabled>
-                  Selecciona:
-                </option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-              </Select>
-            </div>                    
+            </div>                  
             {/* ------ mencion --------- */}
             <div>
               <div className="mb-2 block">
