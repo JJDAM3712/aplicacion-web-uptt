@@ -8,11 +8,10 @@ const CheckboxVeri = () => {
   };
 
   return (
-    <div style={{ 
-        display: "flex",
-        alignItems: "center",
-        alignContent: "center",
-        justifyContent: "center",}}>
+    <div style={{       
+      display: "flex",
+      justifyContent: "center",
+        }}>
       <label>
         <input 
           type="checkbox" 

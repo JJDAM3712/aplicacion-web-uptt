@@ -17,7 +17,7 @@ const AuthContext = createContext<{
 
 export const AuthProv = ({ children }: AuthProvProps) => {
   const [authState, setAuthState] = useState<AuthState>({
-    isAuthenticated: true,
+    isAuthenticated: false,
     token: null,
     userId: null,
   });
