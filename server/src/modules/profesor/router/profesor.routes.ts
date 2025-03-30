@@ -10,4 +10,8 @@ router.post("/profesor", ProfesorController.postController);
 router.put("/profesor/:id", ProfesorController.putController);
 router.delete("/profesor/:id", ProfesorController.deleteController);
 
+// rutas de las clases
+router.post("/clase", ProfesorController.postClaseController);
+router.get("/clase/:id", ProfesorController.deleteClaseController);
+
 export default router;

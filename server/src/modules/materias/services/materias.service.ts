@@ -37,9 +37,9 @@ class MateriaService extends ServiceBase {
         return result;
     }
     // validar si la materia existe
-    public async getServiceExist(materia:string, id:string) {
+    public async getServiceExist(materia:string) {
         const sql = MateriasSQL.getMateriasByMateriaQuery();
-        const [result] = await pool.query<RowDataPacket[]>(sql, [materia, id]);
+        const [result] = await pool.query<RowDataPacket[]>(sql, [materia]);
         return result;
     }
     // valida si la materia no esta repetida

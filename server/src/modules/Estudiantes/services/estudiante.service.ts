@@ -7,10 +7,15 @@ import { PoolConnection } from "mysql2/promise";
 // Servicio de estudiantes
 class EstudianteService extends ServiceBase {
     // mostrar todos los estudiantes
-    public async getService(): Promise<any> {
+    public async getEstudianteService(anno: any, seccion: any, mension: any): Promise<any> {
         try {
             const sql = EstudiantesSQL.getEstudiantesQuery();
-            const [result] = await pool.query<RowDataPacket[]>(sql);
+            // pasa los paremetros de manera opcional
+            const [result] = await pool.query<RowDataPacket[]>(sql, [
+                anno || null, anno || null, 
+                seccion || null, seccion || null, 
+                mension || null, mension || null
+            ]);
             return result;
         } catch (error) {
             return `Error al mostrar todos los estudiantes ${error}`;
@@ -37,10 +42,10 @@ class EstudianteService extends ServiceBase {
         }
     }
     // validar que el estudiante exista
-    public async getServiceExist(data: any, id: string): Promise<any> {
+    public async getServiceExist(data: any): Promise<any> {
         try {
             const sql = EstudiantesSQL.getEstudianteExistQuery();
-            const [result] = await pool.query<RowDataPacket[]>(sql, [data, id]);
+            const [result] = await pool.query<RowDataPacket[]>(sql, [data]);
             return result;
         } catch (error) {
             return error;
