@@ -5,8 +5,9 @@
 	align-items: center;
 	background-color: #fff;
 	margin: 50px auto;
+	flex-wrap: wrap;
+	gap: 20px;
 }
-
 .tarjeta_mension {
 	width: 350px;
 	height: 450px;
@@ -26,7 +27,6 @@
 	text-align: center;
 	line-height: 25px;
 }
-
 .mension_conten {
 	width: 100%;
 	height: 100%;
@@ -64,13 +64,11 @@
 	left: 0;
 	transition: .3s;
 }
-
 .img_mension .mension_img {
 	object-fit: cover;
 	width: 100%;
 	height: 100%;
 }
-
 .tarjeta_mension:hover > .mension_conten .img_mension::after{
 	background-color: rgba(0, 0, 0, .7);
 }
@@ -79,7 +77,7 @@
 	margin-top: 50px ;
 }
 .titleBar {
-	background-color: rgba(87, 7, 12); /* Color de fondo de la franja */
+	background-color: rgb(87, 7, 12); /* Color de fondo de la franja */
 	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 	font-size: 2.4rem;
 	font-family: sans-serif;
@@ -97,5 +95,50 @@
 }
 
 /* footer de la pagina */
+.content_footer{
+	width: 100%;
+	background-color: rgb(87, 7, 12);
+}
+.text_footer{
+	display: flex;
+	justify-content: center;
+	color: #fff;
+	font-family: 'Courier New', Courier, monospace;
+	font-size: .7rem;
+	gap: 10px;
+	padding: 50px 0 0 0;
+}
+.text_footer .title{
+	text-decoration: underline;
+}
+.contacto{
+	padding: 15px 5px;
+	& .facebook, & .correo {
+		width: 120px;
+	}
+	& .facebook a, & .correo a{
+		color: #fff;
+		text-decoration: none;
+		margin: 0 0 0 10px;
+		display: flex;
+		align-items: center;
+		transition: .4s;
+	}
+	& h3{
+		font-size: 1rem;
+		margin-left: 6px;
+	}
+	
+}
+.icono_foo{
+	font-size: 1.4rem;
+	transition: .4s;
+}
 
-  
+.contacto .facebook:hover > a, .contacto .correo:hover > a{
+	transform: scale(1.1);
+}
+.contacto .facebook:hover > a > .icono_foo, 
+.contacto .correo:hover > a > .icono_foo {
+	transform: scale(1.3);
+}

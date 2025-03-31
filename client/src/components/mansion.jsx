@@ -1,4 +1,7 @@
 import "../css/st.css"
+import {
+    AiFillFacebook, AiOutlineMail
+  } from "react-icons/ai";
 
 
 export const TarjetaMension = (props) => {
@@ -30,9 +33,24 @@ export const DivisionPag = (props) => {
 export const FooterPag = () => {
     return (
         <footer className="content_footer">
+            <div className="contacto">
+                <div className="facebook">
+                    <a href="#" alt="FaceBook de la institución">
+                        <AiFillFacebook style={{color:"#3b5998"}} className="icono_foo"/>
+                        <h3>FaceBook</h3>
+                    </a>
+                </div>
+                <div className="correo">
+                    <a href="#" alt="Correo electronico de la institución">
+                        <AiOutlineMail style={{color:"violet"}} className="icono_foo"/>
+                        <h3>Correo</h3>
+                    </a>
+                </div>
+            </div>
+
             <div className="text_footer">
-                <p>Todos los derechos reservados</p>
-                <p className="title"> © Copyright</p>
+                <p>Todos los derechos reservados </p>
+                <p className="title">© Copyright</p>
             </div>
             
         </footer>

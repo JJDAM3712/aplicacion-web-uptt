@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { useDownloadExcel } from "react-export-table-to-excel";
 import { Datepicker, Button } from "flowbite-react";
-import { RegisAsist } from "../components/Modal";
+import { RegisEstudiante } from "../components/Modal";
 import { HiOutlineArrowRight } from "react-icons/hi";
 import socketIOClient from 'socket.io-client';
 import { ServidorURL } from "../config/config";
@@ -19,7 +19,7 @@ export function Estudiantes() {
 
           <form>
             <div className="flex flex-wrap gap-2 mb-1">
-              <RegisAsist />
+              <RegisEstudiante />
 
               <Button color="success" type="submit">
                 Generar Reporte

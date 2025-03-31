@@ -15,7 +15,7 @@ import {
   EliminarUsr,
   EditInv,
   EditarUsr,
-  EditarDep,
+  EditarMateria,
   EliminarCatg,
   EditarCatg,
 } from "./Modal"; //Importamos las Modales para su uso en los Botones de Opciones
@@ -142,73 +142,14 @@ export function TablaEstudiantes({innerRef, datos}) {
   );
 }
 //-------------------------------------------------
-// tabla personal
-export const TablaVisitas = ({ innerRef, datos }) => {
-  const [currentPage, setCurrentPage] = useState(1); 
-  const itemsPerPage = 10;
-  // Calcula los elementos que se mostrarán en la página actual
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = datos.slice(indexOfFirstItem, indexOfLastItem);
-
-  // Función para cambiar la página actual
-  const changePage = (event) => {
-    const pageNumber = Number(event.target.textContent);
-    setCurrentPage(pageNumber);
-  };
-  return (
-    <Container>
-      <div className="ContenedorTabla ">
-        <h1>Visitas:</h1>
-        <Table ref={innerRef}>
-          <Table.Head className="border-b-2">
-            <Table.HeadCell>Nombre</Table.HeadCell>
-            <Table.HeadCell>Cedula</Table.HeadCell>
-            <Table.HeadCell>Departamento</Table.HeadCell>
-            <Table.HeadCell>Motivo</Table.HeadCell>
-            <Table.HeadCell>Fecha</Table.HeadCell>
-            <Table.HeadCell>Hora Entrada</Table.HeadCell>
-            <Table.HeadCell>Hora Salida</Table.HeadCell>
-            <Table.HeadCell></Table.HeadCell>
-          </Table.Head>
-          <Table.Body className="divide-y uppercase">
-            {currentItems.map((visitas) => (
-              <Table.Row className="bg-white" key={visitas.id_visita}>
-                <Table.Cell className="whitespace-nowrap">
-                  {visitas.nombre}
-                </Table.Cell>
-                <Table.Cell>{visitas.cedula}</Table.Cell>
-                <Table.Cell>{visitas.departamento}</Table.Cell>
-                <Table.Cell>{visitas.motivo}</Table.Cell>
-                <Table.Cell>{visitas.fecha}</Table.Cell>
-                <Table.Cell>{visitas.hora_entrada}</Table.Cell>
-                <Table.Cell>{visitas.hora_salida}</Table.Cell>
-                <Table.Cell>
-                  <EliminaVisita id={visitas.id_visita}/>
-                </Table.Cell>
-              </Table.Row>
-            ))}
-          </Table.Body>
-        </Table>
-        <Pagination
-          itemsPerPage={itemsPerPage}
-          totalItems={datos.length}
-          paginate={setCurrentPage}
-          currentPage={currentPage}
-        />
-      </div>
-    </Container>
-  );
-}
-//-------------------------------------------------
 // tabla de materia
-export function TablaDepartamento() {
+export function TablaMaterias() {
   const [datos, setDatos] = useState([]);
   const [currentPage, setCurrentPage] = useState(1); 
   const itemsPerPage =10; 
-
+  
   useEffect(() => {
-    ShowDepart();
+    ShowMaterias();
     const socket = socketIOClient(`${ServidorURL}`);
 
     socket.on('ActualizatTable', (nuevasAsistencias) => {
@@ -219,8 +160,9 @@ export function TablaDepartamento() {
       socket.disconnect();
     };
   }, []);
-  const ShowDepart = async () => {
-    const res = await axios.get(`${ServidorURL}/task`);
+
+  const ShowMaterias = async () => {
+    const res = await axios.get(`${ServidorURL}/materias`);
     setDatos(res.data);
   };
    // Calcula los elementos que se mostrarán en la página actual
@@ -228,11 +170,11 @@ export function TablaDepartamento() {
    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
    const currentItems = datos.slice(indexOfFirstItem, indexOfLastItem);
  
-   // Función para cambiar la página actual
-   const changePage = (event) => {
-     const pageNumber = Number(event.target.textContent);
-     setCurrentPage(pageNumber);
-   };
+  // Función para cambiar la página actual
+  const changePage = (event) => {
+    const pageNumber = Number(event.target.textContent);
+    setCurrentPage(pageNumber);
+  };
   return (
     <Container>
       <div className="ContenedorTabla ">
@@ -244,23 +186,32 @@ export function TablaDepartamento() {
           </Table.Head>
           <Table.Body className="divide-y">
             {/* mostrar datos de bd en tabla */}
-            {currentItems.map((departamentos) => (
+            {currentItems.map((materia) => (
               <Table.Row
                 className="bg-white"
-                key={departamentos.id_departamento}
+                key={materia.id_materia}
               >
                 <Table.Cell className="whitespace-nowrap">
-                  {departamentos.departamento}
+                  {materia.materia}
+                </Table.Cell>
+                <Table.Cell 
+                  className="whitespace-nowrap" 
+                  style={{
+                    width: "100%",
+                    maxWidth:"700px", 
+                    overflow: "hidden",
+                  }}>
+                  {materia.descripcion}
                 </Table.Cell>
                 <Table.Cell>
                   <Button.Group>
-                    <EditarDep
+                    <EditarMateria
                       className="left-4"
-                      id={departamentos.id_departamento}
+                      id={materia.id_materia}
                     />
                     <EliminarDep
                       className="left-4"
-                      id={departamentos.id_departamento}
+                      id={materia.id_materia}
                     />
                   </Button.Group>
                 </Table.Cell>
@@ -279,76 +230,8 @@ export function TablaDepartamento() {
   );
 }
 //-------------------------------------------------
-// tabla de departamento
-export function TablaCargos() {
-  const [datos, setDatos] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1); 
-  const itemsPerPage = 10; 
-
-  useEffect(() => {
-    ShowDepart();
-    const socket = socketIOClient(ServidorURL);
-    socket.on('ActualizatTable', (nuevasAsistencias) => {
-      setDatos(nuevasAsistencias);
-    });
-    return () => {
-      socket.disconnect();
-    };
-  }, []);
-  const ShowDepart = async () => {
-    const res = await axios.get(`${ServidorURL}/cargos`);
-    setDatos(res.data);
-  };
-
-  // Calcula los elementos que se mostrarán en la página actual
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = datos.slice(indexOfFirstItem, indexOfLastItem);
-
-  // Función para cambiar la página actual
-  const changePage = (event) => {
-    const pageNumber = Number(event.target.textContent);
-    setCurrentPage(pageNumber);
-  };
-  return (
-    <Container>
-      <div className="ContenedorTabla ">
-        <h1>Cargos:</h1>
-        <Table className="uppercase">
-          <Table.Head className="border-b-2">
-            <Table.HeadCell>Cargo</Table.HeadCell>
-            <Table.HeadCell>Cantidad de Puestos</Table.HeadCell>
-            <Table.HeadCell></Table.HeadCell>
-          </Table.Head>
-          <Table.Body className="divide-y">
-            {currentItems.map((cargos) => (
-              <Table.Row className="bg-white" key={cargos.id_cargo}>
-                <Table.Cell className="whitespace-nowrap">
-                  {cargos.cargo}
-                </Table.Cell>
-                <Table.Cell className="whitespace-nowrap">
-                  {cargos.cantidad}
-                </Table.Cell>
-                <Table.Cell>
-                  <EliminarCargo className="left-4" id={cargos.id_cargo} />
-                </Table.Cell>
-              </Table.Row>
-            ))}
-          </Table.Body>
-        </Table>
-        <Pagination
-          itemsPerPage={itemsPerPage}
-          totalItems={datos.length}
-          paginate={setCurrentPage}
-          currentPage={currentPage}
-        />
-      </div>
-    </Container>
-  );
-}
-//-------------------------------------------------
 // tabla de notas
-export function TablaInv({ innerRef, datos }) {
+export function TablaNotas({ innerRef, datos }) {
   const [alumnos, setAlumnos] = useState([
     { id: 1, nombre: "Juan", apellido: "Perez", nota1: "0", nota2: "0", nota3: "0", nota4: "0" },
     { id: 2, nombre: "María", apellido: "Gonzales", nota1: "0", nota2: "0", nota3: "0", nota4: "0" },
@@ -500,7 +383,7 @@ export function TablaInv({ innerRef, datos }) {
 }
 //-------------------------------------------------
 // tabla de clases
-export function TablaUsuario() {
+export function TablaClases() {
   const [datos, setDatos] = useState([]);
   const [currentPage, setCurrentPage] = useState(1); 
   const itemsPerPage = 10; 
@@ -572,7 +455,7 @@ export function TablaUsuario() {
 }
 //-------------------------------------------------
 // tabla de menciones
-export function TablaCategoria() {
+export function TablaMenciones() {
   const [data, setData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1); 
   const itemsPerPage = 10; 
