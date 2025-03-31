@@ -3,8 +3,8 @@ import express, { Application } from "express";
 import morgan from "morgan";
 import cors from 'cors';
 import dotenv from 'dotenv';
-//import { Server } from "socket.io";
-//import { createServer } from "http";
+import { Server } from "socket.io";
+import { createServer } from "http";
 //import cookieParser from 'cookie-parser';
 
 // importando rutas
@@ -18,13 +18,12 @@ dotenv.config({ path: `${__dirname}/../.env` });
 // Inicializaciones
 dotenv.config();
 const app: Application = express();
-//const httpServer = createServer(app);
+const httpServer = createServer(app);
 
 // middlewares
-/*
 export const io = new Server(httpServer, {
     cors: {
-        origin: 'http://localhost:3000',
+        origin: 'http://localhost:5173',
         methods: ['GET', 'POST', 'PUT', 'DELETE'],
         credentials: true
     }
@@ -40,7 +39,7 @@ io.on('connection', (socket) => {
     socket.on('disconnect', () => {
         console.log(`Cliente desconectado a ${socket.id}`);
     })
-});*/
+});
 
 // middlewares
 app.use(cors({

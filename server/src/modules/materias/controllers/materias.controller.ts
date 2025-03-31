@@ -71,6 +71,7 @@ class MateriaController extends AppControllerBase{
             res.status(200).json({ message: "Materia actualizada correctamente" , data: result });
         }
         catch (error) {
+            console.log("ERROR ACTUALIZAR = ",error)
             res.status(500).json({ message: "Error al actualizar la materia" });
         }
     }

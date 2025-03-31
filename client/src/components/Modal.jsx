@@ -6,7 +6,6 @@ import { Button, Modal, Radio, Label, TextInput, Select } from "flowbite-react";
 import { FaEraser, FaEdit } from "react-icons/fa";
 import {
   HiOutlineExclamationCircle,
-  HiMail,
   HiUser,
   HiKey,
   HiPencil,
@@ -535,11 +534,56 @@ export function EliminaAsist({ id }) {
     </>
   );
 }
-export function RegisAsist() {
+export function RegisEstudiante() {
   const [openModal, setOpenModal] = useState(false);
+
+  // mostrar materias en select
+  const [datosMencion, setDatosMencion] = useState([]);
+  // mostrar años en select
+  const [datosAnio, setDatosAnio] = useState([]);
+  // mostrar seccion en select
+  const [datoSeccion, setDatoSeccion] = useState([]);
+
+  useEffect(() => {
+    const ShowMencion = async () => {
+      await axios
+        .get(`${ServidorURL}/mension`)
+        .then((res) => {
+          console.log(res);
+          setDatosMencion(res.data);
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    };
+    const ShowSeccion = async () => {
+      await axios
+        .get(`${ServidorURL}/seccion`)
+        .then((res) => {
+          console.log(res);
+          setDatoSeccion(res.data);
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    };
+    ShowMencion();
+    ShowSeccion();
+  }, []);
+
+
+  // todos los datos del formulario
   const [data, setData] = useState({
     cedula: "",
-    asistencia: "entrada",
+    p_nombre: "",
+    s_nombre: "",
+    p_apellido: "",
+    s_apellido: "",
+    telefono: "",
+    email: "",
+    id_seccion: "Selecciona:",
+    id_year: "Selecciona:",
+    id_mension: "Selecciona:"
   });
   const handleChange = (e) => {
     let names = e.target.name;
@@ -553,7 +597,15 @@ export function RegisAsist() {
   const limpiarCampos = () => {
     setData({
       cedula: "",
-      asistencia: "entrada",
+      p_nombre: "",
+      s_nombre: "",
+      p_apellido: "",
+      s_apellido: "",
+      telefono: "",
+      email: "",
+      id_seccion: "",
+      id_year: "",
+      id_mension: ""
     });
   };
   const handleCloseModal = () => {
@@ -564,10 +616,8 @@ export function RegisAsist() {
     e.preventDefault();
     try {
       const url_0 = `${ServidorURL}/asistencia/entrada`;
-      const url_1 = `${ServidorURL}/asistencia/salida`;
       // Define la URL dependiendo del valor de asistencia
-      const url = data.asistencia === "entrada" ? url_0 : url_1;
-      const response = await axios.post(url, data, {
+      const response = await axios.post(`${ServidorURL}/asistencia/entrada`, data, {
         headers: {
           "Content-Type": "application/json",
         },
@@ -662,118 +712,136 @@ export function RegisAsist() {
                   shadow
                 />
             </div>
-              {/*----- primer apellido ------- */}
-              <div>
-                <div className="mb-2 block">
-                  <Label htmlFor="primer apellido" value="Primer Apellido:" />
-                </div>
-                <TextInput
-                  id="p_apellido"
-                  name="p_apellido"
-                  type="text"
-                  placeholder="Primer Apellido"
-                  required
-                  shadow
-                />
+            {/*----- primer apellido ------- */}
+            <div>
+              <div className="mb-2 block">
+                <Label htmlFor="primer apellido" value="Primer Apellido:" />
               </div>
-              {/*----- segundo apellido ------- */}
-              <div>
-                <div className="mb-2 block">
-                  <Label htmlFor="segundo apellido" value="Segundo Apellido:" />
-                </div>
-                <TextInput
-                  id="s_apellido"
-                  name="s_apellido"
-                  type="text"
-                  placeholder="Segundo Apellido"
-                  required
-                  shadow
-                />
+              <TextInput
+                id="p_apellido"
+                name="p_apellido"
+                type="text"
+                placeholder="Primer Apellido"
+                required
+                shadow
+              />
+            </div>
+            {/*----- segundo apellido ------- */}
+            <div>
+              <div className="mb-2 block">
+                <Label htmlFor="segundo apellido" value="Segundo Apellido:" />
               </div>
-              {/*----- telefono ------- */}
-              <div>
-                <div className="mb-2 block">
-                  <Label htmlFor="telefono" value="Teléfono:" />
-                </div>
-                <TextInput
-                  id="telefono"
-                  name="telefono"
-                  type="text"
-                  placeholder="Teléfono"
-                  required
-                  shadow
-                />
+              <TextInput
+                id="s_apellido"
+                name="s_apellido"
+                type="text"
+                placeholder="Segundo Apellido"
+                required
+                shadow
+              />
+            </div>
+            {/*----- telefono ------- */}
+            <div>
+              <div className="mb-2 block">
+                <Label htmlFor="telefono" value="Teléfono:" />
               </div>
-              {/*----- correo ------- */}
-              <div>
-                <div className="mb-2 block">
-                  <Label htmlFor="correo" value="Correo:" />
-                </div>
-                <TextInput
-                  id="correo"
-                  name="correo"
-                  type="text"
-                  placeholder="correo"
-                  required
-                  shadow
-                />
+              <TextInput
+                id="telefono"
+                name="telefono"
+                type="text"
+                placeholder="Teléfono"
+                required
+                shadow
+              />
+            </div>
+            {/*----- correo ------- */}
+            <div>
+              <div className="mb-2 block">
+                <Label htmlFor="correo" value="Correo:" />
               </div>
-              {/*----- Año ------- */}
-              <div>
-                <div className="mb-2 block">
-                  <Label htmlFor="id_anno" value="Selecciona el Año" />
-                </div>
-                <Select
-                  id="id_anno"
-                  name="id_anno"
-                >
-                  <option value="Selecciona:" disabled>
-                    Selecciona:
-                  </option>
-                  <option>1</option>
-                  <option>2</option>
-                  <option>3</option>
-                  <option>4</option>
-                  <option>5</option>
-                  <option>6</option>
-                </Select>
+              <TextInput
+                id="correo"
+                name="correo"
+                type="text"
+                placeholder="correo"
+                required
+                shadow
+              />
+            </div>
+            {/*----- Año ------- */}
+            <div>
+              <div className="mb-2 block">
+                <Label htmlFor="id_anno" value="Selecciona el Año" />
               </div>
-              {/*----- Seccion ------- */}
-              <div>
-                <div className="mb-2 block">
-                  <Label htmlFor="seccion" value="Selecciona la Seccion" />
-                </div>
-                <Select
+              <Select
+                id="id_anno"
+                name="id_anno"
+              >
+                <option value="Selecciona:" disabled>
+                  Selecciona:
+                </option>
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+                <option>4</option>
+                <option>5</option>
+                <option>6</option>
+              </Select>
+            </div>
+            {/*----- Seccion ------- */}
+            <div>
+              <div className="mb-2 block">
+                <Label htmlFor="id_seccion" value="Selecciona la Seccion" />
+              </div>
+              {/* select de mencion */}
+              <Select
                   id="id_seccion"
                   name="id_seccion"
+                  value={data.id_seccion}
+                  onChange={handleChange}
                 >
+                  {/* select por defecto, va didabled */}
                   <option value="Selecciona:" disabled>
-                    Selecciona:
+                    Selecciona
                   </option>
-                  <option>A</option>
-                  <option>B</option>
-                  <option>C</option>
-                  <option>D</option>
-                  <option>E</option>
-                  <option>F</option>
+                  {/* select que lleva los datos */}
+                  {datoSeccion.map((seccion) => (
+                    <option
+                      value={seccion.id_seccion}
+                      key={seccion.id_seccion}
+                    >
+                      {seccion.seccion}
+                    </option>
+                  ))}
                 </Select>
+            </div>
+            {/*----- Mencion ------- */}
+            <div>
+              <div className="mb-2 block">
+                <Label htmlFor="id_mension" value="Selecciona la Mencion" />
               </div>
-              {/*----- Mension ------- */}
-              <div>
-                <div className="mb-2 block">
-                  <Label htmlFor="id_mension" value="Selecciona la Mension" />
-                </div>
-                <Select
+              {/* select de mencion */}
+              <Select
                   id="id_mension"
                   name="id_mension"
+                  value={data.id_mension}
+                  onChange={handleChange}
                 >
+                  {/* select por defecto, va didabled */}
                   <option value="Selecciona:" disabled>
-                    Selecciona:
+                    Selecciona
                   </option>
-
-                  <option>Conciencia</option>
+                  {/* select que lleva los datos */}
+                  {datosMencion.map((mencion) => (
+                    <option
+                      value={mencion.id_mension}
+                      key={mencion.id_mension}
+                    >
+                      {mencion.mension}
+                    </option>
+                  ))}
                 </Select>
-              </div>
+            </div>
                                   
             <div className="w-full flex justify-between">
               <Button type="submit">Registrar</Button>
@@ -1109,10 +1177,10 @@ export function EliminaVisita({ id }) {
 
 // ---------------------------------------
 // modal materias
-export function ModalDep() {
+export function ModalMateria() {
   const [openModal, setOpenModal] = useState(false);
   const [data, setData] = useState({
-    materias: "",
+    materia: "", descripcion: ""
   });
 
   const handleChange = (e) => {
@@ -1123,7 +1191,8 @@ export function ModalDep() {
   // limpiar campos del formulario
   const limpiarCampos = () => {
     setData({
-      materias: "",
+      materia: "",
+      descripcion: ""
     });
   };
   const handleCloseModal = () => {
@@ -1134,11 +1203,11 @@ export function ModalDep() {
   const handleSend = async (e) => {
     e.preventDefault();
     // validar que los campos no esten vacios
-    if (data.departamento.trim() === "") {
-      alert("Campo vacio", "Debes agregar un departamento", "warning");
+    if (data.materia.trim() === "" || data.descripcion.trim() === "") {
+      alert("Campo vacio", "Debes llenar todos los campos", "warning");
     } else {
       try {
-        await axios.post(`${ServidorURL}/task`, data, {
+        await axios.post(`${ServidorURL}/materias`, data, {
           headers: {
             "Content-Type": "application/json",
           },
@@ -1146,8 +1215,19 @@ export function ModalDep() {
         handleCloseModal();
         alert("Materia", "Registro exitoso!", "success");
       } catch (error) {
-        alert("Oops...", "Ha ocurrido un error al registrar!", "error");
-        return console.log(error);
+        switch (error.response && error.response.status) {
+          case 409:
+            alert(
+              "Materia existente",
+              "Ya se ha registrado una materia con el mismo nombre",
+              "error"
+            );
+            break;
+          
+          default:
+            alert("Oops...", `Ha ocurrido un error! ${error}`, "error");
+            console.error(error);
+        }
       }
     }
   };
@@ -1176,6 +1256,22 @@ export function ModalDep() {
                   name="materia"
                   shadow
                   className="uppercase"
+                  onChange={handleChange}
+                  value={data.materia}
+                />
+                <div className="mb-2 block">
+                  <Label htmlFor="descripcion" value="Descripción:" />
+                </div>
+                <TextInput
+                  id="id_materia"
+                  type="text"
+                  placeholder="Descripcion de la materia (max 150 caracteres)"
+                  name="descripcion"
+                  shadow
+                  className="uppercase"
+                  onChange={handleChange}
+                  value={data.descripcion}
+                  maxLength={150}
                 />
               </div>
               <Button type="submit">Registrar</Button>
@@ -1195,9 +1291,9 @@ export function ModalDep() {
 export function EliminarDep({ id }) {
   const [openModal, setOpenModal] = useState(false);
 
-  const deleteDepa = async () => {
+  const deleteMate = async () => {
     try {
-      const res = await axios.delete(`${ServidorURL}/task/${id}`);
+      const res = await axios.delete(`${ServidorURL}/materias/${id}`);
       alert("Materia", "Eliminado exitosamente!", "success");
       setOpenModal(false);
     } catch (error) {
@@ -1225,7 +1321,7 @@ export function EliminarDep({ id }) {
               Estas seguro de querer eliminar este Registro?
             </h3>
             <div className="flex justify-center gap-4">
-              <Button color="failure" onClick={deleteDepa}>
+              <Button color="failure" onClick={deleteMate}>
                 {"Eliminar"}
               </Button>
               <Button color="gray" onClick={() => setOpenModal(false)}>
@@ -1238,23 +1334,44 @@ export function EliminarDep({ id }) {
     </>
   );
 }
-export function EditarDep({ id }) {
+// modal editar materia
+export function EditarMateria({ id }) {
   const [openModal, setOpenModal] = useState(false);
-  const [departamento, setDepartamento] = useState("");
+  const [datos, setDatos] = useState({
+    materia: "",
+    descripcion: ""
+  });
+  const handleChange = (e) => {
+    let names = e.target.name;
+    let value = e.target.value.toUpperCase();
+    console.log(`valores = ${names} == ${value}`)
+    setDatos({ ...datos, [names]: value });
+  
+  };
 
   // actualizar
   const actualizar = async (e) => {
-    e.preventDefault();
-    await axios.put(`${ServidorURL}/task/${id}`, { departamento });
-    setOpenModal(false);
-    alert("Departamento", "Actualización exitososa!", "success");
+    try {
+      e.preventDefault();
+      await axios.put(`${ServidorURL}/materias/${id}`, { 
+        materia: datos.materia,
+        descripcion: datos.descripcion
+       });
+      setOpenModal(false);
+      alert("Materia", "Actualización exitososa!", "success");
+    } catch (error) {
+      console.log(`Error = ${error}`);
+      alert("Materia", "Error al actualizar", "error");
+    }
+    
   };
 
   const handleOpenModal = async () => {
-    const res = await axios.get(`${ServidorURL}/task/${id}`);
-    setDepartamento(res.data[0].departamento);
+    const res = await axios.get(`${ServidorURL}/materias/${id}`);
+    setDatos(res.data[0]);
     setOpenModal(true);
   };
+
 
   return (
     <Container>
@@ -1263,7 +1380,7 @@ export function EditarDep({ id }) {
           <FaEdit />
         </Button>
         <Modal show={openModal} onClose={() => setOpenModal(false)}>
-          <Modal.Header>Editar Departamento</Modal.Header>
+          <Modal.Header>Editar Materia</Modal.Header>
           <Modal.Body>
             <form
               className="flex flex-col gap-4 max-w-full"
@@ -1271,16 +1388,30 @@ export function EditarDep({ id }) {
             >
               <div>
                 <div className="mb-2 block">
-                  <Label htmlFor="departamento" value="Departamento:" />
+                  <Label htmlFor="materia" value="Materia:" />
                 </div>
                 <TextInput
-                  id="departamento"
+                  id="materia"
                   type="text"
-                  placeholder="Nombre del Departamento"
-                  onChange={(e) => setDepartamento(e.target.value)}
-                  name="departamento"
-                  value={departamento}
+                  placeholder="Materia"
+                  onChange={handleChange}
+                  name="materia"
+                  value={datos.materia}
                   shadow
+                />
+                <div className="mb-2 block">
+                  <Label htmlFor="descripcion" value="Descripción:" />
+                </div>
+                <TextInput
+                  id="id_materia"
+                  type="text"
+                  placeholder="Descripcion de la materia (max 150 caracteres)"
+                  name="descripcion"
+                  shadow
+                  className="uppercase"
+                  onChange={handleChange}
+                  value={datos.descripcion}
+                  maxLength={150}
                 />
               </div>
               <Button type="submit">Modificar</Button>
