@@ -1,4 +1,5 @@
-import { useContext, createContext, useState, useEffect } from "react";
+import { useContext, createContext, useState, useEffect } from "react"; 
+import React from "react";
 
 interface AuthProvProps {
   children: React.ReactNode;
