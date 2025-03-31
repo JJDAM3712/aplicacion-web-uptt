@@ -34,7 +34,7 @@ class EstudianteController extends AppControllerBase {
             res.status(500).json(error);
         }
     }
-    // registrar un restudiante
+    // registrar un estudiante
     public async postController(req: Request, res: Response): Promise<void> {
         try {
             const data = req.body;
