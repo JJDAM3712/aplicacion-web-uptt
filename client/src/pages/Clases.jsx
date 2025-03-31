@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { ModalUsr } from "../components/Modal";
+import { ModalClases } from "../components/Modal";
 import { TablaClases } from "../components/Tablas";
 
 export function Clases() {
@@ -7,7 +7,7 @@ export function Clases() {
     <Container>
       <h1>Clases</h1>
       <div className="flex flex-wrap gap-2 mb-1">
-        <ModalUsr />
+        <ModalClases />
       </div>
       <TablaClases />
     </Container>

@@ -151,7 +151,6 @@ export function ModalRegis() {
                   shadow
                 />
               </div>
-             
               {/*----- telefono ------- */}
               <div>
                 <div className="mb-2 block">
@@ -180,7 +179,6 @@ export function ModalRegis() {
                   shadow
                 />
               </div>
-              
               <Button type="submit">Registrar Profesor</Button>
             </form>
           </Modal.Body>
@@ -194,7 +192,7 @@ export function ModalRegis() {
     </Container>
   );
 }
-export function EditarPersona({ id }) {
+export function EditarProfesor({ id }) {
   const [openModal, setOpenModal] = useState(false);
   // mostrar apartamentos en select
   const [datosDep, setDatosDep] = useState([]);
@@ -233,12 +231,13 @@ export function EditarPersona({ id }) {
   //---------------------------------
   // regsitrar datos
   const [datos, setDatos] = useState({
-    nombre: "",
-    apellido: "",
     cedula: "",
+    p_nombre: "",
+    s_nombre: "",
+    p_apellido: "",
+    s_apellido: "",
     telefono: "",
-    id_cargo: "Selecciona:",
-    id_departamento: "Selecciona:",
+    email: "",
   });
 
   // capturar eventos de inputs
@@ -251,7 +250,7 @@ export function EditarPersona({ id }) {
     setDatos({ ...datos, [names]: values });
   };
   const handleOpenModal = async () => {
-    const res = await axios.get(`${ServidorURL}/personal/${id}`);
+    const res = await axios.get(`${ServidorURL}/profesor/${id}`);
     if (res.data[0]) {
       setDatos(res.data[0]);
     } else {
@@ -272,18 +271,19 @@ export function EditarPersona({ id }) {
     } else {
       try {
         const datosParaEnviar = {
-          nombre: datos.nombre,
-          apellido: datos.apellido,
           cedula: datos.cedula,
+          p_nombre: datos.p_nombre,
+          s_nombre: datos.s_nombre,
+          p_apellido: datos.p_apellido,
+          s_apellido: datos.s_apellido,
           telefono: datos.telefono,
-          id_cargo: datos.id_cargo,
-          id_departamento: datos.id_departamento,
+          email: datos.email,
         };
-        await axios.put(`${ServidorURL}/personal/${id}`, datosParaEnviar, {
+        await axios.put(`${ServidorURL}/profesor/${id}`, datosParaEnviar, {
           headers: { "Content-Type": "application/json" },
         });
         setOpenModal(false);
-        alert("Personal", "Actualizado exitosamente!", "success");
+        alert("Profesor", "Actualizado exitosamente!", "success");
       } catch (error) {
         if (error.response && error.response.status === 300) {
           alert(
@@ -315,40 +315,8 @@ export function EditarPersona({ id }) {
               className="flex flex-col gap-4 max-w-full"
               onSubmit={handleSend}
             >
-              {/*----- nombre ------- */}
-              <div>
-                <div className="mb-2 block">
-                  <Label htmlFor="nombres" value="Nombre:" />
-                </div>
-                <TextInput
-                  id="nombres"
-                  name="nombre"
-                  value={datos.nombre}
-                  type="text"
-                  placeholder="Nombre"
-                  onChange={handleChange}
-                  required
-                  shadow
-                />
-              </div>
-              {/*----- apellido ------- */}
-              <div>
-                <div className="mb-2 block">
-                  <Label htmlFor="apellido" value="Apellidos:" />
-                </div>
-                <TextInput
-                  id="apellido"
-                  name="apellido"
-                  value={datos.apellido}
-                  type="text"
-                  placeholder="Apellidos"
-                  onChange={handleChange}
-                  required
-                  shadow
-                />
-              </div>
-              {/*----- cedula ------- */}
-              <div>
+               {/*----- cedula ------- */}
+               <div>
                 <div className="mb-2 block">
                   <Label htmlFor="cedula" value="Cedula:" />
                 </div>
@@ -356,9 +324,63 @@ export function EditarPersona({ id }) {
                   id="cedula"
                   name="cedula"
                   type="text"
-                  value={datos.cedula}
                   placeholder="1234567890"
-                  onChange={handleChange}
+                  required
+                  shadow
+                />
+              </div>
+              {/*----- primer nombre ------- */}
+              <div>
+                <div className="mb-2 block">
+                  <Label htmlFor="primer nombre" value="Primer Nombre:" />
+                </div>
+                <TextInput
+                  id="p_nombre"
+                  name="p_nombre"
+                  type="text"
+                  placeholder="Primer Nombre"
+                  required
+                  shadow
+                />
+              </div>
+                   {/*----- segundo nombre ------- */}
+              <div>
+                <div className="mb-2 block">
+                  <Label htmlFor="segundo nombre" value="Segundo Nombre:" />
+                </div>
+                <TextInput
+                  id="s_nombre"
+                  name="s_nombre"
+                  type="text"
+                  placeholder="Segundo Nombre"
+                  required
+                  shadow
+                />
+              </div>
+              {/*----- primer apellido ------- */}
+              <div>
+                <div className="mb-2 block">
+                  <Label htmlFor="primer apellido" value="Primer Apellido:" />
+                </div>
+                <TextInput
+                  id="p_apellido"
+                  name="p_apellido"
+                  type="text"
+                  placeholder="Primer Apellido"
+                  required
+                  shadow
+                />
+              </div>
+               {/*----- segundo apellido ------- */}
+               <div>
+                <div className="mb-2 block">
+                  <Label htmlFor="segundo apelldio" value="Segundo Apellido:" />
+                </div>
+                <TextInput
+                  id="s_apellido"
+                  name="s_apellido"
+                  type="text"
+                  placeholder="Segundo Apellido"
                   required
                   shadow
                 />
@@ -371,62 +393,25 @@ export function EditarPersona({ id }) {
                 <TextInput
                   id="telefono"
                   name="telefono"
-                  value={datos.telefono}
                   type="text"
                   placeholder="Teléfono"
-                  onChange={handleChange}
                   required
                   shadow
                 />
               </div>
-              {/*----- cargo ------- */}
+              {/*----- correo ------- */}
               <div>
                 <div className="mb-2 block">
-                  <Label htmlFor="id_cargo" value="Selecciona un Cargo" />
+                  <Label htmlFor="correo" value="Correo:" />
                 </div>
-                <Select
-                  id="id_cargo"
-                  name="id_cargo"
-                  value={datos.id_cargo}
-                  onChange={handleChange}
-                >
-                  <option value="Selecciona:" disabled>
-                    Selecciona:
-                  </option>
-                  {datosCat.map((cargos) => (
-                    <option key={cargos.id_cargo} value={cargos.id_cargo}>
-                      {cargos.cargo}
-                    </option>
-                  ))}
-                  <option>Conciencia</option>
-                </Select>
-              </div>
-              {/*----- departamento ------- */}
-              <div>
-                <div className="mb-2 block">
-                  <Label
-                    htmlFor="departamento"
-                    value="Selecciona un Departamento"
-                  />
-                </div>
-                <Select
-                  id="id_departamento"
-                  name="id_departamento"
-                  value={datos.id_departamento}
-                  onChange={handleChange}
-                >
-                  <option value="Selecciona:" disabled>
-                    Selecciona
-                  </option>
-                  {datosDep.map((depart) => (
-                    <option
-                      value={depart.id_departamento}
-                      key={depart.id_departamento}
-                    >
-                      {depart.departamento}
-                    </option>
-                  ))}
-                </Select>
+                <TextInput
+                  id="correo"
+                  name="correo"
+                  type="text"
+                  placeholder="correo"
+                  required
+                  shadow
+                />
               </div>
               <Button type="submit">Modificar Usuario</Button>
             </form>
@@ -441,7 +426,7 @@ export function EditarPersona({ id }) {
     </Container>
   );
 }
-export function EliminarPersona({ id }) {
+export function EliminarProfesor({ id }) {
   const [openModal, setOpenModal] = useState(false);
   const deleteDepa = async () => {
     try {
@@ -489,11 +474,11 @@ export function EliminarPersona({ id }) {
 
 // -----------------------------------------
 // registrar estudiantes
-export function EliminaAsist({ id }) {
+export function EliminaEstudiante({ id }) {
   const [openModal, setOpenModal] = useState(false);
-  const deleteAsistence = async () => {
+  const deleteEstudiante = async () => {
     try {
-      const res = await axios.delete(`${ServidorURL}/asistencia/${id}`);
+      const res = await axios.delete(`${ServidorURL}/estudiante/${id}`);
       alert("Registro", "Eliminado exitosamente!", "success");
       setOpenModal(false);
     } catch (error) {
@@ -521,7 +506,7 @@ export function EliminaAsist({ id }) {
               Estas seguro de querer eliminar este Registro?
             </h3>
             <div className="flex justify-center gap-4">
-              <Button color="failure" onClick={deleteAsistence}>
+              <Button color="failure" onClick={deleteEstudiante}>
                 {"Aceptar"}
               </Button>
               <Button color="gray" onClick={() => setOpenModal(false)}>
@@ -581,8 +566,8 @@ export function RegisEstudiante() {
     s_apellido: "",
     telefono: "",
     email: "",
-    id_seccion: "Selecciona:",
     id_year: "Selecciona:",
+    id_seccion: "Selecciona:",
     id_mension: "Selecciona:"
   });
   const handleChange = (e) => {
@@ -603,8 +588,8 @@ export function RegisEstudiante() {
       s_apellido: "",
       telefono: "",
       email: "",
-      id_seccion: "",
       id_year: "",
+      id_seccion: "",
       id_mension: ""
     });
   };
@@ -615,20 +600,20 @@ export function RegisEstudiante() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const url_0 = `${ServidorURL}/asistencia/entrada`;
-      // Define la URL dependiendo del valor de asistencia
-      const response = await axios.post(`${ServidorURL}/asistencia/entrada`, data, {
+      const url_0 = `${ServidorURL}/estudiante/entrada`;
+      // Define la URL dependiendo del valor de estudiante
+      const response = await axios.post(`${ServidorURL}/estudiante/entrada`, data, {
         headers: {
           "Content-Type": "application/json",
         },
       });
       handleCloseModal();
-      alert("Asistencia", "Registro exitoso!", "success");
+      alert("Estudiante", "Registro exitoso!", "success");
     } catch (error) {
       switch (error.response && error.response.status) {
         case 402:
           alert(
-            "Entrada no registrada!",
+            "Estudiante no registrado!",
             `Debes registrar tu entrada primero`,
             "error"
           );
@@ -853,6 +838,320 @@ export function RegisEstudiante() {
         </Modal.Body>
       </Modal>
     </>
+  );
+}
+export function EditarEstudiante({ id }) {
+  const [openModal, setOpenModal] = useState(false);
+  // mostrar apartamentos en select
+  const [datosDep, setDatosDep] = useState([]);
+  //--------------------------------
+  // mostrar categorias en select
+  const [datosCat, setDatosCat] = useState([]);
+
+  useEffect(() => {
+    const ShowDepart = async () => {
+      await axios
+        .get(`${ServidorURL}/task`)
+        .then((res) => {
+          console.log(res);
+          setDatosDep(res.data);
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    };
+    const ShowCat = async () => {
+      await axios
+        .get(`${ServidorURL}/cargos`)
+        .then((res) => {
+          console.log(res);
+          setDatosCat(res.data);
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    };
+    ShowDepart();
+    ShowCat();
+  }, []);
+  //---------------------------------
+
+  //---------------------------------
+  // regsitrar datos
+  const [datos, setDatos] = useState({
+    cedula: "",
+    p_nombre: "",
+    s_nombre: "",
+    p_apellido: "",
+    s_apellido: "",
+    telefono: "",
+    email: "",
+    id_year: "Selecciona:",
+    id_seccion: "Selecciona:",
+    id_mension: "Selecciona:",
+  });
+
+  // capturar eventos de inputs
+  const handleChange = (e) => {
+    let names = e.target.name;
+    let values = e.target.value.toUpperCase();
+    if (names === "cedula" || names === "telefono") {
+      values = values.replace(/[^0-9]/g, ""); // Esto eliminará cualquier caracter que no sea un dígito
+    }
+    setDatos({ ...datos, [names]: values });
+  };
+  const handleOpenModal = async () => {
+    const res = await axios.get(`${ServidorURL}/estudiante/${id}`);
+    if (res.data[0]) {
+      setDatos(res.data[0]);
+    } else {
+      console.error("No se pudo obtener los datos del estudiante");
+    }
+    setOpenModal(true);
+  };
+  // enviar datos al servidor
+  const handleSend = async (e) => {
+    e.preventDefault();
+    // validar que los campos no esten vacios
+    if (
+      Object.values(datos).some(
+        (field) => typeof field === "string" && field.trim() === ""
+      )
+    ) {
+      alert("Campo vacio", "Debes ingresar todos los datos", "warning");
+    } else {
+      try {
+        const datosParaEnviar = {
+          cedula: datos.cedula,
+          p_nombre: datos.p_nombre,
+          s_nombre: datos.s_nombre,
+          p_apellido: datos.p_apellido,
+          s_apellido: datos.s_apellido,
+          telefono: datos.telefono,
+          email: datos.email,
+          id_year: datos.id_year,
+          id_seccion: datos.id_seccion,
+          id_mension: datos.id_mension,
+        };
+        await axios.put(`${ServidorURL}/estudiante/${id}`, datosParaEnviar, {
+          headers: { "Content-Type": "application/json" },
+        });
+        setOpenModal(false);
+        alert("Estudiante", "Actualizado exitosamente!", "success");
+      } catch (error) {
+        if (error.response && error.response.status === 300) {
+          alert(
+            "Cedula invalida...",
+            `Ya existe un usuario registrado con este número de cedula!`,
+            "error"
+          );
+        } else {
+          alert("Oops...", `Ha ocurrido un error! ${error}`, "error");
+        }
+        return console.log(error);
+      }
+    }
+  };
+  return (
+    <Container>
+      <>
+        <Button onClick={handleOpenModal} color="purple" size="sm">
+          <FaEdit />
+        </Button>
+        <Modal
+          show={openModal}
+          onClose={() => setOpenModal(false)}
+          position="top-center"
+        >
+          <Modal.Header>Editar Datos</Modal.Header>
+          <Modal.Body>
+            <form
+              className="flex flex-col gap-4 max-w-full"
+              onSubmit={handleSend}
+            >
+            { /*----- cedula ------- */}
+            <div>
+                <div className="mb-2 block">
+                  <Label htmlFor="cedula" value="Cedula:" />
+                </div>
+                <TextInput
+                  id="cedula"
+                  name="cedula"
+                  type="text"
+                  placeholder="1234567890"
+                  required
+                  shadow
+                />
+            </div>
+            {/*----- primer nombre ------- */}
+            <div>
+                <div className="mb-2 block">
+                  <Label htmlFor="primer nombre" value="Primer Nombre:" />
+                </div>
+                <TextInput
+                  id="p_nonmbre"
+                  name="p_nombre"
+                  type="text"
+                  placeholder="Primer Nombre"
+                  required
+                  shadow
+                />
+            </div>
+              {/*----- segundo nombre ------- */}
+            <div>
+                <div className="mb-2 block">
+                  <Label htmlFor="segundo nombre" value="Segundo Nombre:" />
+                </div>
+                <TextInput
+                  id="s_segundo"
+                  name="s_segundo"
+                  type="text"
+                  placeholder="Segundo Nombre"
+                  required
+                  shadow
+                />
+            </div>
+            {/*----- primer apellido ------- */}
+            <div>
+              <div className="mb-2 block">
+                <Label htmlFor="primer apellido" value="Primer Apellido:" />
+              </div>
+              <TextInput
+                id="p_apellido"
+                name="p_apellido"
+                type="text"
+                placeholder="Primer Apellido"
+                required
+                shadow
+              />
+            </div>
+            {/*----- segundo apellido ------- */}
+            <div>
+              <div className="mb-2 block">
+                <Label htmlFor="segundo apellido" value="Segundo Apellido:" />
+              </div>
+              <TextInput
+                id="s_apellido"
+                name="s_apellido"
+                type="text"
+                placeholder="Segundo Apellido"
+                required
+                shadow
+              />
+            </div>
+            {/*----- telefono ------- */}
+            <div>
+              <div className="mb-2 block">
+                <Label htmlFor="telefono" value="Teléfono:" />
+              </div>
+              <TextInput
+                id="telefono"
+                name="telefono"
+                type="text"
+                placeholder="Teléfono"
+                required
+                shadow
+              />
+            </div>
+            {/*----- correo ------- */}
+            <div>
+              <div className="mb-2 block">
+                <Label htmlFor="correo" value="Correo:" />
+              </div>
+              <TextInput
+                id="correo"
+                name="correo"
+                type="text"
+                placeholder="correo"
+                required
+                shadow
+              />
+            </div>
+            {/*----- Año ------- */}
+            <div>
+              <div className="mb-2 block">
+                <Label htmlFor="id_anno" value="Selecciona el Año" />
+              </div>
+              <Select
+                id="id_anno"
+                name="id_anno"
+              >
+                <option value="Selecciona:" disabled>
+                  Selecciona:
+                </option>
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+                <option>4</option>
+                <option>5</option>
+                <option>6</option>
+              </Select>
+            </div>
+            {/*----- Seccion ------- */}
+            <div>
+              <div className="mb-2 block">
+                <Label htmlFor="id_seccion" value="Selecciona la Seccion" />
+              </div>
+              {/* select de mencion */}
+              <Select
+                  id="id_seccion"
+                  name="id_seccion"
+                  value={data.id_seccion}
+                  onChange={handleChange}
+                >
+                  {/* select por defecto, va didabled */}
+                  <option value="Selecciona:" disabled>
+                    Selecciona
+                  </option>
+                  {/* select que lleva los datos */}
+                  {datoSeccion.map((seccion) => (
+                    <option
+                      value={seccion.id_seccion}
+                      key={seccion.id_seccion}
+                    >
+                      {seccion.seccion}
+                    </option>
+                  ))}
+                </Select>
+            </div>
+            {/*----- Mencion ------- */}
+            <div>
+              <div className="mb-2 block">
+                <Label htmlFor="id_mension" value="Selecciona la Mencion" />
+              </div>
+              {/* select de mencion */}
+              <Select
+                  id="id_mension"
+                  name="id_mension"
+                  value={data.id_mension}
+                  onChange={handleChange}
+                >
+                  {/* select por defecto, va didabled */}
+                  <option value="Selecciona:" disabled>
+                    Selecciona
+                  </option>
+                  {/* select que lleva los datos */}
+                  {datosMencion.map((mencion) => (
+                    <option
+                      value={mencion.id_mension}
+                      key={mencion.id_mension}
+                    >
+                      {mencion.mension}
+                    </option>
+                  ))}
+                </Select>
+            </div>
+              <Button type="submit">Modificar Estudiante</Button>
+            </form>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button color="gray" onClick={() => setOpenModal(false)}>
+              Cerrar
+            </Button>
+          </Modal.Footer>
+        </Modal>
+      </>
+    </Container>
   );
 }
 
@@ -1288,7 +1587,7 @@ export function ModalMateria() {
   );
 }
 // modal eliminar materia
-export function EliminarDep({ id }) {
+export function EliminarMateria({ id }) {
   const [openModal, setOpenModal] = useState(false);
 
   const deleteMate = async () => {
@@ -1579,7 +1878,7 @@ export function EliminarCargo({ id }) {
 
 //----------------------------------------------
 // registrar notas
-export function RegisInv({ id }) {
+export function RegisNotas({ id }) {
   const [openModal, setOpenModal] = useState(false);
 
   // mostrar apartamentos en select
@@ -1714,7 +2013,7 @@ export function RegisInv({ id }) {
     </>
   );
 }
-export function EditInv({ id }) {
+export function EditNotas({ id }) {
   const [openModal, setOpenModal] = useState(false);
   // mostrar apartamentos en select
   const [datosDep, setDatosDep] = useState([]);
@@ -1996,7 +2295,7 @@ export function EditInv({ id }) {
     </>
   );
 }
-export function EliminarInv({ id }) {
+export function EliminarNotas({ id }) {
   const [openModal, setOpenModal] = useState(false);
   const deleteInven = async () => {
     try {
@@ -2044,7 +2343,7 @@ export function EliminarInv({ id }) {
 //---------------------------------------------
 
 // registrar clases
-export function ModalUsr() {
+export function ModalClases() {
   const [openModal, setOpenModal] = useState(false);
   const [data, setData] = useState({
     usuario: "",
@@ -2221,7 +2520,7 @@ export function ModalUsr() {
     </Container>
   );
 }
-export function EliminarUsr({ id }) {
+export function EliminarClases({ id }) {
   const [openModal, setOpenModal] = useState(false);
   const deleteInven = async () => {
     try {
@@ -2278,17 +2577,18 @@ export function EliminarUsr({ id }) {
     </>
   );
 }
-export function EditarUsr({ id }) {
+export function EditarClases({ id }) {
   const [openModal, setOpenModal] = useState(false);
   const [secondPass, setSecondPass] = useState("");
 
   //---------------------------------
   // actualizar datos
   const [datos, setDatos] = useState({
-    usuario: "",
-    pass: "",
-    quest: "",
-    resp: "",
+    profesor: "",
+    materia: "",
+    year: "",
+    seccion: "",
+    mencion: "",
   });
   const handleChange = (e) => {
     let names = e.target.name;
@@ -2316,11 +2616,11 @@ export function EditarUsr({ id }) {
   };
   // mostrar los datos en los inputs
   const handleOpenModal = async () => {
-    const res = await axios.get(`${ServidorURL}/signup/${id}`);
+    const res = await axios.get(`${ServidorURL}/clases/${id}`);
     if (res.data[0]) {
       setDatos(res.data[0]);
     } else {
-      console.error("No se pudo obtener los datos del producto");
+      console.error("No se pudo obtener los datos de la clase");
     }
     setOpenModal(true);
   };
@@ -2345,23 +2645,24 @@ export function EditarUsr({ id }) {
     } else {
       // si los campos no estan vacios realiza la funcion
       const datosParaEnviar = {
-        usuario: datos.usuario,
-        pass: datos.pass,
-        quest: datos.quest,
-        resp: datos.resp,
+        profesor: datos.profesor,
+        materia: datos.materia,
+        year: datos.year,
+        seccion: datos.seccion,
+        mencion: datos.mencion,
       };
       try {
-        await axios.put(`${ServidorURL}/signup/${id}`, datosParaEnviar, {
+        await axios.put(`${ServidorURL}/clase/${id}`, datosParaEnviar, {
           headers: { "Content-Type": "application/json" },
         });
         setOpenModal(false);
         limpiarCampos();
-        alert("Articulo", "Actualizado exitosamente!", "success");
+        alert("Clase", "Actualizado exitosamente!", "success");
       } catch (error) {
         if (error.response && error.response.status === 400) {
           alert(
-            "Usuario invalido...",
-            `Ya existe un usuario registrado con ese nombre!`,
+            "Clase invalido...",
+            `Ya existe un clase registrado con ese nombre!`,
             "error"
           );
         } else {
@@ -2382,99 +2683,103 @@ export function EditarUsr({ id }) {
           onClose={handleCloseModal}
           position="top-center"
         >
-          <Modal.Header>Editar datos de Usuario</Modal.Header>
+          <Modal.Header>Editar la Clase</Modal.Header>
           <Modal.Body>
             <form
               onSubmit={handleSend}
               className="flex flex-col gap-4 max-w-full"
             >
-              {/*-------- usuario ---------*/}
-              <div>
+            {/* ------ profesor --------- */}
+            <div>
                 <div className="mb-2 block">
-                  <Label htmlFor="usuario" value="Usuario:" />
-                </div>
-                <TextInput
-                  id="usuario"
-                  name="usuario"
-                  onChange={handleChange}
-                  value={datos.usuario}
-                  type="text"
-                  rightIcon={HiUser}
-                  placeholder="Nombre Usuario"
-                  required
-                  shadow
-                />
-              </div>
-              {/*------- contraseña -------*/}
-              <div>
-                <div className="mb-2 block">
-                  <Label htmlFor="password" value="Contraseña: " />
-                </div>
-                <TextInput
-                  id="pass"
-                  name="pass"
-                  onChange={handleChange}
-                  value={datos.pass}
-                  type="password"
-                  required
-                  shadow
-                  rightIcon={HiKey}
-                />
-              </div>
-              {/*--- confirmar contraseña ---*/}
-              <div>
-                <div className="mb-2 block">
-                  <Label htmlFor="password2" value="Repita su Contraseña: " />
-                </div>
-                <TextInput
-                  id="secondPass"
-                  name="secondPass"
-                  onChange={handleChange}
-                  value={secondPass}
-                  type="password"
-                  required
-                  shadow
-                  rightIcon={HiKey}
-                />
-              </div>
-              {/*------- pregunta --------- */}
-              <div>
-                <div className="mb-2 block">
-                  <Label htmlFor="quest" value="Pregunta de Seguridad:" />
+                  <Label htmlFor="id_profesor" value="Selecciona el Profesor" />
                 </div>
                 <Select
-                  id="quest"
-                  name="quest"
-                  value={datos.quest}
-                  onChange={handleChange}
+                  id="id_profesor"
+                  name="id_profesor"
                 >
                   <option value="Selecciona:" disabled>
-                    Seleccione:
+                    Selecciona:
                   </option>
-                  <option value="1">¿Color Favorito?</option>
-                  <option value="2">¿Nombre de mi Perro?</option>
-                  <option value="3">¿Nombre de mi Madre?</option>
-                  <option value="4">¿Lugar de Nacimiento?</option>
-                  <option value="5">¿Primer auto?</option>
+                  <option value={["1234567","Juan", "Perez"]}>{["1234567"," ","Juan"," ", "Perez"]}</option>
+                  <option value={["2134445","Jose", "Mendez"]}>{["2134445"," ","Jose"," ", "Mendez"]}</option>
+                  <option value={["5232134","Pedro", "Aguilar"]}>{["5232134"," ","Pedro"," ", "Aguilar"]}</option>
+                  <option value={["5213333","Carlos", "Martinez"]}>{["5213333"," ","Carlos"," ", "Martinez"]}</option>
                 </Select>
+            </div>
+            {/* ------ materia --------- */}
+            <div>
+              <div className="mb-2 block">
+                <Label htmlFor="materia" value="Materia:" />
               </div>
-              {/*------- respuesta ---------*/}
-              <div>
-                <div className="mb-2 block">
-                  <Label htmlFor="respuesta" value="Respuesta:" />
-                </div>
-                <TextInput
-                  id="resp"
-                  name="resp"
-                  onChange={handleChange}
-                  value={datos.resp}
-                  type="text"
-                  rightIcon={HiPencil}
-                  placeholder="Ingrese su Respuesta"
-                  required
-                  shadow
-                />
+              <Select
+                id="materia"
+                name="materia"
+              >
+                <option value="Selecciona:" disabled>
+                  Selecciona:
+                </option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+              </Select>
+            </div> 
+            {/* ------ año --------- */}
+            <div>
+              <div className="mb-2 block">
+                <Label htmlFor="año" value="Año:" />
               </div>
+              <Select
+                id="año"
+                name="año"
+              >
+                <option value="Selecciona:" disabled>
+                  Selecciona:
+                </option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+              </Select>
+            </div>            
+            {/* ------ seccion --------- */}
+            <div>
+              <div className="mb-2 block">
+                <Label htmlFor="seccion" value="Seccion:" />
+              </div>
+              <Select
+                id="seccion"
+                name="seccion"
+              >
+                <option value="Selecciona:" disabled>
+                  Selecciona:
+                </option>
+                <option value="A">A</option>
+                <option value="B">B</option>
+                <option value="C">C</option>
+                <option value="D">D</option>
+                <option value="E">E</option>
+                <option value="F">F</option>
+              </Select>
+            </div>                  
+            {/* ------ mencion --------- */}
+            <div>
+              <div className="mb-2 block">
+                <Label htmlFor="mencion" value="Mencion:" />
+              </div>
+              <Select
+                id="mencion"
+                name="mencion"
+              >
+                <option value="Selecciona:" disabled>
+                  Selecciona:
+                </option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+              </Select>
+            </div>  
               <Button type="submit">Actualizar</Button>
             </form>
           </Modal.Body>
@@ -2490,7 +2795,7 @@ export function EditarUsr({ id }) {
 }
 //----------------------------------------------
 // registrar mencion
-export function ModalCatg() {
+export function ModalMencion() {
   const [openModal, setOpenModal] = useState(false);
   const [data, setData] = useState({
     categoria: "",
@@ -2570,7 +2875,7 @@ export function ModalCatg() {
     </Container>
   );
 }
-export function EliminarCatg({ id }) {
+export function EliminarMencion({ id }) {
   const [openModal, setOpenModal] = useState(false);
 
   const deleteInven = async () => {
@@ -2615,13 +2920,13 @@ export function EliminarCatg({ id }) {
     </>
   );
 }
-export function EditarCatg({ id }) {
+export function EditarMencion({ id }) {
   const [openModal, setOpenModal] = useState(false);
-  const [categoria, setCategoria] = useState("");
+  const [categoria, setMencion] = useState("");
 
   // limpiar campos del formulario
   const limpiarCampos = () => {
-    setCategoria("");
+    setMencion("");
   };
   const handleCloseModal = () => {
     limpiarCampos();
@@ -2631,9 +2936,9 @@ export function EditarCatg({ id }) {
   const actualizar = async (e) => {
     try {
       e.preventDefault();
-      await axios.put(`${ServidorURL}/categoria/${id}`, { categoria });
+      await axios.put(`${ServidorURL}/mencion/${id}`, { categoria });
       setOpenModal(false);
-      alert("Categoria", "Actualizado exitosamente!", "success");
+      alert("Mencion", "Actualizado exitosamente!", "success");
     } catch (error) {
       console.error(error);
     }
@@ -2641,14 +2946,14 @@ export function EditarCatg({ id }) {
   // ver los datos en el input
   const handleOpenModal = async () => {
     try {
-      const res = await PeticionAxios(`categoria/${id}`, "get");
+      const res = await PeticionAxios(`mencion/${id}`, "get");
       if (res && res.length > 0) {
-        setCategoria(res[0].categoria);
+        setMencion(res[0].mencion);
         setOpenModal(true);
       } else {
         console.log("Respuesta inesperada:", res);
       }
-      setCategoria(res.data[0].categoria);
+      setMencion(res.data[0].categoria);
       setOpenModal(true);
     } catch (error) {
       console.error(error);
@@ -2665,24 +2970,22 @@ export function EditarCatg({ id }) {
           onClose={handleCloseModal}
           position="top-center"
         >
-          <Modal.Header>Actualizar Categoria</Modal.Header>
+          <Modal.Header>Actualizar Mencion</Modal.Header>
           <Modal.Body>
             <form
               className="flex flex-col gap-4 max-w-full"
               onSubmit={actualizar}
             >
-              <div>
+               <div>
                 <div className="mb-2 block">
-                  <Label htmlFor="categoria" value="Categoria:" />
+                  <Label htmlFor="mencion" value="Mencion:" />
                 </div>
                 <TextInput
-                  id="categoria"
-                  name="categoria"
-                  onChange={(e) => setCategoria(e.target.value.toUpperCase())}
-                  value={categoria}
+                  id="id_mencion"
+                  name="mencion"
                   type="text"
                   rightIcon={HiPencil}
-                  placeholder="Nombre categoria"
+                  placeholder="Nombre Mencion"
                   required
                   shadow
                 />

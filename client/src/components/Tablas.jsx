@@ -5,19 +5,19 @@ import React from "react";
 import CheckboxVeri from "./checkbox";
 import axios from "axios";
 import {
-  EditarPersona,
-  EliminarPersona,
-  EliminaAsist,
+  EditarProfesor,
+  EliminarProfesor,
+  EliminaEstudiante,
   EliminaVisita,
-  EliminarDep,
+  EliminarMateria,
   EliminarCargo,
-  EliminarInv,
-  EliminarUsr,
-  EditInv,
-  EditarUsr,
+  EliminarNotas,
+  EliminarClases,
+  EditarClases,
   EditarMateria,
-  EliminarCatg,
-  EditarCatg,
+  EliminarMencion,
+  EditarMencion,
+  EditarEstudiante,
 } from "./Modal"; //Importamos las Modales para su uso en los Botones de Opciones
 import socketIOClient from 'socket.io-client';
 import Pagination from "./Pagination";
@@ -64,8 +64,8 @@ export function TablaProfesores({ innerRef, datos }) {
                 <Table.Cell>a@a</Table.Cell>
                 <Table.Cell>
                   <Button.Group>
-                    <EditarPersona />
-                    <EliminarPersona />
+                    <EditarProfesor />
+                    <EliminarProfesor />
                   </Button.Group>
                 </Table.Cell>
               </Table.Row>
@@ -124,8 +124,7 @@ export function TablaEstudiantes({innerRef, datos}) {
                 <Table.Cell>informatica</Table.Cell>
                 <Table.Cell>
                 <Button.Group>
-                    <EditarPersona />
-                    <EliminarPersona />
+                    <EliminaEstudiante />
                 </Button.Group>
                 </Table.Cell>
               </Table.Row>
@@ -209,7 +208,7 @@ export function TablaMaterias() {
                       className="left-4"
                       id={materia.id_materia}
                     />
-                    <EliminarDep
+                    <EliminarMateria
                       className="left-4"
                       id={materia.id_materia}
                     />
@@ -436,8 +435,8 @@ export function TablaClases() {
                 <Table.Cell>Telematica</Table.Cell>
                 <Table.Cell>
                   <Button.Group>
-                    <EditarUsr />
-                    <EliminarUsr />
+                    <EditarClases />
+                    <EliminarClases />
                   </Button.Group>
                 </Table.Cell>
               </Table.Row>
@@ -505,8 +504,8 @@ export function TablaMenciones() {
                 </Table.Cell>
                 <Table.Cell>
                   <Button.Group>
-                    <EditarCatg id={categorias.id_categoria} />
-                    <EliminarCatg
+                    <EditarMencion id={categorias.id_categoria} />
+                    <EliminarMencion
                       className="left-4"
                       id={categorias.id_categoria}
                     />
