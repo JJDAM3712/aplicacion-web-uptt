@@ -25,6 +25,11 @@ class ProfesorController extends AppControllerBase {
                 res.status(404).json({ message: "El profesor no existe" });
                 return;
             }
+            if (result[0].id_rol != 2) {
+                res.status(404).json({ message: "El usuario no es profesor" });
+                return;  
+            }
+            
             res.status(200).json(result);
         } catch (error) {
             res.status(500).json({ message: error });
@@ -63,23 +68,6 @@ class ProfesorController extends AppControllerBase {
             res.status(500).json({ message: "error al registrar el profesor", error});
         }
     }
-    // registrar clase del profesor
-    public async postClaseController(req: Request, res: Response): Promise<void> {
-        try {
-            // validar que la clase no exista
-            const exist = await ProfesorService.getServiceExist(req.body);
-            if (exist.length > 0) {
-                res.status(409).json({message: "Esta clase ya se encuentra registrada"});
-                return; 
-            }
-
-            const result = await ProfesorService.postClaseService(req.body);
-
-            res.status(200).json({message: "Clase registrada", result});
-        } catch (error) {
-            res.status(500).json({ message: "error al registrar el profesor", error}); 
-        }
-    }
     // actualizar profesor
     public async putController(req: Request, res: Response): Promise<void> {
         try {
@@ -105,18 +93,53 @@ class ProfesorController extends AppControllerBase {
     // borrar profesor
     public async deleteController(req: Request, res: Response): Promise<void> {
         try {
+            const {id} = req.params;
             // validar que el profesor exista
-            const exist = await ProfesorService.getServiceById(req.params.id);
+            const exist = await ProfesorService.getServiceById(id);
             
             if (exist.length === 0) {
-                res.status(404).json({ message: "El profesor no existe "});
+                res.status(404).json({ message: "El profesor no existe"});
                 return
             }
+            // cambiar prof a null en tabla clases
+            await ProfesorService.profNullClaseService(id);
+
+
             // borrar
-            const result = await ProfesorService.deleteService(req.params.id);
+            const result = await userService.deleteService(id);
+
             res.status(200).json({ message: "Profesor borrado", result});
         } catch (error) {
             res.status(500).json({ message: "Error al borrar el profesor", error });
+        }
+    }
+
+    // --- controladores de clases --- //
+
+    // registrar clase del profesor
+    public async postClaseController(req: Request, res: Response): Promise<void> {
+        try {
+            // validar que la clase no exista
+            const exist = await ProfesorService.getServiceExist(req.body);
+            if (exist.length > 0) {
+                res.status(409).json({message: "Esta clase ya se encuentra registrada"});
+                return; 
+            }
+            console.log(`largo exist = ${exist.length }`)
+            // validar que la clase no la de otro prof
+            const otherProfClass = await ProfesorService.claseOtherProfService(req.body);
+            console.log(`largo class = ${otherProfClass.length }`);
+            console.log(`largo class = ${JSON.stringify(otherProfClass)}`)
+            if (otherProfClass.length > 0) {
+                res.status(408).json({message: "Esta clase ya se encuentra asignada a otro profesor"});
+                return;
+            }
+
+            const result = await ProfesorService.postClaseService(req.body);
+
+            res.status(200).json({message: "Clase registrada", result});
+        } catch (error) {
+            res.status(500).json({ message: "error al registrar el profesor", error}); 
         }
     }
     // borrar clase

@@ -18,35 +18,13 @@ class ProfesorService extends ServiceBase {
         const [result] = await pool.query<RowDataPacket[]>(sql, [id]);
         return result;
     }
-    // mostrar una clase por id
-    public async getClaseByService(id: string): Promise<any> {
-        const sql = ProfesorSQL.getClaseByQuery();
-        const [result] = await pool.query<RowDataPacket[]>(sql, id);
-        return result;
-    }
-
     // registrar profesores
     public async postServiceTransaction(data: any, connection: PoolConnection): Promise<any> {
         const sql = ProfesorSQL.postProfQuery();
         const [result] = await connection.query<RowDataPacket[]>(sql, data);
         return result;
-    }
-    // registrar clase de profesores
-    public async postClaseService(data: any){
-        const sql = ProfesorSQL.postProfQuery();
-        const [result] = await pool.query<RowDataPacket[]>(sql, data);
-        return result;
-    }
-    // validar que el profesor exista
-    public async getServiceExist(data: any): Promise<any> {
-        const sql = ProfesorSQL.getClaseExistQuery();
-        
-        const value = [data.id_user, data.id_materias, data.id_seccion, data.id_anno, data.id_mension];
-
-
-        const [result] = await pool.query<RowDataPacket[]>(sql, value);
-        return result;
-    }
+    }  
+    
     // actualizar el profesor
     public async putService(data: any, id: string): Promise<any> {
          const sql = ProfesorSQL.putProfQuery();
@@ -63,6 +41,43 @@ class ProfesorService extends ServiceBase {
     public async deleteService(id: string): Promise<any> {
         const sql = ProfesorSQL.deleteProfQuery();
         const [result] = await pool.query<RowDataPacket[]>(sql, [id]);
+        return result;
+    }
+    
+
+    // --- servicios de clases --- //
+    // mostrar una clase por id
+    public async getClaseByService(id: string): Promise<any> {
+        const sql = ProfesorSQL.getClaseByQuery();
+        const [result] = await pool.query<RowDataPacket[]>(sql, id);
+        return result;
+    }
+    // registrar clase de profesores
+    public async postClaseService(data: any){
+        const sql = ProfesorSQL.postProfQuery();
+        const [result] = await pool.query<RowDataPacket[]>(sql, data);
+        return result;
+    }
+    // validar que el profesor exista
+    public async getServiceExist(data: any): Promise<any> {
+        const sql = ProfesorSQL.getClaseExistQuery();
+        
+        const value = [data.id_user, data.id_materias, data.id_seccion, data.id_anno, data.id_mension];
+
+        const [result] = await pool.query<RowDataPacket[]>(sql, value);
+        return result;
+    }
+    // cambiar profesor a null
+    public async profNullClaseService(id: string): Promise<any> {
+        const sql = ProfesorSQL.profClaseNull();
+        const result = await pool.query<RowDataPacket[]>(sql, id);
+        return result;
+    }
+    // validar que una clase la de otro profesor
+    public async claseOtherProfService(data:any): Promise<any> {
+        const sql = ProfesorSQL.claseOtherProf();
+        const value = [data.id_materias, data.id_seccion, data.id_anno, data.id_mension];
+        const result = await pool.query<RowDataPacket[]>(sql, value);
         return result;
     }
     // borrar clase

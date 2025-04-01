@@ -37,7 +37,7 @@ class MencionController extends AppControllerBase{
     public async postController(req:Request, res:Response): Promise<void> {
         try {
             // valida que la mencion no exista
-            const result1 = await MencionService.getServiceExist(req.body.mencion, req.params.id);
+            const result1 = await MencionService.getServiceExist(req.body.mension);
             if (result1.length > 0) {
                 res.status(409).json({ message: "La mencion ya existe"});
                 return;

@@ -37,9 +37,9 @@ class MencionService extends ServiceBase {
         return result;
     }
     // validar si la mencion existe
-    public async getServiceExist(mencion:string, id:string) {
+    public async getServiceExist(mension:string) {
         const sql = MencionSQL.getMencionByMencionQuery();
-        const [result] = await pool.query<RowDataPacket[]>(sql, [mencion, id]);
+        const [result] = await pool.query<RowDataPacket[]>(sql, [mension]);
         return result;
     }
     // valida si la mencion no esta repetida

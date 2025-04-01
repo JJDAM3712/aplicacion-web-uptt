@@ -1,0 +1,21 @@
+# puerto de la aplicacion
+PORT=4000
+
+# configuracion de cors
+CORS_ORIGIN=http://localhost:5173
+CORS_METHODS=GET,POST,PUT,DELETE
+
+# configuracion de base de datos
+HOST=localhost
+USER_DATABASE=root
+PASS_DATABASE=MySQLite_2712
+DATABASE=estanislaocarrillodb
+
+# configuracion de gmail
+HOST_MAIL=smtp.gmail.com
+
+USER_MAIL=jjason3712@gmail.com
+PASS_MAIL=gxxq kljs vjhu ssxo
+
+# contraseña de token
+TOKEN_SECRET=J@XP@dMWSkpm28A

@@ -8,6 +8,8 @@ class ProfesorSQL {
     public deleteProfesor: string;
     public deleteClase: string;
     public getClaseBy: string;
+    public claseProfNull: string;
+    public getClaseOther: string;
 
 
     constructor() {
@@ -19,13 +21,16 @@ class ProfesorSQL {
                             JOIN secciones s ON c.id_seccion = s.id_seccion
                             JOIN mensiones mn ON c.id_mension = mn.id_mension`;
         // mostrar un profesor y susclases por id
-        this.getProfesorById = `SELECT * FROM clases c
-                            JOIN usuarios u ON c.id_user = u.id_usuario
-                            JOIN materias m ON c.id_materias = m.id_materia
-                            JOIN year y ON c.id_anno = y.id_anno
-                            JOIN secciones s ON c.id_seccion = s.id_seccion
-                            JOIN mensiones mn ON c.id_mension = mn.id_mension
-                            WHERE u.id_usuario = ?`;
+        this.getProfesorById = `SELECT cedula, p_nombre, 
+                                s_nombre, p_apellido, s_apellido, telefono, 
+                                seccion, mension, anno, id_rol 
+                                FROM clases c
+                                JOIN usuarios u ON c.id_user = u.id_usuario
+                                JOIN materias m ON c.id_materias = m.id_materia
+                                JOIN year y ON c.id_anno = y.id_anno
+                                JOIN secciones s ON c.id_seccion = s.id_seccion
+                                JOIN mensiones mn ON c.id_mension = mn.id_mension
+                                WHERE u.id_usuario = ?`;
         // mostrar una clase
         this.getClaseBy = "SELECT * FROM clases WHERE id_clase = ?"
         // registrar una clase para el profesor
@@ -39,6 +44,13 @@ class ProfesorSQL {
                                    AND c.id_anno = ?
                                    AND c.id_mension = ?
                             LIMIT 1`;
+        // validar que la clase ya la de otro profesor
+        this.getClaseOther = `SELECT 1 FROM clases c
+                            WHERE   c.id_materias = ?
+                                    AND c.id_seccion = ?
+                                    AND c.id_anno = ?
+                                    AND c.id_mension = ?
+                            LIMIT 1`;
         // actualiazar un estudiante
         this.putProfesor = "UPDATE profesores SET ? WHERE id_prof = ?";
         // valida que la clase no este repetida
@@ -47,6 +59,8 @@ class ProfesorSQL {
         this.deleteProfesor = "DELETE FROM profesores WHERE id_prof = ?";
         // borrar clase
         this.deleteClase = "DELETE FROM clases WHERE id_clase = ?";
+        // cambiar profesor de clase a null
+        this.claseProfNull = "UPDATE clases SET id_user = NULL WHERE id_user = ?";
 
     }
     // mostrar todos los estudiantes
@@ -67,6 +81,10 @@ class ProfesorSQL {
     deleteProfQuery() {return this.deleteProfesor}
     // borrar una clase
     deleteClaseQuery() {return this.deleteClase}
+    // cambiar prof a null
+    profClaseNull() {return this.claseProfNull}
+    // validar que una clase la de otro prof
+    claseOtherProf() {return this.getClaseOther}
 }
 
 export default new ProfesorSQL();

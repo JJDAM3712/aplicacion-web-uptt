@@ -10,13 +10,13 @@ class MencionSQL {
 
     // constructor con las consultas
     constructor() {
-        this.getMencion = "SELECT * FROM mencion";
-        this.getMencionById = "SELECT * FROM mencion WHERE id_mencion = ?";
-        this.insertMencion = "INSERT INTO mencion SET ?";
-        this.updateMencion = "UPDATE mencion SET ? WHERE id_mencion = ?";
-        this.deleteMencion = "DELETE FROM mencion WHERE id_mencion = ?";
-        this.getMencionByMencionCreate = "SELECT * FROM mencion WHERE mencion = ?";
-        this.getMencionByMencionUpdate = "SELECT * FROM mencion WHERE mencion = ? AND id_mencion != ?";
+        this.getMencion = "SELECT * FROM mensiones";
+        this.getMencionById = "SELECT * FROM mensiones WHERE id_mension = ?";
+        this.insertMencion = "INSERT INTO mensiones SET ?";
+        this.updateMencion = "UPDATE mensiones SET ? WHERE id_mension = ?";
+        this.deleteMencion = "DELETE FROM mensiones WHERE id_mension = ?";
+        this.getMencionByMencionCreate = "SELECT * FROM mensiones WHERE mension = ?";
+        this.getMencionByMencionUpdate = "SELECT * FROM mensiones WHERE mension = ? AND id_mension != ?";
     }
     // mostrar todos los datos de las mencion
     getMencionQuery() {return this.getMencion;}
