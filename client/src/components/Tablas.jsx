@@ -17,7 +17,8 @@ import {
   EditarMateria,
   EliminarMencion,
   EditarMencion,
-  EditarEstudiante,
+  EditarEstudiante
+
 } from "./Modal"; //Importamos las Modales para su uso en los Botones de Opciones
 import socketIOClient from 'socket.io-client';
 import Pagination from "./Pagination";
@@ -124,7 +125,7 @@ export function TablaEstudiantes({innerRef, datos}) {
                 <Table.Cell>informatica</Table.Cell>
                 <Table.Cell>
                 <Button.Group>
-                    <EliminaEstudiante />
+                  <EliminaEstudiante />
                 </Button.Group>
                 </Table.Cell>
               </Table.Row>
@@ -460,7 +461,7 @@ export function TablaMenciones() {
   const itemsPerPage = 10; 
 
   useEffect(() => {
-    ShowCategoria();
+    ShowMencion();
     const socket = socketIOClient(ServidorURL);
 
     socket.on('ActualizatTable', (nuevasAsistencias) => {
@@ -472,8 +473,8 @@ export function TablaMenciones() {
     };
   }, []);
   
-  const ShowCategoria = async () => {
-    const res = await axios.get(`${ServidorURL}/categoria`);
+  const ShowMencion = async () => {
+    const res = await axios.get(`${ServidorURL}/mencion`);
     setData(res.data);
   };
   // Calcula los elementos que se mostrarán en la página actual
@@ -496,18 +497,18 @@ export function TablaMenciones() {
             <Table.HeadCell></Table.HeadCell>
           </Table.Head>
           <Table.Body className="divide-y">
-            {currentItems.map((categorias) => (
+            {currentItems.map((mencion) => (
               // eslint-disable-next-line react/jsx-key
               <Table.Row className="bg-white">
                 <Table.Cell className="whitespace-nowrap">
-                  {categorias.categoria}
+                  {mencion.mension}
                 </Table.Cell>
                 <Table.Cell>
                   <Button.Group>
-                    <EditarMencion id={categorias.id_categoria} />
+                    <EditarMencion id={mencion.id_mension} />
                     <EliminarMencion
                       className="left-4"
-                      id={categorias.id_categoria}
+                      id={mencion.id_mension}
                     />
                   </Button.Group>
                 </Table.Cell>

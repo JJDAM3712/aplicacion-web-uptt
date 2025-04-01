@@ -1590,7 +1590,7 @@ export function ModalMateria() {
 export function EliminarMateria({ id }) {
   const [openModal, setOpenModal] = useState(false);
 
-  const deleteMate = async () => {
+  const deleteMateria = async () => {
     try {
       const res = await axios.delete(`${ServidorURL}/materias/${id}`);
       alert("Materia", "Eliminado exitosamente!", "success");
@@ -1617,10 +1617,10 @@ export function EliminarMateria({ id }) {
           <div className="text-center">
             <HiOutlineExclamationCircle className="mx-auto mb-4 h-14 w-14 text-icon text-red-500" />
             <h3 className="mb-5 text-lg font-normal text-gray-500">
-              Estas seguro de querer eliminar este Registro?
+              Estas seguro de querer eliminar esta Materia?
             </h3>
             <div className="flex justify-center gap-4">
-              <Button color="failure" onClick={deleteMate}>
+              <Button color="failure" onClick={deleteMateria}>
                 {"Eliminar"}
               </Button>
               <Button color="gray" onClick={() => setOpenModal(false)}>
@@ -2445,7 +2445,7 @@ export function ModalClases() {
               >
                 <option value="Selecciona:" disabled>
                   Selecciona:
-                </option>
+                  </option>
                 <option value="1">1</option>
                 <option value="2">2</option>
               </Select>
@@ -2798,37 +2798,51 @@ export function EditarClases({ id }) {
 export function ModalMencion() {
   const [openModal, setOpenModal] = useState(false);
   const [data, setData] = useState({
-    categoria: "",
+    mension: ""
   });
-  // limpiar campos del formulario
-  const limpiarCampos = () => {
-    setData({ categoria: "" });
-  };
-  const handleCloseModal = () => {
-    limpiarCampos();
-    setOpenModal(false);
-  };
-
+  
   const handleChange = (e) => {
     let names = e.target.name;
     let value = e.target.value.toUpperCase();
     setData({ ...data, [names]: value });
   };
+  // limpiar campos del formulario
+  const limpiarCampos = () => {
+    setData({ mension: "" });
+  };
+  const handleCloseModal = () => {
+    limpiarCampos();
+    setOpenModal(false);
+  };
   // enviar datos al servidor
   const handleSend = async (e) => {
     e.preventDefault();
     // validar que los campos no esten vacios
-    if (data.categoria.trim() === "") {
+    if (data.mension.trim() === "") {
       alert("Campo vacio", "Debes llenar todos los campos", "warning");
     } else {
       try {
-        PeticionAxios("categoria", "post", data);
-        setData({ categoria: "" });
-        setOpenModal(false);
-        alert("Categoria", "Registro exitoso!", "success");
+        await axios.post(`${ServidorURL}/mencion`, data, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        handleCloseModal();
+        alert("Mencion", "Registro exitoso!", "success");
       } catch (error) {
-        alert("Oops...", "Ha ocurrido un error al registrar!", "error");
-        return console.log(error);
+        switch (error.response && error.response.status) {
+          case 409:
+            alert(
+              "Mencion existente",
+              "Ya se ha registrado una materia con el mismo nombre",
+              "error"
+            );
+            break;
+          
+          default:
+            alert("Oops...", `Ha ocurrido un error! ${error}`, "error");
+            console.error(error);
+        }
       }
     }
   };
@@ -2853,13 +2867,14 @@ export function ModalMencion() {
                   <Label htmlFor="mencion" value="Mencion:" />
                 </div>
                 <TextInput
-                  id="id_mencion"
-                  name="mencion"
+                  id="id_mension"
                   type="text"
-                  rightIcon={HiPencil}
                   placeholder="Nombre Mencion"
-                  required
+                  name="mension"
                   shadow
+                  className="uppercase"
+                  onChange={handleChange}
+                  value={data.mension}
                 />
               </div>
               <Button type="submit">Registrar</Button>
@@ -2878,13 +2893,13 @@ export function ModalMencion() {
 export function EliminarMencion({ id }) {
   const [openModal, setOpenModal] = useState(false);
 
-  const deleteInven = async () => {
+  const deleteMencion = async () => {
     try {
-      await axios.delete(`${ServidorURL}/categoria/${id}`);
+      await axios.delete(`${ServidorURL}/mencion/${id}`);
 
-      alert("Categoria", "Eliminado exitosamente!", "success");
+      alert("Mencion", "Eliminado exitosamente!", "success");
     } catch (error) {
-      return alert("Categoria", "Error en la eliminacion", "error");
+      return alert("Mencion", "Error en la eliminacion", "error");
     }
     setOpenModal(false);
   };
@@ -2904,10 +2919,10 @@ export function EliminarMencion({ id }) {
           <div className="text-center">
             <HiOutlineExclamationCircle className="mx-auto mb-4 h-14 w-14 text-icon text-red-500" />
             <h3 className="mb-5 text-lg font-normal text-gray-500">
-              Estas seguro de querer eliminar este Registro?
+              Estas seguro de querer eliminar esta Mencion?
             </h3>
             <div className="flex justify-center gap-4">
-              <Button color="failure" onClick={deleteInven}>
+              <Button color="failure" onClick={deleteMencion}>
                 {"Eliminar"}
               </Button>
               <Button color="gray" onClick={() => setOpenModal(false)}>
@@ -2922,11 +2937,20 @@ export function EliminarMencion({ id }) {
 }
 export function EditarMencion({ id }) {
   const [openModal, setOpenModal] = useState(false);
-  const [categoria, setMencion] = useState("");
-
+  const [datos, setDatos] = useState({
+      mension: ""
+  });
+ 
+  const handleChange = (e) => {
+    let names = e.target.name;
+    let value = e.target.value.toUpperCase();
+    console.log(`valores = ${names} == ${value}`)
+    setDatos({ ...datos, [names]: value });
+  
+  };
   // limpiar campos del formulario
   const limpiarCampos = () => {
-    setMencion("");
+    setDatos("");
   };
   const handleCloseModal = () => {
     limpiarCampos();
@@ -2936,28 +2960,21 @@ export function EditarMencion({ id }) {
   const actualizar = async (e) => {
     try {
       e.preventDefault();
-      await axios.put(`${ServidorURL}/mencion/${id}`, { categoria });
+      await axios.put(`${ServidorURL}/mencion/${id}`, { 
+        mension: datos.mension
+       });
       setOpenModal(false);
-      alert("Mencion", "Actualizado exitosamente!", "success");
+      alert("Mencion", "Actualización exitososa!", "success");
     } catch (error) {
-      console.error(error);
+      console.log(`Error = ${error}`);
+      alert("Materia", "Error al actualizar", "error");
     }
   };
   // ver los datos en el input
   const handleOpenModal = async () => {
-    try {
-      const res = await PeticionAxios(`mencion/${id}`, "get");
-      if (res && res.length > 0) {
-        setMencion(res[0].mencion);
-        setOpenModal(true);
-      } else {
-        console.log("Respuesta inesperada:", res);
-      }
-      setMencion(res.data[0].categoria);
-      setOpenModal(true);
-    } catch (error) {
-      console.error(error);
-    }
+    const res = await axios.get(`${ServidorURL}/mencion/${id}`);
+    setDatos(res.data[0]);
+    setOpenModal(true);
   };
   return (
     <Container>
@@ -2978,19 +2995,20 @@ export function EditarMencion({ id }) {
             >
                <div>
                 <div className="mb-2 block">
-                  <Label htmlFor="mencion" value="Mencion:" />
+                  <Label htmlFor="mension" value="Mencion:" />
                 </div>
                 <TextInput
-                  id="id_mencion"
-                  name="mencion"
+                  id="id_mension"
+                  name="mension"
                   type="text"
-                  rightIcon={HiPencil}
                   placeholder="Nombre Mencion"
-                  required
+                  onChange={handleChange}
                   shadow
+                  value={datos.mension}
+                  className="uppercase"
                 />
               </div>
-              <Button type="submit">Registrar</Button>
+              <Button type="submit">Actualizar</Button>
             </form>
           </Modal.Body>
           <Modal.Footer>
@@ -3014,4 +3032,4 @@ const Container = styled.div`
     img {
      max-width: 100%;
       height: auto;
-    }`;
+  }`;
