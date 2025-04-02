@@ -45,7 +45,12 @@ export function Notas() {
     <Container>
       <h1>Notas</h1>
       <div className="flex flex-wrap gap-2 mb-1" >
-        <ModalClases /> 
+        <ModalClases />
+        <select className="border rounded px-2 py-1">
+          <option value="opcion1">Lapso 1</option>
+          <option value="opcion2">Lapso 2</option>
+          <option value="opcion3">Lapso 3</option>
+        </select>
         <Button color="success" onClick={onDownload}>
           Generar Reporte
           <HiOutlineArrowRight className="ml-2 h-5 w-5" />

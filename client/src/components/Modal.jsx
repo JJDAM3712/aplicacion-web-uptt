@@ -3069,7 +3069,7 @@ export function EditarMencion({ id }) {
                   <Label htmlFor="mension" value="Mencion:" />
                 </div>
                 <TextInput
-                  id="id_mension"
+                  id="mension"
                   name="mension"
                   type="text"
                   placeholder="Nombre Mencion"
@@ -3084,6 +3084,256 @@ export function EditarMencion({ id }) {
           </Modal.Body>
           <Modal.Footer>
             <Button color="dark" onClick={handleCloseModal}>
+              Cerrar
+            </Button>
+          </Modal.Footer>
+        </Modal>
+      </>
+    </Container>
+  );
+}
+
+// modal evaluacion
+export function ModalEvaluacion() {
+  const [openModal, setOpenModal] = useState(false);
+  const [data, setData] = useState({
+    evaluacion: "", descripcion: ""
+  });
+
+  const handleChange = (e) => {
+    let names = e.target.name;
+    let value = e.target.value.toUpperCase();
+    setData({ ...data, [names]: value });
+  };
+  // limpiar campos del formulario
+  const limpiarCampos = () => {
+    setData({
+      evaluacion: "",
+      descripcion: ""
+    });
+  };
+  const handleCloseModal = () => {
+    limpiarCampos();
+    setOpenModal(false);
+  };
+  // enviar datos al servidor
+  const handleSend = async (e) => {
+    e.preventDefault();
+    // validar que los campos no esten vacios
+    if (data.evaluacion.trim() === "" || data.descripcion.trim() === "") {
+      alert("Campo vacio", "Debes llenar todos los campos", "warning");
+    } else {
+      try {
+        await axios.post(`${ServidorURL}/evaluacion`, data, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        handleCloseModal();
+        alert("Evaluacion", "Registro exitoso!", "success");
+      } catch (error) {
+        switch (error.response && error.response.status) {
+          case 409:
+            alert(
+              "Materia existente",
+              "Ya se ha registrado una materia con el mismo nombre",
+              "error"
+            );
+            break;
+          
+          default:
+            alert("Oops...", `Ha ocurrido un error! ${error}`, "error");
+            console.error(error);
+        }
+      }
+    }
+  };
+
+  return (
+    <Container>
+      <>
+        <Button onClick={() => setOpenModal(true)}>
+          Registrar Evaluacion
+        </Button>
+        <Modal show={openModal} onClose={handleCloseModal}>
+          <Modal.Header>Registrar Evaluacion</Modal.Header>
+          <Modal.Body>
+            <form
+              className="flex flex-col gap-4 max-w-full uppercase"
+              onSubmit={handleSend}
+            >
+              <div>
+                <div className="mb-2 block">
+                  <Label htmlFor="evaluacion" value="Evaluacion:" />
+                </div>
+                <TextInput
+                  id="id_evaluacion"
+                  type="text"
+                  placeholder="Nombre de la Evaluacion"
+                  name="evaluacion"
+                  shadow
+                  className="uppercase"
+                  onChange={handleChange}
+                  value={data.evaluacion}
+                />
+                <div className="mb-2 block">
+                  <Label htmlFor="descripcion" value="Descripción:" />
+                </div>
+                <TextInput
+                  id="id_evaluacion"
+                  type="text"
+                  placeholder="Descripcion de la Evaluacion"
+                  name="descripcion"
+                  shadow
+                  className="uppercase"
+                  onChange={handleChange}
+                  value={data.descripcion}
+                />
+              </div>
+              <Button type="submit">Registrar</Button>
+            </form>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button color="dark" onClick={handleCloseModal}>
+              Cerrar
+            </Button>
+          </Modal.Footer>
+        </Modal>
+      </>
+    </Container>
+  );
+}
+// modal eliminar evaluacion
+export function EliminarEvaluacion({ id }) {
+  const [openModal, setOpenModal] = useState(false);
+
+  const deleteEvaluacion = async () => {
+    try {
+      const res = await axios.delete(`${ServidorURL}/evaluacion/${id}`);
+      alert("Evaluacion", "Eliminado exitosamente!", "success");
+      setOpenModal(false);
+    } catch (error) {
+      console.error("error", error);
+      alert("Evaluacion", "Error en la eliminación!", "error");
+      setOpenModal(false);
+    }
+  };
+  return (
+    <>
+      <Button onClick={() => setOpenModal(true)} color="failure" size="sm">
+        <FaEraser />
+      </Button>
+      <Modal
+        show={openModal}
+        size="md"
+        onClose={() => setOpenModal(false)}
+        popup
+      >
+        <Modal.Header />
+        <Modal.Body>
+          <div className="text-center">
+            <HiOutlineExclamationCircle className="mx-auto mb-4 h-14 w-14 text-icon text-red-500" />
+            <h3 className="mb-5 text-lg font-normal text-gray-500">
+              Estas seguro de querer eliminar esta Evaluacion?
+            </h3>
+            <div className="flex justify-center gap-4">
+              <Button color="failure" onClick={deleteEvaluacion}>
+                {"Eliminar"}
+              </Button>
+              <Button color="gray" onClick={() => setOpenModal(false)}>
+                Cancelar
+              </Button>
+            </div>
+          </div>
+        </Modal.Body>
+      </Modal>
+    </>
+  );
+}
+// modal editar evaluacion
+export function EditarEvaluacion({ id }) {
+  const [openModal, setOpenModal] = useState(false);
+  const [datos, setDatos] = useState({
+    evaluacion: "",
+    descripcion: ""
+  });
+  const handleChange = (e) => {
+    let names = e.target.name;
+    let value = e.target.value.toUpperCase();
+    console.log(`valores = ${names} == ${value}`)
+    setDatos({ ...datos, [names]: value });
+  
+  };
+
+  // actualizar
+  const actualizar = async (e) => {
+    try {
+      e.preventDefault();
+      await axios.put(`${ServidorURL}/evaluacion/${id}`, { 
+        materia: datos.evaluacion,
+        descripcion: datos.descripcion
+       });
+      setOpenModal(false);
+      alert("Evaluacion", "Actualización exitososa!", "success");
+    } catch (error) {
+      console.log(`Error = ${error}`);
+      alert("Evaluacion", "Error al actualizar", "error");
+    }
+    
+  };
+
+  const handleOpenModal = async () => {
+    const res = await axios.get(`${ServidorURL}/evaluacion/${id}`);
+    setDatos(res.data[0]);
+    setOpenModal(true);
+  };
+
+
+  return (
+    <Container>
+      <>
+        <Button onClick={handleOpenModal} color="purple" size="sm">
+          <FaEdit />
+        </Button>
+        <Modal show={openModal} onClose={() => setOpenModal(false)}>
+          <Modal.Header>Editar Evaluacion</Modal.Header>
+          <Modal.Body>
+            <form
+              className="flex flex-col gap-4 max-w-full"
+              onSubmit={actualizar}
+            >
+              <div>
+                <div className="mb-2 block">
+                  <Label htmlFor="Evaluacion" value="Evaluacion:" />
+                </div>
+                <TextInput
+                  id="evaluacion"
+                  type="text"
+                  placeholder="Evaluacion"
+                  onChange={handleChange}
+                  name="evaluacion"
+                  value={datos.evaluacion}
+                  shadow
+                />
+                <div className="mb-2 block">
+                  <Label htmlFor="descripcion" value="Descripción:" />
+                </div>
+                <TextInput
+                  id="id_evaluacion"
+                  type="text"
+                  placeholder="Descripcion de la Evaluacion"
+                  name="descripcion"
+                  shadow
+                  className="uppercase"
+                  onChange={handleChange}
+                  value={datos.descripcion}
+                />
+              </div>
+              <Button type="submit">Modificar</Button>
+            </form>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button color="dark" onClick={() => setOpenModal(false)}>
               Cerrar
             </Button>
           </Modal.Footer>

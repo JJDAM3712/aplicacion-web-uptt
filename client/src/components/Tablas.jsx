@@ -17,7 +17,9 @@ import {
   EditarMateria,
   EliminarMencion,
   EditarMencion,
-  EditarEstudiante
+  EditarEstudiante,
+  EditarEvaluacion,
+  EliminarEvaluacion
 
 } from "./Modal"; //Importamos las Modales para su uso en los Botones de Opciones
 import socketIOClient from 'socket.io-client';
@@ -519,6 +521,94 @@ export function TablaMenciones() {
         <Pagination
           itemsPerPage={itemsPerPage}
           totalItems={data.length}
+          paginate={setCurrentPage}
+          currentPage={currentPage}
+        />
+      </div>
+    </Container>
+  );
+}
+//-------------------------------------------------
+// tabla de evaluacion
+export function TablaEvaluacion() {
+  const [datos, setDatos] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1); 
+  const itemsPerPage =10; 
+  
+  useEffect(() => {
+    ShowMaterias();
+    const socket = socketIOClient(`${ServidorURL}`);
+
+    socket.on('ActualizatTable', (nuevasAsistencias) => {
+      setDatos(nuevasAsistencias);
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
+
+  const ShowMaterias = async () => {
+    const res = await axios.get(`${ServidorURL}/evaluacion`);
+    setDatos(res.data);
+  };
+   // Calcula los elementos que se mostrarán en la página actual
+   const indexOfLastItem = currentPage * itemsPerPage;
+   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+   const currentItems = datos.slice(indexOfFirstItem, indexOfLastItem);
+ 
+  // Función para cambiar la página actual
+  const changePage = (event) => {
+    const pageNumber = Number(event.target.textContent);
+    setCurrentPage(pageNumber);
+  };
+  return (
+    <Container>
+      <div className="ContenedorTabla ">
+        <h1>Evaluacines:</h1>
+        <Table className="uppercase">
+          <Table.Head className="border-b-2 uppercase">
+            <Table.HeadCell>Evaluacion</Table.HeadCell>
+            <Table.HeadCell></Table.HeadCell>
+          </Table.Head>
+          <Table.Body className="divide-y">
+            {/* mostrar datos de bd en tabla */}
+            {currentItems.map((evaluacion) => (
+              <Table.Row
+                className="bg-white"
+                key={evaluacion.id_evaluacion}
+              >
+                <Table.Cell className="whitespace-nowrap">
+                  {evaluacion.evaluacion}
+                </Table.Cell>
+                <Table.Cell 
+                  className="whitespace-nowrap" 
+                  style={{
+                    width: "100%",
+                    maxWidth:"700px", 
+                    overflow: "hidden",
+                  }}>
+                  {evaluacion.descripcion}
+                </Table.Cell>
+                <Table.Cell>
+                  <Button.Group>
+                    <EditarEvaluacion
+                      className="left-4"
+                      id={evaluacion.id_evaluacion}
+                    />
+                    <EliminarEvaluacion
+                      className="left-4"
+                      id={evaluacion.id_evaluacion}
+                    />
+                  </Button.Group>
+                </Table.Cell>
+              </Table.Row>
+            ))}
+          </Table.Body>
+        </Table>
+        <Pagination
+          itemsPerPage={itemsPerPage}
+          totalItems={datos.length}
           paginate={setCurrentPage}
           currentPage={currentPage}
         />
