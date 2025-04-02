@@ -15,8 +15,8 @@ const router = Router();
 // rutas
 const rutas = [
     materiasRoutes, 
-    //notasRoutes, 
-    //estudiantesRoutes, 
+    notasRoutes, 
+    estudiantesRoutes, 
     profesorRoutes, 
     userRoutes, 
     sessionRoutes,

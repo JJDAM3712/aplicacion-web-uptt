@@ -23,12 +23,6 @@ class ProfesorService extends ServiceBase {
         const sql = ProfesorSQL.postProfQuery();
         const [result] = await connection.query<RowDataPacket[]>(sql, data);
         return result;
-    }  
-    // actualizar el profesor
-    public async putService(data: any, id: string): Promise<any> {
-         const sql = ProfesorSQL.putProfQuery();
-         const [result] = await pool.query<RowDataPacket[]>(sql, [data, id]);
-         return result;
     }
     // validar que el profesor no este repetido
     public async getServiceRepeat(data: string, id: string): Promise<any> {
@@ -92,6 +86,31 @@ class ProfesorService extends ServiceBase {
                                                                 data.id_seccion, 
                                                                 data.id_anno,
                                                                 data.id_mension
+                                                            ]);
+        return result;
+    }
+    // actualizar una clase
+    public async putService(data: any, id: string): Promise<any> {
+        const sql = ProfesorSQL.putClaseQuery();
+        const [result] = await pool.query<RowDataPacket[]>(sql, [
+                                                                data.id_user, 
+                                                                data.id_materias,
+                                                                data.id_seccion,
+                                                                data.id_anno,
+                                                                data.id_mension, 
+                                                                id
+                                                            ]);
+        return result;
+    }
+    // validar que una clase este repetida
+    public async classExistService(data: any, id: string): Promise<any> {
+        const sql = ProfesorSQL.putClaseExistQuery();
+        const [result] = await pool.query<RowDataPacket[]>(sql, [
+                                                                data.id_materias,
+                                                                data.id_seccion,
+                                                                data.id_anno,
+                                                                data.id_mension,
+                                                                id
                                                             ]);
         return result;
     }

@@ -60,28 +60,6 @@ class ProfesorController extends AppControllerBase {
             res.status(500).json({ message: "error al registrar el profesor", error});
         }
     }
-    // actualizar profesor
-    public async putController(req: Request, res: Response): Promise<void> {
-        try {
-            // validar que el profesor exista
-            const exist = await ProfesorService.getServiceById(req.params.id);
-            if (exist.length === 0) {
-                res.status(404).json({ message: "El profesor no existe "});
-                return
-            }
-            // validar que el profesor no este repetido
-            const repeat = await ProfesorService.getServiceRepeat(req.body.cedula, req.params.id);
-            if (repeat.length > 0) {
-                res.status(409).json({ message: "Ya existe un profesor con esta cedula "});
-                return;
-            }
-            // actualizar
-            const result = await ProfesorService.putService(req.body, req.params.id);
-            res.status(200).json({ message: "profesor actualizado", result});
-        } catch (error) {
-            res.status(500).json({ message: "Error al actualizar el profesor", error});
-        }
-    }
     // borrar profesor
     public async deleteController(req: Request, res: Response): Promise<void> {
         try {
@@ -157,6 +135,40 @@ class ProfesorController extends AppControllerBase {
             res.status(200).json({message: "Clase registrada", result});
         } catch (error) {
             res.status(500).json({ message: "error al registrar el profesor", error}); 
+        }
+    }
+    // actualizar una clase
+    public async putController(req: Request, res: Response): Promise<void> {
+        try {
+            const data = req.body;
+            const id = req.params.id;
+
+            // validar que la clase exista
+            const exist = await ProfesorService.getClaseByService(id);
+            if (exist.length === 0) {
+                res.status(404).json({ message: "La clase no existe "});
+                return
+            }
+            // validar que la clase no este repetida
+            const repeat = await ProfesorService.classExistService(data, id);
+            if (repeat.length >= 1) {
+                res.status(409).json({
+                    message: "Ya otro profesor da esta clase"
+                });
+                return;
+            }
+
+            const result = await ProfesorService.putService(data, id);
+
+            res.status(200).json({
+                message: "Clase actualizada exitosamente",
+                result: result
+            })
+        } catch (error) {
+            res.status(500).json({
+                message: "error al actualizar la clase",
+                data: error
+            })
         }
     }
     // borrar clase

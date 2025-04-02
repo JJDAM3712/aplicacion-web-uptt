@@ -3,7 +3,7 @@ class ProfesorSQL {
     public getProfesorById: string;
     public postProfesor: string;
     public getClaseExist: string;
-    public putProfesor: string;
+    public putClase: string;
     public getProfesorRepeat: string;
     public deleteProfesor: string;
     public deleteClase: string;
@@ -12,6 +12,7 @@ class ProfesorSQL {
     public getClaseOther: string;
     public getProfesor: string;
     public getProfById: string;
+    public putClaseExist: string;
     
     // SELECT * FROM usuarios WHERE id_rol = 2 AND id_usuario =
 
@@ -54,8 +55,23 @@ class ProfesorSQL {
                                     AND c.id_anno = ?
                                     AND c.id_mension = ?
                             LIMIT 1`;
-        // actualiazar un profesor
-        this.putProfesor = "UPDATE profesores SET ? WHERE id_prof = ?";
+        // validar que la clase sea repetida al actualizar
+        this.putClaseExist = `SELECT 1 FROM clases
+                            WHERE  
+                                    id_materias = ?
+                                    AND id_seccion = ?
+                                    AND id_anno = ?
+                                    AND id_mension = ?
+                                    AND id_clase != ?
+                            LIMIT 1`
+        // actualiazar una clase
+        this.putClase = `UPDATE clases SET 
+                                        id_user = ?, 
+                                        id_materias = ?, 
+                                        id_seccion = ?, 
+                                        id_anno = ?, 
+                                        id_mension = ?
+                                    WHERE id_clase = ?`;
         // valida que la clase no este repetida
         this.getProfesorRepeat = "SELECT cedula FROM profesores WHERE cedula = ? AND id_prof != ?";
         // borrar una clase
@@ -80,8 +96,8 @@ class ProfesorSQL {
     postProfQuery() {return this.postProfesor}
     // validar que el profesor no exista
     getClaseExistQuery() {return this.getClaseExist}
-    // actualizar un profesor
-    putProfQuery() {return this.putProfesor}
+    // actualizar una clase
+    putClaseQuery() {return this.putClase}
     // validar que el profesor no este repetido
     getProfRepeatQuery() {return this.getProfesorRepeat}
     // borrar un profesor
@@ -96,6 +112,8 @@ class ProfesorSQL {
     showProfesor() {return this.getProfesor}
     // mostrar un profesor
     showProfesorById() {return this.getProfById}
+    // validar que la clase sea repetida al actualizar
+    putClaseExistQuery() {return this.putClaseExist}
 }
 
 export default new ProfesorSQL();
