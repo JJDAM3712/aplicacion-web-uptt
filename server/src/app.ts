@@ -5,7 +5,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import { Server } from "socket.io";
 import { createServer } from "http";
-//import cookieParser from 'cookie-parser';
+import cookieParser from 'cookie-parser';
 
 // importando rutas
 import router  from "./routes/routes";
@@ -23,11 +23,16 @@ const httpServer = createServer(app);
 // middlewares
 export const io = new Server(httpServer, {
     cors: {
-        origin: 'http://localhost:5173',
-        methods: ['GET', 'POST', 'PUT', 'DELETE'],
+        origin: process.env.CORS_ORIGIN,
+        methods: process.env.CORS_METHODS,
         credentials: true
     }
 });
+app.use(cors({
+    origin: process.env.CORS_ORIGIN,
+    methods: process.env.CORS_METHODS,
+    credentials: true
+}));
 
 io.on('connection', (socket) => {
     console.log(`Cliente conectado a ${socket.id}`);
@@ -41,20 +46,12 @@ io.on('connection', (socket) => {
     })
 });
 
-// middlewares
-app.use(cors({
-    origin: process.env.CORS_ORIGIN, //permitir solicitudes desde tel cliente
-    methods: process.env.CORS_METHODS, //permitir los metodos
-    credentials: true //enviar cookies o headers de autenticación
-}));
 app.use(morgan('dev'));
 
-//app.use(cookieParser());
+app.use(cookieParser());
 
 // procesar los datos del cliente
 app.use(express.json());
-
-
 
 // rutas
 app.use(router);
@@ -62,12 +59,9 @@ app.use(router);
 // validacion de token
 
 // configuraciones 
-
 app.set('port', process.env.PORT);
 
 
 app.listen(app.get('port'), () => {
     console.log(`Servidor en el puerto ${app.get('port')}`);
 });
-
-

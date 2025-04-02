@@ -9,17 +9,92 @@ import {
   HiUser,
   HiKey,
   HiPencil,
+  HiLockClosed
 } from "react-icons/hi";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { alert, PeticionAxios } from "../utils/generic";
 import { ServidorURL } from "../config/config";
+import "../css/principal.css";
 
-// ----------------------------------------
+// ---------------------------------------- 
 // login
 export function Login() {
+  const [openModal, setOpenModal] = useState(false);
+
+  // limpiar campos del formulario
+  const limpiarCampos = () => {
+    setData({
+      usuario: "",
+      password: ""
+    });
+  };
+  const handleCloseModal = () => {
+    setOpenModal(false);
+  };
   return (
-    <form action="" className="form_main" onSubmit={handleSend}>
+    <Container>
+      <>
+        <Button className="boton-login" onClick={() => setOpenModal(true)}>
+          Iniciar Sesión
+        </Button>
+        <Modal 
+          show={openModal} 
+          onClose={handleCloseModal}
+          position="top-center"
+        >
+          <Modal.Body>
+            <form
+              className="flex flex-col gap-4 max-w-full uppercase"
+            >
+              <div className="flex items-center justify-center mb-4">
+                <img src={logo} alt="Logo" className="w-24" />
+              </div>
+              <div className="flex items-center justify-center">
+                <p className="heading text-center">Ingresar al Sistema</p>
+              </div>
+              <div>
+                <div className="mb-2 block">
+                  <Label htmlFor="usuario" value="Usuario:" />
+                </div>
+                <TextInput
+                  id="id_usuario"
+                  type="text"
+                  placeholder="Ingrese el Usuario"
+                  name="usuario"
+                  shadow
+                  className="uppercase"
+                />
+                <div className="mb-2 block">
+                  <Label htmlFor="password" value="Contraseña:" />
+                </div>
+                <TextInput
+                  id="id_usuario"
+                  type="password"
+                  name="password"
+                  placeholder="Contraseña"
+                  inputMode="numeric"
+                  pattern="[0-9]*"
+                  shadow
+                />
+              </div>
+              <Button className="boton-login">Ingresar</Button>
+            </form>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button color="dark" onClick={handleCloseModal}>
+              Cerrar
+            </Button>
+          </Modal.Footer>
+        </Modal>
+      </>
+    </Container>
+  );
+}
+`
+export function Login() {
+  return (
+    <form action="" className="form_main">
             <div className="flex ">
               <img src={logo} alt="Logo CNE" className="w-24" />
             </div>
@@ -31,9 +106,7 @@ export function Login() {
                 className="inputField"
                 id="usuario"
                 name="usuario"
-                value={datos.usuario}
                 placeholder="Usuario"
-                onChange={handleChange}
               />
             </div>
     
@@ -44,8 +117,6 @@ export function Login() {
                 className="inputField"
                 id="password"
                 name="password"
-                value={datos.password}
-                onChange={handleChange}
                 placeholder="Contraseña"
               />
             </div>
@@ -57,7 +128,7 @@ export function Login() {
           </form>
   )
 }
-
+`
 // registrar profesor
 export function ModalRegis() {
   const [openModal, setOpenModal] = useState(false);
@@ -1155,7 +1226,7 @@ export function EditarEstudiante({ id }) {
   );
 }
 
-// ------------------------------------------
+// ------------------------------------------ 
 export function RegisVisita() {
   const [openModal, setOpenModal] = useState(false);
   const [data, setData] = useState({

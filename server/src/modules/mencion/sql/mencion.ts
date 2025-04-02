@@ -18,19 +18,19 @@ class MencionSQL {
         this.getMencionByMencionCreate = "SELECT * FROM mensiones WHERE mension = ?";
         this.getMencionByMencionUpdate = "SELECT * FROM mensiones WHERE mension = ? AND id_mension != ?";
     }
-    // mostrar todos los datos de las mensiones
+    // mostrar todos los datos de las mencion
     getMencionQuery() {return this.getMencion;}
-    // msotrar una mensiones por id
+    // msotrar una mencion por id
     getMencionByIdQuery() {return this.getMencionById;}
-    // registrar una mensiones
+    // registrar una mencion
     insertMencionQuery() {return this.insertMencion;}
-    // actualizar una mensiones
+    // actualizar una mencion
     updateMencionQuery() {return this.updateMencion;}
-    // eliminar una mensiones
+    // eliminar una mencion
     deleteMencionQuery() {return this.deleteMencion;}
-    // validar si la mensiones existe
+    // validar si la mencion existe
     getMencionByNombreQuery() {return this.getMencionByMencionUpdate;}
-    // valiodar si la mensiones existe
+    // valiodar si la mencion existe
     getMencionByMencionQuery() {return this.getMencionByMencionCreate;}
 }
 

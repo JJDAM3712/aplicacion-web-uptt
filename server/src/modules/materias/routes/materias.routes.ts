@@ -1,6 +1,5 @@
 import { Router, Request, Response } from "express";
 import MateriaController from "../controllers/materias.controller";
-import { tokenValidate } from "../../session/token/session.token";
 
 
 const router = Router();
