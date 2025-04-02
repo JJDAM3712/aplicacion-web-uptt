@@ -3097,7 +3097,7 @@ export function EditarMencion({ id }) {
 export function ModalEvaluacion() {
   const [openModal, setOpenModal] = useState(false);
   const [data, setData] = useState({
-    evaluacion: "", descripcion: ""
+    evaluacion: ""
   });
 
   const handleChange = (e) => {
@@ -3108,8 +3108,7 @@ export function ModalEvaluacion() {
   // limpiar campos del formulario
   const limpiarCampos = () => {
     setData({
-      evaluacion: "",
-      descripcion: ""
+      evaluacion: ""
     });
   };
   const handleCloseModal = () => {
@@ -3120,11 +3119,11 @@ export function ModalEvaluacion() {
   const handleSend = async (e) => {
     e.preventDefault();
     // validar que los campos no esten vacios
-    if (data.evaluacion.trim() === "" || data.descripcion.trim() === "") {
+    if (data.evaluacion.trim() === "") {
       alert("Campo vacio", "Debes llenar todos los campos", "warning");
     } else {
       try {
-        await axios.post(`${ServidorURL}/evaluacion`, data, {
+        await axios.post(`${ServidorURL}/evaluacion/`, data, {
           headers: {
             "Content-Type": "application/json",
           },
@@ -3135,7 +3134,7 @@ export function ModalEvaluacion() {
         switch (error.response && error.response.status) {
           case 409:
             alert(
-              "Materia existente",
+              "Evaluacion existente",
               "Ya se ha registrado una materia con el mismo nombre",
               "error"
             );
@@ -3175,19 +3174,6 @@ export function ModalEvaluacion() {
                   className="uppercase"
                   onChange={handleChange}
                   value={data.evaluacion}
-                />
-                <div className="mb-2 block">
-                  <Label htmlFor="descripcion" value="Descripción:" />
-                </div>
-                <TextInput
-                  id="id_evaluacion"
-                  type="text"
-                  placeholder="Descripcion de la Evaluacion"
-                  name="descripcion"
-                  shadow
-                  className="uppercase"
-                  onChange={handleChange}
-                  value={data.descripcion}
                 />
               </div>
               <Button type="submit">Registrar</Button>
@@ -3254,8 +3240,7 @@ export function EliminarEvaluacion({ id }) {
 export function EditarEvaluacion({ id }) {
   const [openModal, setOpenModal] = useState(false);
   const [datos, setDatos] = useState({
-    evaluacion: "",
-    descripcion: ""
+    evaluacion: ""
   });
   const handleChange = (e) => {
     let names = e.target.name;
@@ -3270,8 +3255,7 @@ export function EditarEvaluacion({ id }) {
     try {
       e.preventDefault();
       await axios.put(`${ServidorURL}/evaluacion/${id}`, { 
-        materia: datos.evaluacion,
-        descripcion: datos.descripcion
+        evaluacion: datos.evaluacion
        });
       setOpenModal(false);
       alert("Evaluacion", "Actualización exitososa!", "success");
@@ -3314,19 +3298,6 @@ export function EditarEvaluacion({ id }) {
                   name="evaluacion"
                   value={datos.evaluacion}
                   shadow
-                />
-                <div className="mb-2 block">
-                  <Label htmlFor="descripcion" value="Descripción:" />
-                </div>
-                <TextInput
-                  id="id_evaluacion"
-                  type="text"
-                  placeholder="Descripcion de la Evaluacion"
-                  name="descripcion"
-                  shadow
-                  className="uppercase"
-                  onChange={handleChange}
-                  value={datos.descripcion}
                 />
               </div>
               <Button type="submit">Modificar</Button>

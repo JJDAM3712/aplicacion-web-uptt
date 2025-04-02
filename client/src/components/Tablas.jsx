@@ -581,15 +581,6 @@ export function TablaEvaluacion() {
                 <Table.Cell className="whitespace-nowrap">
                   {evaluacion.evaluacion}
                 </Table.Cell>
-                <Table.Cell 
-                  className="whitespace-nowrap" 
-                  style={{
-                    width: "100%",
-                    maxWidth:"700px", 
-                    overflow: "hidden",
-                  }}>
-                  {evaluacion.descripcion}
-                </Table.Cell>
                 <Table.Cell>
                   <Button.Group>
                     <EditarEvaluacion
