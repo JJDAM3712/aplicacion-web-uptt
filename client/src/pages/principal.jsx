@@ -3,6 +3,7 @@ import logo from "../assets/img/fachada.jpg"
 import "../css/principal.css"
 import logot from "../assets/img/logo.jpg"
 import { DivisionPag } from "../components/mansion";
+import { Login } from "../components/Modal";
 
 export function HomePage() {
   return (
@@ -10,8 +11,7 @@ export function HomePage() {
       <header className="header_principal">
         <div className="header_title">
           <img src={logot} />
-          
-          <button className="login-button">Iniciar Sesión</button>
+          <Login />
         </div>
         <img
           className="background-image"

@@ -10,7 +10,7 @@ class EstudiantesSQL {
 
     constructor() {
         // mostrar todos los estudiantes   
-        this.getStudent = `SELECT cedula, p_nombre, s_nombre, p_apellido, s_apellido, telefono, email, anno, seccion, mension
+        this.getStudent = `SELECT *
                             FROM estudiantes al
                             JOIN usuarios u ON al.id_user = u.id_usuario
                             JOIN year y ON al.id_year = y.id_anno
@@ -18,11 +18,10 @@ class EstudiantesSQL {
                             JOIN mensiones m ON al.id_mension = m.id_mension
                             WHERE (? IS NULL OR y.anno = ?)
                                     AND (? IS NULL OR s.seccion = ?)
-                                    AND (? IS NULL OR m.mension = ?)`;
+                                    AND (? IS NULL OR m.mension = ?)
+                                    ORDER BY u.cedula ASC`;
         // mostrar un estudiante por id
-        this.getStudentById = `SELECT cedula, p_nombre, 
-                                s_nombre, p_apellido, s_apellido, 
-                                telefono, seccion, mension, anno, id_user 
+        this.getStudentById = `SELECT * 
                   				FROM usuarios
                                 LEFT JOIN estudiantes ON estudiantes.id_user = usuarios.id_usuario
                   				LEFT JOIN secciones ON secciones.id_seccion = estudiantes.id_seccion

@@ -23,18 +23,18 @@ class ProfesorSQL {
                             JOIN materias m ON c.id_materias = m.id_materia
                             JOIN year y ON c.id_anno = y.id_anno
                             JOIN secciones s ON c.id_seccion = s.id_seccion
-                            JOIN mensiones mn ON c.id_mension = mn.id_mension`;
+                            JOIN mensiones mn ON c.id_mension = mn.id_mension
+                            ORDER BY u.cedula ASC
+                            `;
         // mostrar un profesor y sus clases por id
-        this.getProfesorById = `SELECT cedula, p_nombre, 
-                                s_nombre, p_apellido, s_apellido, telefono, 
-                                seccion, mension, anno, materia, id_rol 
+        this.getProfesorById = `SELECT * 
                                 FROM clases c
                                 JOIN usuarios u ON c.id_user = u.id_usuario
                                 JOIN materias m ON c.id_materias = m.id_materia
                                 JOIN year y ON c.id_anno = y.id_anno
                                 JOIN secciones s ON c.id_seccion = s.id_seccion
                                 JOIN mensiones mn ON c.id_mension = mn.id_mension
-                                WHERE u.id_usuario = ?`;
+                                WHERE c.id_clase = ?`;
         // mostrar una clase para validar que exista
         this.getClaseBy = "SELECT * FROM clases WHERE id_clase = ?"
         // registrar una clase para el profesor

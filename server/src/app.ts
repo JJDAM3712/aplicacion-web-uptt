@@ -20,8 +20,10 @@ dotenv.config();
 const app: Application = express();
 const httpServer = createServer(app);
 
+
 // middlewares
 export const io = new Server(httpServer, {
+    path: '/api/socket.io',
     cors: {
         origin: process.env.CORS_ORIGIN,
         methods: process.env.CORS_METHODS,
@@ -32,7 +34,7 @@ export const io = new Server(httpServer, {
 io.on('connection', (socket) => {
     console.log(`Cliente conectado a ${socket.id}`);
 
-    socket.on('ActualizatTable', (data) => {
+    socket.on('ActualizarTable', (data) => {
         io.emit('TablaActualizada', data)
     });
 
@@ -40,6 +42,11 @@ io.on('connection', (socket) => {
         console.log(`Cliente desconectado a ${socket.id}`);
     })
 });
+app.use(cors({
+    origin: 'http://localhost:5173',
+    methods: process.env.CORS_METHODS,
+    credentials: true
+}))
 
 app.use(morgan('dev'));
 
@@ -47,6 +54,7 @@ app.use(cookieParser());
 
 // procesar los datos del cliente
 app.use(express.json());
+
 
 // rutas
 app.use(router);
@@ -57,6 +65,6 @@ app.use(router);
 app.set('port', process.env.PORT);
 
 
-app.listen(app.get('port'), () => {
+httpServer.listen(app.get('port'), () => {
     console.log(`Servidor en el puerto ${app.get('port')}`);
 });

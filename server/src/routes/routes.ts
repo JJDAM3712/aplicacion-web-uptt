@@ -10,6 +10,8 @@ import sessionRoutes from "../modules/session/routes/session.routes";
 import mencionRoutes from "../modules/mencion/routes/mencion.routes";
 import yearRoutes from "../modules/anno/routes/anno.routes";
 import lapsoRoutes from "../modules/lapso/routes/lapso.routes"
+import evaluacionRoutes from "../modules/evaluacion/routes/evaluacion.routes";
+import seccionRoutes from "../modules/seccion/routes/seccion.routes"
 
 const router = Router();
 
@@ -23,7 +25,9 @@ const rutas = [
     sessionRoutes,
     mencionRoutes,
     yearRoutes,
-    lapsoRoutes
+    lapsoRoutes,
+    evaluacionRoutes,
+    seccionRoutes
 ];
 
 router.use("/api", rutas);

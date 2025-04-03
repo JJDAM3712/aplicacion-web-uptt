@@ -69,6 +69,7 @@ function Login() {
     <Container>
       <HomePage />
       <DivisionPag texto="Menciones" />
+      
      <div className="tarjetasDeMension">
       <TarjetaMension 
           estilo="rgb(51, 169, 204)" 

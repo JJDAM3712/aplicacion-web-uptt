@@ -10,7 +10,7 @@ class SeccionSQL {
 
     // constructor con las consultas
     constructor() {
-        this.getSeccion = "SELECT seccion FROM secciones";
+        this.getSeccion = "SELECT * FROM secciones";
         this.getSeccionById = "SELECT * FROM secciones WHERE id_seccion = ?";
         this.insertSeccion = "INSERT INTO secciones SET ?";
         this.updateSeccion = "UPDATE secciones SET ? WHERE id_seccion = ?";

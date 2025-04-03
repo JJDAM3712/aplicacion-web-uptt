@@ -10,7 +10,7 @@ class MencionSQL {
 
     // constructor con las consultas
     constructor() {
-        this.getMencion = "SELECT * FROM mensiones";
+        this.getMencion = "SELECT * FROM mensiones ORDER BY mension ASC";
         this.getMencionById = "SELECT * FROM mensiones WHERE id_mension = ?";
         this.insertMencion = "INSERT INTO mensiones SET ?";
         this.updateMencion = "UPDATE mensiones SET ? WHERE id_mension = ?";

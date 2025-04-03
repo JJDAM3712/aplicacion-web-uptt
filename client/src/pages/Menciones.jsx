@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { ModalCatg } from "../components/Modal";
+import { ModalMencion } from "../components/Modal";
 import { TablaMenciones } from "../components/Tablas";
 
 export function Menciones() {
@@ -7,7 +7,7 @@ export function Menciones() {
     <Container>
       <h1>Menciones</h1>
       <div className="flex flex-wrap gap-2 mb-1">
-        <ModalCatg />
+        <ModalMencion />
       </div>
       <TablaMenciones />
     </Container>

@@ -2,6 +2,7 @@ import  ProfesorService from "../service/profesor.service";
 import { Request, Response } from "express";
 import { AppControllerBase } from "../../../controller/app.controller";
 import userService from "../../usuarios/services/user.service";
+import { io } from "../../../app";
 
 
 class ProfesorController extends AppControllerBase {
@@ -9,6 +10,9 @@ class ProfesorController extends AppControllerBase {
     public async getProfController(req: Request, res: Response): Promise<void> {
         try {
             const result = await ProfesorService.getProfService();
+            
+            io.emit("ActualizarTable", result)
+
             res.status(200).json(result);
         } catch (error) {
             res.status(500).json({message: "error al mostrar los profesores"});

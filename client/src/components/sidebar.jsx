@@ -117,6 +117,11 @@ const linksArray = [
     icon: <PiBankBold />,
     to: "/app/clases",
   },
+  {
+    label: "Evaluacion",
+    icon: <AiOutlineForm />,
+    to: "/app/evaluacion",
+  },
  
 ];
 

@@ -12,19 +12,20 @@ import { ServidorURL } from "../config/config";
 import { Buscador } from "../components/buscador";
 
 
-export function Profesores() {
-  const { setTheme, theme } = useContext(ThemeContext);
-  const CambiarTheme = () => {
-    setTheme((theme) => (theme === "light" ? "dark" : "light"));
-  };
+export const Profesores = () => {
   // optener datos del personal
   // Mover la lógica de obtener los datos a este componente
   const [datos, setDatos] = useState([]);
+  const [filteredData, setFilteredData] = useState(datos);
 
   useEffect(() => {
-    const socket = socketIOClient(ServidorURL);
+    ShowProfesores();
+    
+    const socket = socketIOClient(`http://localhost:4000`, {
+        path: '/api/socket.io'
+    });
 
-    socket.on('ActualizatTable', (nuevasAsistencias) => {
+    socket.on('ActualizarTable', (nuevasAsistencias) => {
       setDatos(nuevasAsistencias);
     });
 
@@ -33,24 +34,21 @@ export function Profesores() {
     };
   }, []);
 
-  useEffect(() => {
-    ShowDepart();
-  }, []);
-
-  const ShowDepart = async () => {
-    const res = await axios.get(`${ServidorURL}/personal`);
+  const ShowProfesores = async () => {
+    const res = await axios.get(`${ServidorURL}/profesor`);
     setDatos(res.data);
-  };
+    setFilteredData(res.data);
+  }
   const TablaPers = useRef(null);
 
   const { onDownload } = useDownloadExcel({
     currentTableRef: TablaPers.current,
-    filename: 'Personal',
+    filename: 'Profesores',
     sheet: 'Hoja 1'
   });
 
   return (
-    <Container themeUse={theme}>
+    <Container>
       <h1>Profesores</h1>
       <div className="flex flex-wrap gap-2 mb-1">
         <ModalRegis />
@@ -59,11 +57,11 @@ export function Profesores() {
             Generar Reporte
             <HiOutlineArrowRight className="ml-2 h-5 w-5" />
           </Button>
-          <Buscador />
+          <Buscador data={datos} onSearch={setFilteredData}/>
         {/* --- tabla personal */}
       </div>
       <Suspense fallback={<div>Cargando...</div>}>
-        <TablaProfesores innerRef={TablaPers} datos={datos}/>
+        <TablaProfesores innerRef={TablaPers} datos={filteredData}/>
       </Suspense>
       
     </Container>

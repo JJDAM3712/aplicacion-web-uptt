@@ -7,6 +7,7 @@ import { Materias } from "../pages/Materias";
 import { Notas } from "../pages/Notas";
 import { Clases } from "../pages/Clases";
 import { Menciones } from "../pages/Menciones";
+import { Evaluacion } from "../pages/Evaluacion";
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const routes = [
@@ -17,6 +18,7 @@ export const routes = [
   { name: "Materias", path: "/materias", component: Materias },
   { name: "Clases", path: "/clases", component: Clases },
   { name: "Menciones", path: "/menciones", component: Menciones },
+  { name: "Evaluacion", path: "/evaluacion", component: Evaluacion },
 ];
 
 export function MyRoutes() {
