@@ -164,6 +164,7 @@ export function TablaEstudiantes({innerRef, datos}) {
                 </Table.Cell>
                 <Table.Cell>
                 <Button.Group>
+                  <EditarEstudiante id={estudiantes.id_usuario}/>
                   <EliminaEstudiante id={estudiantes.id_usuario}/>
                 </Button.Group>
                 </Table.Cell>

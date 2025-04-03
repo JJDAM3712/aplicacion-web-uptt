@@ -473,7 +473,7 @@ export function EditarProfesor({ id }) {
                   shadow
                 />
               </div>
-                   {/*----- segundo nombre ------- */}
+              {/*----- segundo nombre ------- */}
               <div>
                 <div className="mb-2 block">
                   <Label htmlFor="segundo nombre" value="Segundo Nombre:" />
@@ -505,8 +505,8 @@ export function EditarProfesor({ id }) {
                   shadow
                 />
               </div>
-               {/*----- segundo apellido ------- */}
-               <div>
+              {/*----- segundo apellido ------- */}
+              <div>
                 <div className="mb-2 block">
                   <Label htmlFor="segundo apelldio" value="Segundo Apellido:" />
                 </div>
@@ -1003,39 +1003,54 @@ export function RegisEstudiante() {
 }
 export function EditarEstudiante({ id }) {
   const [openModal, setOpenModal] = useState(false);
-  // mostrar apartamentos en select
-  const [datosDep, setDatosDep] = useState([]);
-  //--------------------------------
-  // mostrar categorias en select
-  const [datosCat, setDatosCat] = useState([]);
+  // mostrar materias en select
+  const [datosMencion, setDatosMencion] = useState([]);
+  // mostrar años en select
+  const [datosAnio, setDatosAnio] = useState([]);
+  // mostrar seccion en select
+  const [datoSeccion, setDatoSeccion] = useState([]);
 
   useEffect(() => {
-    const ShowDepart = async () => {
+    // mostrar mencion
+    const ShowMencion = async () => {
       await axios
-        .get(`${ServidorURL}/task`)
+        .get(`${ServidorURL}/mencion`)
         .then((res) => {
           console.log(res);
-          setDatosDep(res.data);
+          setDatosMencion(res.data);
         })
         .catch((err) => {
           console.error(err);
         });
     };
-    const ShowCat = async () => {
+    // mostrar seccion
+    const ShowSeccion = async () => {
       await axios
-        .get(`${ServidorURL}/cargos`)
+        .get(`${ServidorURL}/seccion`)
         .then((res) => {
           console.log(res);
-          setDatosCat(res.data);
+          setDatoSeccion(res.data);
         })
         .catch((err) => {
           console.error(err);
         });
     };
-    ShowDepart();
-    ShowCat();
+    // mostrar año
+    const ShowYear = async () => {
+      await axios
+        .get(`${ServidorURL}/anno`)
+        .then((res) => {
+          console.log(res);
+          setDatosAnio(res.data);
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    };
+    ShowYear();
+    ShowMencion();
+    ShowSeccion();
   }, []);
-  //---------------------------------
 
   //---------------------------------
   // regsitrar datos
@@ -1047,9 +1062,9 @@ export function EditarEstudiante({ id }) {
     s_apellido: "",
     telefono: "",
     email: "",
-    id_year: "Selecciona:",
     id_seccion: "Selecciona:",
-    id_mension: "Selecciona:",
+    id_year: "Selecciona:",
+    id_mension: "Selecciona:"
   });
 
   // capturar eventos de inputs
@@ -1057,14 +1072,15 @@ export function EditarEstudiante({ id }) {
     let names = e.target.name;
     let values = e.target.value.toUpperCase();
     if (names === "cedula" || names === "telefono") {
-      values = values.replace(/[^0-9]/g, ""); // Esto eliminará cualquier caracter que no sea un dígito
+      // Esto eliminará cualquier caracter que no sea un dígito
+      values = values.replace(/[^0-9]/g, ""); 
     }
     setDatos({ ...datos, [names]: values });
   };
   const handleOpenModal = async () => {
-    const res = await axios.get(`${ServidorURL}/estudiante/${id}`);
-    if (res.data[0]) {
-      setDatos(res.data[0]);
+    const res = await axios.get(`${ServidorURL}/estudiantes/${id}`);
+    if (res.data.result[0]) {
+      setDatos(res.data.result[0]);
     } else {
       console.error("No se pudo obtener los datos del estudiante");
     }
@@ -1073,45 +1089,35 @@ export function EditarEstudiante({ id }) {
   // enviar datos al servidor
   const handleSend = async (e) => {
     e.preventDefault();
-    // validar que los campos no esten vacios
-    if (
-      Object.values(datos).some(
-        (field) => typeof field === "string" && field.trim() === ""
-      )
-    ) {
-      alert("Campo vacio", "Debes ingresar todos los datos", "warning");
-    } else {
-      try {
-        const datosParaEnviar = {
-          cedula: datos.cedula,
-          p_nombre: datos.p_nombre,
-          s_nombre: datos.s_nombre,
-          p_apellido: datos.p_apellido,
-          s_apellido: datos.s_apellido,
-          telefono: datos.telefono,
-          email: datos.email,
-          id_year: datos.id_year,
-          id_seccion: datos.id_seccion,
-          id_mension: datos.id_mension,
-        };
-        await axios.put(`${ServidorURL}/estudiante/${id}`, datosParaEnviar, {
-          headers: { "Content-Type": "application/json" },
-        });
-        setOpenModal(false);
-        alert("Estudiante", "Actualizado exitosamente!", "success");
-      } catch (error) {
-        if (error.response && error.response.status === 300) {
-          alert(
-            "Cedula invalida...",
-            `Ya existe un usuario registrado con este número de cedula!`,
-            "error"
-          );
-        } else {
-          alert("Oops...", `Ha ocurrido un error! ${error}`, "error");
-        }
-        return console.log(error);
+    
+    alert("Campo vacio", "Debes ingresar todos los datos", "warning");
+  
+    try {
+      
+      await axios.put(`${ServidorURL}/estudiantes/${id}`, datos, {
+        headers: { "Content-Type": "application/json" },
+      });
+      setOpenModal(false);
+      alert("Estudiante", "Actualizado exitosamente!", "success");
+    } catch (error) {
+      if (error.response && error.response.status === 409) {
+        alert(
+          "Cedula repetida!",
+          `Ya existe un usuario registrado con este número de cedula!`,
+          "error"
+        );
+      } else if (error.response && error.response.status === 408){
+        alert(
+          "Email repetida!",
+          `Ya existe un usuario registrado con ese correo electronico!`,
+          "error"
+        );
+      } else {
+        alert("Oops...", `Ha ocurrido un error! ${error}`, "error");
       }
+      return console.log(error);
     }
+    
   };
   return (
     <Container>
@@ -1130,19 +1136,21 @@ export function EditarEstudiante({ id }) {
               className="flex flex-col gap-4 max-w-full"
               onSubmit={handleSend}
             >
-            { /*----- cedula ------- */}
+            {/*----- cedula ------- */}
             <div>
-                <div className="mb-2 block">
-                  <Label htmlFor="cedula" value="Cedula:" />
-                </div>
-                <TextInput
-                  id="cedula"
-                  name="cedula"
-                  type="text"
-                  placeholder="1234567890"
-                  required
-                  shadow
-                />
+              <div className="mb-2 block">
+                <Label htmlFor="cedula" value="Cedula:" />
+              </div>
+              <TextInput
+                id="cedula"
+                name="cedula"
+                type="text"
+                value={datos.cedula}
+                onChange={handleChange}
+                placeholder="1234567890"
+                required
+                shadow
+              />
             </div>
             {/*----- primer nombre ------- */}
             <div>
@@ -1153,20 +1161,24 @@ export function EditarEstudiante({ id }) {
                   id="p_nonmbre"
                   name="p_nombre"
                   type="text"
+                  value={datos.p_nombre}
+                  onChange={handleChange}
                   placeholder="Primer Nombre"
                   required
                   shadow
                 />
             </div>
-              {/*----- segundo nombre ------- */}
+            {/*----- segundo nombre ------- */}
             <div>
                 <div className="mb-2 block">
                   <Label htmlFor="segundo nombre" value="Segundo Nombre:" />
                 </div>
                 <TextInput
-                  id="s_segundo"
-                  name="s_segundo"
+                  id="s_nombre"
+                  name="s_nombre"
                   type="text"
+                  value={datos.s_nombre}
+                  onChange={handleChange}
                   placeholder="Segundo Nombre"
                   required
                   shadow
@@ -1181,6 +1193,8 @@ export function EditarEstudiante({ id }) {
                 id="p_apellido"
                 name="p_apellido"
                 type="text"
+                value={datos.p_apellido}
+                onChange={handleChange}
                 placeholder="Primer Apellido"
                 required
                 shadow
@@ -1195,6 +1209,8 @@ export function EditarEstudiante({ id }) {
                 id="s_apellido"
                 name="s_apellido"
                 type="text"
+                value={datos.s_apellido}
+                onChange={handleChange}
                 placeholder="Segundo Apellido"
                 required
                 shadow
@@ -1209,6 +1225,8 @@ export function EditarEstudiante({ id }) {
                 id="telefono"
                 name="telefono"
                 type="text"
+                value={datos.telefono}
+                onChange={handleChange}
                 placeholder="Teléfono"
                 required
                 shadow
@@ -1220,44 +1238,26 @@ export function EditarEstudiante({ id }) {
                 <Label htmlFor="correo" value="Correo:" />
               </div>
               <TextInput
-                id="correo"
-                name="correo"
+                id="email"
+                name="email"
                 type="text"
+                value={datos.email}
+                onChange={handleChange}
                 placeholder="correo"
                 required
                 shadow
               />
             </div>
-            {/*----- Año ------- */}
-            <div>
-              <div className="mb-2 block">
-                <Label htmlFor="id_anno" value="Selecciona el Año" />
-              </div>
-              <Select
-                id="id_anno"
-                name="id_anno"
-              >
-                <option value="Selecciona:" disabled>
-                  Selecciona:
-                </option>
-                <option>1</option>
-                <option>2</option>
-                <option>3</option>
-                <option>4</option>
-                <option>5</option>
-                <option>6</option>
-              </Select>
-            </div>
             {/*----- Seccion ------- */}
             <div>
               <div className="mb-2 block">
-                <Label htmlFor="id_seccion" value="Selecciona la Seccion" />
+                <Label htmlFor="seccion" value="Selecciona la Seccion" />
               </div>
               {/* select de mencion */}
               <Select
                   id="id_seccion"
                   name="id_seccion"
-                  value={data.id_seccion}
+                  value={datos.id_seccion}
                   onChange={handleChange}
                 >
                   {/* select por defecto, va didabled */}
@@ -1265,15 +1265,40 @@ export function EditarEstudiante({ id }) {
                     Selecciona
                   </option>
                   {/* select que lleva los datos */}
-                  {datoSeccion.map((seccion) => (
+                  {datoSeccion.map((secciones) => (
                     <option
-                      value={seccion.id_seccion}
-                      key={seccion.id_seccion}
+                      value={secciones.id_seccion}
+                      key={secciones.id_seccion}
                     >
-                      {seccion.seccion}
+                      {secciones.seccion}
                     </option>
                   ))}
                 </Select>
+            </div>
+            {/*----- Año ------- */}
+            <div>
+              <div className="mb-2 block">
+                <Label htmlFor="id_anno" value="Selecciona el Año" />
+              </div>
+              <Select
+                id="id_year"
+                name="id_year"
+                value={datos.id_year}
+                onChange={handleChange}
+              >
+                <option value="Selecciona:" disabled>
+                  Selecciona
+                </option>
+                {/* select que lleva los datos */}
+                {datosAnio.map((anio) => (
+                  <option
+                    value={anio.id_anno}
+                    key={anio.id_anno}
+                  >
+                    {anio.anno}
+                  </option>
+                  ))}
+              </Select>
             </div>
             {/*----- Mencion ------- */}
             <div>
@@ -1284,7 +1309,7 @@ export function EditarEstudiante({ id }) {
               <Select
                   id="id_mension"
                   name="id_mension"
-                  value={data.id_mension}
+                  value={datos.id_mension}
                   onChange={handleChange}
                 >
                   {/* select por defecto, va didabled */}
