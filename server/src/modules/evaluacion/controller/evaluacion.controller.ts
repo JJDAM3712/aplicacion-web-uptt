@@ -10,7 +10,6 @@ class EvaluacionController extends AppControllerBase{
         try {
             const evaluaciones = await EvaluacionService.getService();
             io.emit('ActualizarTable', evaluaciones);
-            console.log("Evento emitido: ActualizarTable", evaluaciones);
             res.status(200).json(evaluaciones);
         } catch (error) {
             res.status(500).json({ message: error });

@@ -36,7 +36,6 @@ class ProfesorService extends ServiceBase {
         const [result] = await pool.query<RowDataPacket[]>(sql, [id]);
         return result;
     }
-    
 
     // --- servicios de clases --- //
     // mostrar todos los profesores con sus clases
@@ -118,6 +117,28 @@ class ProfesorService extends ServiceBase {
     public async deleteClaseService(id: string): Promise<any> {
         const sql = ProfesorSQL.deleteClaseQuery();
         const [result] = await pool.query(sql, id);
+        return result;
+    }
+    // consultas para filtrar clases
+    public async filterMateriaService(id:string):Promise<any> {
+        const sql = ProfesorSQL.FilterMaterias();
+        const [result] = await pool.query<RowDataPacket[]>(sql, id);
+        return result;
+
+    }
+    public async filterMencionService(id:string):Promise<any> {
+        const sql = ProfesorSQL.FilterMenciones();
+        const [result] = await pool.query<RowDataPacket[]>(sql, id);
+        return result;
+    }
+    public async filterAnioService(id:string):Promise<any> {
+        const sql = ProfesorSQL.FilterAnios();
+        const [result] = await pool.query<RowDataPacket[]>(sql, id);
+        return result;
+    }
+    public async filteSeccionService(id:string):Promise<any> {
+        const sql = ProfesorSQL.FilterSecciones();
+        const [result] = await pool.query<RowDataPacket[]>(sql, id);
         return result;
     }
 }

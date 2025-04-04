@@ -17,5 +17,6 @@ router.get("/clase/:id", ProfesorController.getControllerById);
 router.post("/clase", ProfesorController.postClaseController);
 router.put("/clase/:id", ProfesorController.putController);
 router.delete("/clase/:id", ProfesorController.deleteClaseController);
+router.get("/clase/:id/clases", ProfesorController.filterClassController);
 
 export default router;

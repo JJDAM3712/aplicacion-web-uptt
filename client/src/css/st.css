@@ -142,3 +142,18 @@
 .contacto .correo:hover > a > .icono_foo {
 	transform: scale(1.3);
 }
+
+/* Para navegadores basados en WebKit (Chrome, Safari, Edge basado en Chromium) */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+.input_notas{
+	width: 60px;
+	text-align: right;
+}
+/* Para Firefox */
+input[type="number"] {
+    -moz-appearance: textfield;
+}

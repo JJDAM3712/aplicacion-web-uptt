@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { Button, TextInput } from "flowbite-react";
-import { RegisNotas, ModalClases } from "../components/Modal";
+import { RegisNotas, ModalClases, FiltrarClases } from "../components/Modal";
 import { HiOutlineArrowRight } from "react-icons/hi";
 import { TablaNotas } from "../components/Tablas";
 import axios from "axios";
@@ -9,11 +9,30 @@ import { useDownloadExcel } from 'react-export-table-to-excel';
 import socketIOClient from 'socket.io-client';
 import { ServidorURL } from "../config/config";
 import { Buscador } from "../components/buscador";
+import "../css/st.css";
 
 export function Notas() {
   const [datos, setDatos] = useState([]);
-
+  const [datosLapso, setDatosLapso] = useState({
+    id_lapso: "Seleccionar:"
+  });
+  const [dataLap, setDataLap] = useState([]);
+  
   useEffect(() => {
+    const ShowLapso = async () => {
+      await axios
+        .get(`${ServidorURL}/lapso`)
+        .then((res) => {
+          console.log(res.data.result);
+          setDataLap(res.data.result);
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    };
+    
+    ShowLapso();
+    ShowDepart();
     const socket = socketIOClient(ServidorURL);
 
     socket.on('ActualizatTable', (nuevasAsistencias) => {
@@ -23,14 +42,11 @@ export function Notas() {
     return () => {
       socket.disconnect();
     };
-  }, []);
-
-  useEffect(() => {
-    ShowDepart();
+    
   }, []);
 
   const ShowDepart = async () => {
-    const res = await axios.get(`${ServidorURL}/inventary`);
+    const res = await axios.get(`${ServidorURL}/estudiantes`);
     setDatos(res.data);
   };
   const TablaInvent = useRef(null);
@@ -45,11 +61,24 @@ export function Notas() {
     <Container>
       <h1>Notas</h1>
       <div className="flex flex-wrap gap-2 mb-1" >
-        <ModalClases />
-        <select className="border rounded px-2 py-1">
-          <option value="opcion1">Lapso 1</option>
-          <option value="opcion2">Lapso 2</option>
-          <option value="opcion3">Lapso 3</option>
+        <FiltrarClases />
+        <select 
+          id="id_lapso"
+          name="id_lapso"
+          value={datosLapso.id_lapso}
+          onChange={(e) => setDatosLapso({ id_lapso: e.target.value })}
+          className="border rounded px-2 py-1"
+        >
+          <option value="Seleccionar:" disabled>Seleccionar:</option>
+          {dataLap.map((lapsos) => (
+            <option 
+              value={lapsos.id_lapso}
+              key={lapsos.id_lapso}
+            >
+              {lapsos.lapso}
+            </option>
+          ))}
+          
         </select>
         <Button color="success" onClick={onDownload}>
           Generar Reporte

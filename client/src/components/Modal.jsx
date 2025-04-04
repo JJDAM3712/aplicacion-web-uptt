@@ -3625,6 +3625,163 @@ export function EditarEvaluacion({ id }) {
   );
 }
 
+// filtrar clases
+export function FiltrarClases({manejarFiltro}) {
+  const [openModal, setOpenModal] = useState(false);
+  const [datosAnio, setDatosAnio] = useState([]);
+  const [datoSeccion, setDatoSeccion] = useState([]);
+  const [datosMencion, setDatosMencion] = useState([]);
+
+  const [data, setData] = useState({
+      id_anno: "Selecciona:",
+      id_seccion: "Selecciona:",
+      id_mension: "Selecciona:"
+  });
+
+  const limpiarFiltros = () => {
+    setData({
+      id_anno: "Selecciona:",
+      id_seccion: "Selecciona:",
+      id_mension: "Selecciona:"
+    });
+    onFilter([]); // Limpia los resultados en la tabla
+  };
+
+  useEffect(() => {
+    // Obtener listas para los selectores (años, secciones y menciones)
+    const fetchFiltros = async () => {
+      try {
+        const resAnio = await axios.get(`${ServidorURL}/anno`);
+        const resSeccion = await axios.get(`${ServidorURL}/seccion`);
+        const resMencion = await axios.get(`${ServidorURL}/mencion`);
+
+        console.log("año", resAnio.data)
+        setDatosAnio(resAnio.data);
+        setDatoSeccion(resSeccion.data);
+        setDatosMencion(resMencion.data);
+      } catch (error) {
+        console.error("Error al cargar los filtros:", error);
+      }
+    };
+
+    fetchFiltros();
+  }, []);
+
+  // Manejar cambios en los selectores
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setData((prevData) => ({
+      ...prevData,
+      [name]: value
+    }));
+  };
+  // Solicitar los estudiantes filtrados al backend
+  const aplicarFiltro = async () => {
+    if (data.id_anno !== "Selecciona:" && data.id_seccion !== "Selecciona:" && data.id_mension !== "Selecciona:") {
+      try {
+        const res = await axios.get(`${ServidorURL}/estudiantes`, {
+          params: {
+            anno: data.id_anno,
+            seccion: data.id_seccion,
+            mension: data.id_mension
+          }
+        });
+        onFilter(res.data); // Envía los estudiantes filtrados al componente padre
+      } catch (error) {
+        console.error("Error al aplicar el filtro:", error);
+      }
+    } else {
+      alert("Por favor selecciona todos los filtros.");
+    }
+  };
+
+  return (
+    <Container>
+      <>
+        <Button onClick={() => setOpenModal(true)} className="m-auto">
+          Filtrar Clase
+        </Button>
+        <Modal
+          show={openModal}
+          onClose={() => setOpenModal(false)}
+          position="top-center"
+        >
+          <Modal.Header>Filtrar Clase</Modal.Header>
+          <Modal.Body>
+          <form className="flex flex-col gap-4">
+            {/* Selector de Año */}
+            <div>
+              <Label htmlFor="id_anno" value="Año:" />
+              <Select
+                id="id_anno"
+                name="id_anno"
+                value={data.id_anno}
+                onChange={handleChange}
+              >
+                <option value="Selecciona:" disabled>Selecciona:</option>
+                {datosAnio.map((anio) => (
+                  <option value={anio.anno} key={anio.id_anno}>
+                    {anio.anno}
+                  </option>
+                ))}
+              </Select>
+            </div>
+            {/* Selector de Sección */}
+            <div>
+              <Label htmlFor="id_seccion" value="Sección:" />
+              <Select
+                id="id_seccion"
+                name="id_seccion"
+                value={data.id_seccion}
+                onChange={handleChange}
+              >
+                <option value="Selecciona:" disabled>Selecciona:</option>
+                {datoSeccion.map((seccion) => (
+                  <option value={seccion.seccion} key={seccion.id_seccion}>
+                    {seccion.seccion}
+                  </option>
+                ))}
+              </Select>
+            </div>
+            {/* Selector de Mención */}
+            <div>
+              <Label htmlFor="id_mension" value="Mención:" />
+              <Select
+                id="id_mension"
+                name="id_mension"
+                value={data.id_mension}
+                onChange={handleChange}
+              >
+                <option value="Selecciona:" disabled>Selecciona:</option>
+                {datosMencion.map((mencion) => (
+                  <option value={mencion.mension} key={mencion.id_mension}>
+                    {mencion.mension}
+                  </option>
+                ))}
+              </Select>
+            </div>
+            {/* Botones de Aplicar y Limpiar */}
+            <div className="flex gap-4">
+              <Button color="primary" onClick={aplicarFiltro}>
+                Aplicar Filtro
+              </Button>
+              <Button color="secondary" onClick={limpiarFiltros}>
+                Limpiar Filtros
+              </Button>
+            </div>
+            </form>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button color="dark" onClick={() => setOpenModal(false)}>
+              Cerrar
+            </Button>
+          </Modal.Footer>
+        </Modal>
+      </>
+    </Container>
+  );
+}
+
 const Container = styled.div`
 .Logocontent {
   display: flex;

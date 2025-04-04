@@ -98,7 +98,7 @@ export function TablaProfesores({ innerRef, datos }) {
 }
 //-------------------------------------------------
 // tabla estudiantes
-export function TablaEstudiantes({innerRef, datos}) {
+export function TablaEstudiantes({innerRef, datos, setDatos}) {
   const [currentPage, setCurrentPage] = useState(1); 
   const itemsPerPage = 10; 
   // Calcula los elementos que se mostrarán en la página actual
@@ -272,33 +272,45 @@ export function TablaMaterias() {
 }
 //-------------------------------------------------
 // tabla de notas
-export function TablaNotas({ innerRef, datos }) {
-  const [alumnos, setAlumnos] = useState([
-    { id: 1, nombre: "Juan", apellido: "Perez", nota1: "0", nota2: "0", nota3: "0", nota4: "0" },
-    { id: 2, nombre: "María", apellido: "Gonzales", nota1: "0", nota2: "0", nota3: "0", nota4: "0" },
-    { id: 3, nombre: "Carlos", apellido: "Yonson", nota1: "0", nota2: "0", nota3: "0", nota4: "0" },
-  ])
-  // editar datos en la tabla
-  const [editando, setEditando] = useState(null);
-
-  const manejarCambio = (id, valor) => {
-    const nuevosAlumnos = alumnos.map((alumno) =>
-      alumno.id === id ? { ...alumno, nota1: valor } : alumno,
-      alumno.id === id ? { ...alumno, nota2: valor } : alumno,
-      alumno.id === id ? { ...alumno, nota3: valor } : alumno,
-      alumno.id === id ? { ...alumno, nota4: valor } : alumno
+export function TablaNotas({ innerRef, datos, setDatos }) {
+  const [alumnos, setAlumnos] = useState(() => 
+    datos.map((estudiantes) => ({
+      id_estudiante: estudiantes.id_estudiante,
+      cedula: estudiantes.cedula,
+      p_nombre: estudiantes.p_nombre,
+      p_apellido: estudiantes.p_apellido,
+      notas: [0, 0, 0, 0]
+    }))
+  );
+  useEffect(() => {
+    setAlumnos(
+      datos.map((estudiantes) => ({
+        id_estudiante: estudiantes.id_estudiante,
+        cedula: estudiantes.cedula,
+        p_nombre: estudiantes.p_nombre,
+        p_apellido: estudiantes.p_apellido,
+        notas: [0, 0, 0, 0],
+      }))
     );
-    setAlumnos(nuevosAlumnos);
-  };
+  }, [datos]);
 
-  const manejarDobleClick = (id) => {
-    setEditando(id);
+  const handleNotaChange = (e, estudianteId, indexNota) => {
+    const { value } = e.target;
+    if (!isNaN(value) && value.length <= 2 && Number(value) <= 20){
+      setAlumnos((prevDatos) =>
+        prevDatos.map((estudiante) =>
+          estudiante.id_estudiante === estudianteId
+            ? {
+                ...estudiante,
+                notas: estudiante.notas.map((nota, index) =>
+                    index === indexNota ? Number(value) : nota
+                )
+              }
+            : estudiante
+        )
+      );
+    }
   };
-
-  const manejarGuardar = () => {
-    setEditando(null);
-  };
-
 
   // paginacion de la tabla
   const [currentPage, setCurrentPage] = useState(1); 
@@ -306,7 +318,7 @@ export function TablaNotas({ innerRef, datos }) {
   // Calcula los elementos que se mostrarán en la página actual
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = datos.slice(indexOfFirstItem, indexOfLastItem);
+  const currentItems = alumnos.slice(indexOfFirstItem, indexOfLastItem);
 
   // Función para cambiar la página actual
   const changePage = (event) => {
@@ -320,8 +332,8 @@ export function TablaNotas({ innerRef, datos }) {
         <Table className="uppercase" ref={innerRef}>
           <Table.Head className="border-b-2">
             <Table.HeadCell>Cedula</Table.HeadCell>
-            <Table.HeadCell>Nombre</Table.HeadCell>
-            <Table.HeadCell>Apellido</Table.HeadCell>
+            <Table.HeadCell>Nombres</Table.HeadCell>
+            <Table.HeadCell>Apellidos</Table.HeadCell>
             <Table.HeadCell>1er Nota</Table.HeadCell>
             <Table.HeadCell>2da Nota</Table.HeadCell>
             <Table.HeadCell>3er Nota</Table.HeadCell>
@@ -329,85 +341,26 @@ export function TablaNotas({ innerRef, datos }) {
             <Table.HeadCell></Table.HeadCell>
           </Table.Head>
           <Table.Body className="divide-y">
-            {alumnos.map((alumno) => (
-              <Table.Row className="bg-white" key={alumno.id}>
-                <Table.Cell className="whitespace-nowrap">{alumno.id}</Table.Cell>
-                <Table.Cell>{alumno.nombre}</Table.Cell>
-                <Table.Cell>{alumno.apellido}</Table.Cell>
+            {currentItems.map((alumno) => (
+              <Table.Row className="bg-white" key={alumno.id_usuario}>
+                <Table.Cell className="whitespace-nowrap">{alumno.cedula}</Table.Cell>
+                <Table.Cell>{[alumno.p_nombre," ",alumno.s_nombre]}</Table.Cell>
+                <Table.Cell>{[alumno.p_apellido," ",alumno.s_apellido]}</Table.Cell>
 
-                <Table.Cell>
-                  {editando === alumno.id ? (
-                      <TextInput 
-                        type="number"
-                        value={alumno.nota1}
-                        onChange={(e) => manejarCambio(alumno.id, e.target.value)}
-                        style={{
-                          cursor: "pointer"
-                        }}
+                {alumno.notas.map((nota, index) => (
+                  <Table.Cell key={index}>
+                      <TextInput
+                          className="input_notas"
+                          type="number"
+                          min="0"
+                          max="20"
+                          value={nota}
+                          onChange={(e) =>
+                              handleNotaChange(e, alumno.id_estudiante, index)
+                          }
                       />
-                    ) : (
-                      <span onDoubleClick={() => manejarDobleClick(alumno.id)} style={{
-                        cursor: "pointer"
-                      }}>
-                        {alumno.nota1}
-                      </span>
-                    )}
-                </Table.Cell>
-
-                <Table.Cell>
-                    {editando === alumno.id ? (
-                      <TextInput 
-                        type="number"
-                        value={alumno.nota2}
-                        onChange={(e) => manejarCambio(alumno.id, e.target.value)}
-                        style={{
-                          cursor: "pointer"
-                        }}
-                      />
-                    ) : (
-                      <span onDoubleClick={() => manejarDobleClick(alumno.id)} style={{
-                        cursor: "pointer"
-                      }}>
-                        {alumno.nota2}
-                      </span>
-                    )}
-                </Table.Cell>
-                <Table.Cell>
-                    {editando === alumno.id ? (
-                      <TextInput 
-                        type="number"
-                        value={alumno.nota3}
-                        onChange={(e) => manejarCambio(alumno.id, e.target.value)}
-                        style={{
-                          cursor: "pointer"
-                        }}
-                      />
-                    ) : (
-                      <span onDoubleClick={() => manejarDobleClick(alumno.id)} style={{
-                        cursor: "pointer"
-                      }}>
-                        {alumno.nota3}
-                      </span>
-                    )}
-                </Table.Cell>
-                <Table.Cell>
-                    {editando === alumno.id ? (
-                      <TextInput 
-                        type="number"
-                        value={alumno.nota4}
-                        onChange={(e) => manejarCambio(alumno.id, e.target.value)}
-                        style={{
-                          cursor: "pointer"
-                        }}
-                      />
-                    ) : (
-                      <span onDoubleClick={() => manejarDobleClick(alumno.id)} style={{
-                        cursor: "pointer"
-                      }}>
-                        {alumno.nota4}
-                      </span>
-                    )}
-                </Table.Cell>
+                  </Table.Cell>
+                ))}
               </Table.Row>
             ))}
           </Table.Body>
@@ -469,7 +422,7 @@ export function TablaClases() {
             <Table.HeadCell>Mencion</Table.HeadCell>            
           </Table.Head>
           <Table.Body className="divide-y">
-            {datos.map((clases) => (
+            {currentItems.map((clases) => (
               <Table.Row 
                 className="bg-white"
                 key={clases.id_clase}
@@ -594,17 +547,15 @@ export function TablaEvaluacion() {
     const socket = socketIOClient(`http://localhost:4000`, {
       path: '/api/socket.io'
     });
-    socket.on('connect', () => {
-      console.log("Conexión establecida con el servidor");
-    });
-    
-    socket.on('connect_error', (error) => {
-      console.error("Error en la conexión:", error);
-    });
 
-    socket.on('ActualizarTable', (evaluaciones) => {
-      console.log("Datos recibidos del servidor:", evaluaciones);
-      setDatos(evaluaciones);
+    socket.on('ActualizarTable', (currentItems) => {
+      console.log("Datos recibidos del servidor:", currentItems);
+      if (JSON.stringify(datos) !== JSON.stringify(currentItems)) {
+          setDatos(currentItems);
+          console.log("Estado actualizado con nuevos datos:", currentItems);
+      } else {
+          console.log("Los datos no han cambiado, no se actualiza el estado.");
+      }
     });
 
     return () => {
