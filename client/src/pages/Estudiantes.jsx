@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { useDownloadExcel } from "react-export-table-to-excel";
 import { Datepicker, Button } from "flowbite-react";
-import { RegisEstudiante } from "../components/Modal";
+import { FiltrarClases, RegisEstudiante } from "../components/Modal";
 import { HiOutlineArrowRight } from "react-icons/hi";
 import socketIOClient from 'socket.io-client';
 import { ServidorURL } from "../config/config";
@@ -14,6 +14,7 @@ import { Buscador } from "../components/buscador";
 export function Estudiantes() {
   const [datos, setDatos] = useState([]);
   const [filteredData, setFilteredData] = useState(datos);
+  const [datosFiltrados, setDatosFiltrados] = useState([]);
 
   useEffect(() => {
     ShowEstudiantes();
@@ -43,6 +44,20 @@ export function Estudiantes() {
     filename: 'Profesores',
     sheet: 'Hoja 1'
   });
+  // Función para manejar filtros y actualizar datosFiltrados
+  const manejarFiltro = (filtros) => {
+    const resultados = datos.filter((estudiante) => {
+      // Verifica todos los filtros aplicados
+      return (
+        (!filtros.id_user || estudiante.id_user === filtros.id_user) &&
+        (!filtros.id_materias || estudiante.id_materias === filtros.id_materias) &&
+        (!filtros.id_anno || estudiante.id_anno === filtros.id_anno) &&
+        (!filtros.id_seccion || estudiante.id_seccion === filtros.id_seccion) &&
+        (!filtros.id_mension || estudiante.id_mension === filtros.id_mension)
+      );
+    });
+    setDatosFiltrados(resultados);
+  };
   
   return (
     <Container>
@@ -52,7 +67,7 @@ export function Estudiantes() {
           <form>
             <div className="flex flex-wrap gap-2 mb-1">
               <RegisEstudiante />
-
+              <FiltrarClases onFilter={manejarFiltro} />
               <Button color="success" type="submit">
                 Generar Reporte
                 <HiOutlineArrowRight className="ml-2 h-5 w-5" />

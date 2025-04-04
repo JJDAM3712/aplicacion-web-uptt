@@ -13,6 +13,10 @@ class ProfesorSQL {
     public getProfesor: string;
     public getProfById: string;
     public putClaseExist: string;
+    public filterMateria: string;
+    public filterMencion: string;
+    public filterAnios: string;
+    public filterSeccion: string;
     
     // SELECT * FROM usuarios WHERE id_rol = 2 AND id_usuario =
 
@@ -84,6 +88,11 @@ class ProfesorSQL {
         this.getProfesor = "SELECT * FROM usuarios WHERE id_rol = 2";
         // mostrar a un profesor
         this.getProfById = "SELECT * FROM usuarios WHERE id_rol = 2 AND id_usuario = ?";
+        // consultas para filtrar clases
+        this.filterMateria = "SELECT DISTINCT m.id_materia, m.materia FROM clases c JOIN materias m ON c.id_materias = m.id_materia WHERE c.id_user = ?";
+        this.filterMencion = "SELECT DISTINCT mn.id_mension, mn.mension FROM clases c JOIN mensiones mn ON c.id_mension = mn.id_mension WHERE c.id_user = ?";
+        this.filterAnios = "SELECT DISTINCT y.id_anno, y.anno FROM clases c JOIN year y ON c.id_anno = y.id_anno WHERE c.id_user = ?";
+        this.filterSeccion = "SELECT DISTINCT s.id_seccion, s.seccion FROM clases c JOIN secciones s ON c.id_seccion = s.id_seccion WHERE c.id_user = ?";
 
     }
     // mostrar todos los profesores con sus clases
@@ -114,6 +123,11 @@ class ProfesorSQL {
     showProfesorById() {return this.getProfById}
     // validar que la clase sea repetida al actualizar
     putClaseExistQuery() {return this.putClaseExist}
+    // querys para filtrar clases
+    FilterMaterias() {return this.filterMateria}
+    FilterMenciones() {return this.filterMencion}
+    FilterAnios() {return this.filterAnios}
+    FilterSecciones() {return this.filterSeccion}
 }
 
 export default new ProfesorSQL();

@@ -32,9 +32,10 @@ export const io = new Server(httpServer, {
 });
 
 io.on('connection', (socket) => {
-    console.log(`Cliente conectado a ${socket.id}`);
+    
 
     socket.on('ActualizarTable', (data) => {
+        console.log(`Cliente conectado a ${socket.id}`);
         io.emit('TablaActualizada', data)
     });
 

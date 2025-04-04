@@ -195,6 +195,28 @@ class ProfesorController extends AppControllerBase {
             res.status(500).json({ message: "error al eliminar la clase", error}); 
         }
     }
+    // filtro de clases
+    public async filterClassController(req: Request, res: Response): Promise<void> {
+        try {
+            const {id} = req.params;
+            const materias = await ProfesorService.filterMateriaService(id);
+            const menciones = await ProfesorService.filterMencionService(id);
+            const anio = await ProfesorService.filterAnioService(id);
+            const secciones = await ProfesorService.filteSeccionService(id);
+
+            res.status(200).json({
+                materias,
+                menciones,
+                anio,
+                secciones
+            })
+        } catch (error) {
+            res.status(500).json({
+                message: "Error al obtener la clase",
+                error: error
+            })
+        }
+    }
 }
 
 export default new ProfesorController();
