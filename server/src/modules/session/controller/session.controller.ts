@@ -47,8 +47,10 @@ class SessionController extends AppControllerBase {
     // autenticacion de login
     async autenticateController(req: Request, res: Response): Promise<void> {
         try {
-            const {cedula, clave} = req.body;
-
+            const cedula = req.body.cedula;
+            const clave = req.body.clave;
+            
+            console.log("datos", cedula, "=", clave);
             // validar si los datos vienen vacios
             if (cedula == "" || clave == "") {
                 res.status(409).json({
@@ -56,7 +58,7 @@ class SessionController extends AppControllerBase {
                 });
                 return;
             }
-
+            
             const result = await sessionService.loginService(cedula);
             // valida si el usuario existe
             if (result.length === 0) {
@@ -73,12 +75,19 @@ class SessionController extends AppControllerBase {
                 return;
             }
             const token = await sessionService.tokenGenerate(result[0].id_usuario, result[0].id_rol);
-            console.log(token)
+
+            const userId = result[0].id; 
+            // Configura el token en una cookie
+            res.cookie('access_token', token, {
+                httpOnly: true,
+            });
             // exito si todo es valido
             res.status(200).json({
-                message: "Login exitoso!",
-                result: result
-            })
+                message: "Login exitoso",
+                token, 
+                userId
+            });
+            
         } catch (error) {
             console.error(error)
             res.status(500).json({

@@ -5,19 +5,22 @@ import React from "react";
 import CheckboxVeri from "./checkbox";
 import axios from "axios";
 import {
-  EditarPersona,
-  EliminarPersona,
-  EliminaAsist,
+  EditarProfesor,
+  EliminarProfesor,
+  EliminaEstudiante,
   EliminaVisita,
-  EliminarDep,
+  EliminarMateria,
   EliminarCargo,
-  EliminarInv,
-  EliminarUsr,
-  EditInv,
-  EditarUsr,
-  EditarDep,
-  EliminarCatg,
-  EditarCatg,
+  EliminarNotas,
+  EliminarClases,
+  EditarClases,
+  EditarMateria,
+  EliminarMencion,
+  EditarMencion,
+  EditarEstudiante,
+  EditarEvaluacion,
+  EliminarEvaluacion
+
 } from "./Modal"; //Importamos las Modales para su uso en los Botones de Opciones
 import socketIOClient from 'socket.io-client';
 import Pagination from "./Pagination";
@@ -25,9 +28,10 @@ import { ServidorURL } from "../config/config";
 
 //-------------------------------------------------
 // tabla profesores
-export function TablaProfesores({ innerRef, datos }) {
+export function TablaProfesores({ innerRef, datos, setDatos }) {
   const [currentPage, setCurrentPage] = useState(1); 
   const itemsPerPage = 10;
+
   // Calcula los elementos que se mostrarán en la página actual
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -45,31 +49,41 @@ export function TablaProfesores({ innerRef, datos }) {
         <Table ref={innerRef}>
           <Table.Head className="border-b-2 uppercase">
             <Table.HeadCell>Activar</Table.HeadCell>
-            <Table.HeadCell>Nombre</Table.HeadCell>
-            <Table.HeadCell>Apellido</Table.HeadCell>
             <Table.HeadCell>Cedula</Table.HeadCell>
+            <Table.HeadCell>Nombres</Table.HeadCell>
+            <Table.HeadCell>Apellidos</Table.HeadCell>
             <Table.HeadCell>Teléfono</Table.HeadCell>
             <Table.HeadCell>Correo</Table.HeadCell>
             <Table.HeadCell></Table.HeadCell>
           </Table.Head>
           <Table.Body className="divide-y uppercase">
-              <Table.Row className="bg-white">
-              <Table.Cell><CheckboxVeri /></Table.Cell>
-                <Table.Cell className="whitespace-nowrap font-medium text-gray-900 ">
-                  Juan
+            {currentItems.map((profesores) => (
+              <Table.Row 
+                className="bg-white"
+                key={profesores.id_usuario}
+              >
+                <Table.Cell>
+                  <CheckboxVeri id={profesores.id_usuario}/>
                 </Table.Cell>
-                <Table.Cell>Matos</Table.Cell>
-                <Table.Cell>11329525</Table.Cell>
-                <Table.Cell>04120268520</Table.Cell>
-                <Table.Cell>a@a</Table.Cell>
+                <Table.Cell className="whitespace-nowrap font-medium text-gray-900 ">
+                  {profesores.cedula}
+                </Table.Cell>
+                <Table.Cell>
+                  {[profesores.p_nombre, " ",profesores.s_nombre]}
+                </Table.Cell>
+                <Table.Cell>
+                  {[profesores.p_apellido," " ,profesores.s_apellido]}
+                </Table.Cell>
+                <Table.Cell>{profesores.telefono}</Table.Cell>
+                <Table.Cell>{profesores.email}</Table.Cell>
                 <Table.Cell>
                   <Button.Group>
-                    <EditarPersona />
-                    <EliminarPersona />
+                    <EditarProfesor id={profesores.id_usuario}/>
+                    <EliminarProfesor id={profesores.id_usuario}/>
                   </Button.Group>
                 </Table.Cell>
               </Table.Row>
-           
+            ))}
           </Table.Body>
         </Table>
         <Pagination
@@ -84,68 +98,9 @@ export function TablaProfesores({ innerRef, datos }) {
 }
 //-------------------------------------------------
 // tabla estudiantes
-export function TablaEstudiantes({innerRef, datos}) {
+export function TablaEstudiantes({innerRef, datos, setDatos}) {
   const [currentPage, setCurrentPage] = useState(1); 
   const itemsPerPage = 10; 
-  // Calcula los elementos que se mostrarán en la página actual
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  //const currentItems = datos.slice(indexOfFirstItem, indexOfLastItem);
-
-  // Función para cambiar la página actual
-  const changePage = (event) => {
-    const pageNumber = Number(event.target.textContent);
-    setCurrentPage(pageNumber);
-  };
-  return (
-    <Container>
-      <div className="ContenedorTabla">
-        <h1>Estudiantes:</h1>
-        <Table>
-          <Table.Head className="border-b-2 uppercase">
-            <Table.HeadCell>Activar</Table.HeadCell>
-            <Table.HeadCell>Nombre</Table.HeadCell>
-            <Table.HeadCell>Apellido</Table.HeadCell>
-            <Table.HeadCell>Cedula</Table.HeadCell>
-            <Table.HeadCell>Año</Table.HeadCell>
-            <Table.HeadCell>Sección</Table.HeadCell>
-            <Table.HeadCell>Mencion</Table.HeadCell>
-            <Table.HeadCell></Table.HeadCell>
-          </Table.Head>
-          <Table.Body className="divide-y uppercase">
-            {/* mostrar los datos */}
-              <Table.Row className="bg-white">
-                <Table.Cell><CheckboxVeri /></Table.Cell>
-                <Table.Cell className="whitespace-nowrap">juanito</Table.Cell>
-                <Table.Cell>perez</Table.Cell>
-                <Table.Cell>1234567</Table.Cell>
-                <Table.Cell>2do</Table.Cell>
-                <Table.Cell>C</Table.Cell>
-                <Table.Cell>informatica</Table.Cell>
-                <Table.Cell>
-                <Button.Group>
-                    <EditarPersona />
-                    <EliminarPersona />
-                </Button.Group>
-                </Table.Cell>
-              </Table.Row>
-          </Table.Body>
-        </Table>
-        <Pagination
-          itemsPerPage={itemsPerPage}
-          //totalItems={datos.length}
-          paginate={setCurrentPage}
-          currentPage={currentPage}
-        />
-      </div>
-    </Container>
-  );
-}
-//-------------------------------------------------
-// tabla personal
-export const TablaVisitas = ({ innerRef, datos }) => {
-  const [currentPage, setCurrentPage] = useState(1); 
-  const itemsPerPage = 10;
   // Calcula los elementos que se mostrarán en la página actual
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -158,38 +113,69 @@ export const TablaVisitas = ({ innerRef, datos }) => {
   };
   return (
     <Container>
-      <div className="ContenedorTabla ">
-        <h1>Visitas:</h1>
-        <Table ref={innerRef}>
-          <Table.Head className="border-b-2">
-            <Table.HeadCell>Nombre</Table.HeadCell>
+      <div className="ContenedorTabla">
+        <h1>Estudiantes:</h1>
+        {(!currentItems || currentItems.length === 0) ? (
+          <p className="text-center">Selecciona una clase para filtrar los datos.</p>
+        ) : (
+        <Table>
+          <Table.Head className="border-b-2 uppercase" ref={innerRef}>
+            <Table.HeadCell>Activar</Table.HeadCell>
             <Table.HeadCell>Cedula</Table.HeadCell>
-            <Table.HeadCell>Departamento</Table.HeadCell>
-            <Table.HeadCell>Motivo</Table.HeadCell>
-            <Table.HeadCell>Fecha</Table.HeadCell>
-            <Table.HeadCell>Hora Entrada</Table.HeadCell>
-            <Table.HeadCell>Hora Salida</Table.HeadCell>
+            <Table.HeadCell>Nombres</Table.HeadCell>
+            <Table.HeadCell>Apellidos</Table.HeadCell>
+            <Table.HeadCell>Telefono</Table.HeadCell>
+            <Table.HeadCell>Correo</Table.HeadCell>
+            <Table.HeadCell>Año</Table.HeadCell>
+            <Table.HeadCell>Sección</Table.HeadCell>
+            <Table.HeadCell>Mencion</Table.HeadCell>
             <Table.HeadCell></Table.HeadCell>
           </Table.Head>
           <Table.Body className="divide-y uppercase">
-            {currentItems.map((visitas) => (
-              <Table.Row className="bg-white" key={visitas.id_visita}>
-                <Table.Cell className="whitespace-nowrap">
-                  {visitas.nombre}
-                </Table.Cell>
-                <Table.Cell>{visitas.cedula}</Table.Cell>
-                <Table.Cell>{visitas.departamento}</Table.Cell>
-                <Table.Cell>{visitas.motivo}</Table.Cell>
-                <Table.Cell>{visitas.fecha}</Table.Cell>
-                <Table.Cell>{visitas.hora_entrada}</Table.Cell>
-                <Table.Cell>{visitas.hora_salida}</Table.Cell>
+            {/* mostrar los datos */}
+            {currentItems.map((estudiantes) => (
+              <Table.Row 
+                className="bg-white"
+                key={estudiantes.id_usuario}
+              >
                 <Table.Cell>
-                  <EliminaVisita id={visitas.id_visita}/>
+                  <CheckboxVeri id={estudiantes.id_usuario}/>
                 </Table.Cell>
-              </Table.Row>
+                <Table.Cell className="whitespace-nowrap">
+                  {estudiantes.cedula}
+                </Table.Cell>
+                <Table.Cell>
+                  {[estudiantes.p_nombre, " ", estudiantes.s_nombre]}
+                </Table.Cell>
+                <Table.Cell>
+                  {[estudiantes.p_apellido, " ", estudiantes.s_apellido]}
+                </Table.Cell>
+                <Table.Cell>
+                  {estudiantes.telefono}
+                </Table.Cell>
+                <Table.Cell>
+                  {estudiantes.email}
+                </Table.Cell>
+                <Table.Cell>
+                  {estudiantes.anno}
+                </Table.Cell>
+                <Table.Cell>
+                  {estudiantes.seccion}
+                </Table.Cell>
+                <Table.Cell>
+                  {estudiantes.mension}
+                </Table.Cell>
+                <Table.Cell>
+                <Button.Group>
+                  <EditarEstudiante id={estudiantes.id_usuario}/>
+                  <EliminaEstudiante id={estudiantes.id_usuario}/>
+                </Button.Group>
+                </Table.Cell>
+              </Table.Row> 
             ))}
           </Table.Body>
         </Table>
+        )}
         <Pagination
           itemsPerPage={itemsPerPage}
           totalItems={datos.length}
@@ -202,13 +188,13 @@ export const TablaVisitas = ({ innerRef, datos }) => {
 }
 //-------------------------------------------------
 // tabla de materia
-export function TablaDepartamento() {
+export function TablaMaterias() {
   const [datos, setDatos] = useState([]);
   const [currentPage, setCurrentPage] = useState(1); 
   const itemsPerPage =10; 
-
+  
   useEffect(() => {
-    ShowDepart();
+    ShowMaterias();
     const socket = socketIOClient(`${ServidorURL}`);
 
     socket.on('ActualizatTable', (nuevasAsistencias) => {
@@ -219,8 +205,9 @@ export function TablaDepartamento() {
       socket.disconnect();
     };
   }, []);
-  const ShowDepart = async () => {
-    const res = await axios.get(`${ServidorURL}/task`);
+
+  const ShowMaterias = async () => {
+    const res = await axios.get(`${ServidorURL}/materias`);
     setDatos(res.data);
   };
    // Calcula los elementos que se mostrarán en la página actual
@@ -228,11 +215,11 @@ export function TablaDepartamento() {
    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
    const currentItems = datos.slice(indexOfFirstItem, indexOfLastItem);
  
-   // Función para cambiar la página actual
-   const changePage = (event) => {
-     const pageNumber = Number(event.target.textContent);
-     setCurrentPage(pageNumber);
-   };
+  // Función para cambiar la página actual
+  const changePage = (event) => {
+    const pageNumber = Number(event.target.textContent);
+    setCurrentPage(pageNumber);
+  };
   return (
     <Container>
       <div className="ContenedorTabla ">
@@ -244,93 +231,34 @@ export function TablaDepartamento() {
           </Table.Head>
           <Table.Body className="divide-y">
             {/* mostrar datos de bd en tabla */}
-            {currentItems.map((departamentos) => (
+            {currentItems.map((materia) => (
               <Table.Row
                 className="bg-white"
-                key={departamentos.id_departamento}
+                key={materia.id_materia}
               >
                 <Table.Cell className="whitespace-nowrap">
-                  {departamentos.departamento}
+                  {materia.materia}
+                </Table.Cell>
+                <Table.Cell 
+                  className="whitespace-nowrap" 
+                  style={{
+                    width: "100%",
+                    maxWidth:"700px", 
+                    overflow: "hidden",
+                  }}>
+                  {materia.descripcion}
                 </Table.Cell>
                 <Table.Cell>
                   <Button.Group>
-                    <EditarDep
+                    <EditarMateria
                       className="left-4"
-                      id={departamentos.id_departamento}
+                      id={materia.id_materia}
                     />
-                    <EliminarDep
+                    <EliminarMateria
                       className="left-4"
-                      id={departamentos.id_departamento}
+                      id={materia.id_materia}
                     />
                   </Button.Group>
-                </Table.Cell>
-              </Table.Row>
-            ))}
-          </Table.Body>
-        </Table>
-        <Pagination
-          itemsPerPage={itemsPerPage}
-          totalItems={datos.length}
-          paginate={setCurrentPage}
-          currentPage={currentPage}
-        />
-      </div>
-    </Container>
-  );
-}
-//-------------------------------------------------
-// tabla de departamento
-export function TablaCargos() {
-  const [datos, setDatos] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1); 
-  const itemsPerPage = 10; 
-
-  useEffect(() => {
-    ShowDepart();
-    const socket = socketIOClient(ServidorURL);
-    socket.on('ActualizatTable', (nuevasAsistencias) => {
-      setDatos(nuevasAsistencias);
-    });
-    return () => {
-      socket.disconnect();
-    };
-  }, []);
-  const ShowDepart = async () => {
-    const res = await axios.get(`${ServidorURL}/cargos`);
-    setDatos(res.data);
-  };
-
-  // Calcula los elementos que se mostrarán en la página actual
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = datos.slice(indexOfFirstItem, indexOfLastItem);
-
-  // Función para cambiar la página actual
-  const changePage = (event) => {
-    const pageNumber = Number(event.target.textContent);
-    setCurrentPage(pageNumber);
-  };
-  return (
-    <Container>
-      <div className="ContenedorTabla ">
-        <h1>Cargos:</h1>
-        <Table className="uppercase">
-          <Table.Head className="border-b-2">
-            <Table.HeadCell>Cargo</Table.HeadCell>
-            <Table.HeadCell>Cantidad de Puestos</Table.HeadCell>
-            <Table.HeadCell></Table.HeadCell>
-          </Table.Head>
-          <Table.Body className="divide-y">
-            {currentItems.map((cargos) => (
-              <Table.Row className="bg-white" key={cargos.id_cargo}>
-                <Table.Cell className="whitespace-nowrap">
-                  {cargos.cargo}
-                </Table.Cell>
-                <Table.Cell className="whitespace-nowrap">
-                  {cargos.cantidad}
-                </Table.Cell>
-                <Table.Cell>
-                  <EliminarCargo className="left-4" id={cargos.id_cargo} />
                 </Table.Cell>
               </Table.Row>
             ))}
@@ -348,146 +276,141 @@ export function TablaCargos() {
 }
 //-------------------------------------------------
 // tabla de notas
-export function TablaInv({ innerRef, datos }) {
-  const [alumnos, setAlumnos] = useState([
-    { id: 1, nombre: "Juan", apellido: "Perez", nota1: "0", nota2: "0", nota3: "0", nota4: "0" },
-    { id: 2, nombre: "María", apellido: "Gonzales", nota1: "0", nota2: "0", nota3: "0", nota4: "0" },
-    { id: 3, nombre: "Carlos", apellido: "Yonson", nota1: "0", nota2: "0", nota3: "0", nota4: "0" },
-  ])
-  // editar datos en la tabla
-  const [editando, setEditando] = useState(null);
+export function TablaNotas({ datos, setDatos, idLapso, idEvaluacion, idClase, onGuardarNotas}) {
+  const [alumnos, setAlumnos] = useState([]);
+  const [notasDatos, setNotasDatos] = useState([]);
+  useEffect(() => {
+    if (datos && datos.length > 0) {
+      setAlumnos(
+        datos.map((estudiantes) => ({
+          id_estudiante: estudiantes.id_estudiante,
+          cedula: estudiantes.cedula,
+          p_nombre: estudiantes.p_nombre,
+          p_apellido: estudiantes.p_apellido,
+          notas: estudiantes.notas && estudiantes.notas.length === 4
+                ? estudiantes.notas
+                : [0, 0, 0, 0],
+        }))
+      );
+    } else {
+      setAlumnos([]);
+    }
+  }, [datos]);
 
-  const manejarCambio = (id, valor) => {
-    const nuevosAlumnos = alumnos.map((alumno) =>
-      alumno.id === id ? { ...alumno, nota1: valor } : alumno,
-      alumno.id === id ? { ...alumno, nota2: valor } : alumno,
-      alumno.id === id ? { ...alumno, nota3: valor } : alumno,
-      alumno.id === id ? { ...alumno, nota4: valor } : alumno
-    );
-    setAlumnos(nuevosAlumnos);
+  useEffect(() => {
+    const ShowNotas = async () => {
+      try {
+        const res = await axios.get(`${ServidorURL}/notas`);
+        const notasExistentes = res.data; // Asegúrate de que res.data contiene las notas correctas
+  
+        setAlumnos((prevAlumnos) =>
+          prevAlumnos.map((alumno) => {
+            const notasAlumno = notasExistentes.find(
+              (nota) => nota.id_estudiante === alumno.id_estudiante
+            );
+            return {
+              ...alumno,
+              notas: notasAlumno
+                ? [notasAlumno.nota1, notasAlumno.nota2, notasAlumno.nota3, notasAlumno.nota4]
+                : [0, 0, 0, 0], // Asignar valores predeterminados si no hay notas
+            };
+          })
+        );
+      } catch (error) {
+        console.error("Error al mostrar las notas:", error);
+      }
+    };
+  
+    ShowNotas();
+  }, []);
+
+  const handleNotaChange = (e, estudianteId, indexNota) => {
+    const { value } = e.target;
+    if (!isNaN(value) && value.length <= 2 && Number(value) <= 20){
+      setAlumnos((prevDatos) =>
+        prevDatos.map((estudiante) =>
+          estudiante.id_estudiante === estudianteId
+            ? {
+                ...estudiante,
+                notas: estudiante.notas.map((nota, index) =>
+                    index === indexNota ? Number(value) : nota
+                )
+              }
+            : estudiante
+        )
+      );
+    }
   };
-
-  const manejarDobleClick = (id) => {
-    setEditando(id);
-  };
-
-  const manejarGuardar = () => {
-    setEditando(null);
-  };
-
+  // Enviar notas actualizadas al padre
+  useEffect(() => {
+    if (onGuardarNotas) {
+      // Envía las notas al padre
+      onGuardarNotas(alumnos); 
+    }
+  }, [alumnos]);
 
   // paginacion de la tabla
   const [currentPage, setCurrentPage] = useState(1); 
-  const itemsPerPage = 10; 
+  const itemsPerPage = 30; 
   // Calcula los elementos que se mostrarán en la página actual
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = datos.slice(indexOfFirstItem, indexOfLastItem);
+  const currentItems = alumnos.slice(indexOfFirstItem, indexOfLastItem);
 
   // Función para cambiar la página actual
   const changePage = (event) => {
     const pageNumber = Number(event.target.textContent);
-    setCurrentPage(pageNumber);
+    if (pageNumber >= 1 && pageNumber <= Math.ceil(alumnos.length / itemsPerPage)) {
+      setCurrentPage(pageNumber);
+    }
   };
   return (
     <Container>
       <div className="ContenedorTabla">
         <h1>Notas:</h1>
-        <Table className="uppercase" ref={innerRef}>
-          <Table.Head className="border-b-2">
-            <Table.HeadCell>Cedula</Table.HeadCell>
-            <Table.HeadCell>Nombre</Table.HeadCell>
-            <Table.HeadCell>Apellido</Table.HeadCell>
-            <Table.HeadCell>1er Nota</Table.HeadCell>
-            <Table.HeadCell>2da Nota</Table.HeadCell>
-            <Table.HeadCell>3er Nota</Table.HeadCell>
-            <Table.HeadCell>4ta Nota</Table.HeadCell>
-            <Table.HeadCell></Table.HeadCell>
-          </Table.Head>
-          <Table.Body className="divide-y">
-            {alumnos.map((alumno) => (
-              <Table.Row className="bg-white" key={alumno.id}>
-                <Table.Cell className="whitespace-nowrap">{alumno.id}</Table.Cell>
-                <Table.Cell>{alumno.nombre}</Table.Cell>
-                <Table.Cell>{alumno.apellido}</Table.Cell>
+        {(!datos || datos.length === 0) ? (
+          <p className="text-center">Selecciona una clase para filtrar los datos.</p>
+        ) : (
+          <Table className="uppercase">
+            <Table.Head className="border-b-2">
+              <Table.HeadCell>Cedula</Table.HeadCell>
+              <Table.HeadCell>Nombres</Table.HeadCell>
+              <Table.HeadCell>Apellidos</Table.HeadCell>
+              <Table.HeadCell>1er Nota</Table.HeadCell>
+              <Table.HeadCell>2da Nota</Table.HeadCell>
+              <Table.HeadCell>3er Nota</Table.HeadCell>
+              <Table.HeadCell>4ta Nota</Table.HeadCell>
+              <Table.HeadCell></Table.HeadCell>
+            </Table.Head>
+            <Table.Body className="divide-y">
+              {currentItems.map((alumno) => (
+                <Table.Row 
+                  className={`bg-white ${alumno.modificadas ? "bg-yellow-100" : ""}`} 
+                  key={alumno.id_estudiante}
+                  >
+                  <Table.Cell className="whitespace-nowrap">{alumno.cedula}</Table.Cell>
+                  <Table.Cell>{[alumno.p_nombre," ",alumno.s_nombre]}</Table.Cell>
+                  <Table.Cell>{[alumno.p_apellido," ",alumno.s_apellido]}</Table.Cell>
 
-                <Table.Cell>
-                  {editando === alumno.id ? (
-                      <TextInput 
-                        type="number"
-                        value={alumno.nota1}
-                        onChange={(e) => manejarCambio(alumno.id, e.target.value)}
-                        style={{
-                          cursor: "pointer"
-                        }}
-                      />
-                    ) : (
-                      <span onDoubleClick={() => manejarDobleClick(alumno.id)} style={{
-                        cursor: "pointer"
-                      }}>
-                        {alumno.nota1}
-                      </span>
-                    )}
-                </Table.Cell>
-
-                <Table.Cell>
-                    {editando === alumno.id ? (
-                      <TextInput 
-                        type="number"
-                        value={alumno.nota2}
-                        onChange={(e) => manejarCambio(alumno.id, e.target.value)}
-                        style={{
-                          cursor: "pointer"
-                        }}
-                      />
-                    ) : (
-                      <span onDoubleClick={() => manejarDobleClick(alumno.id)} style={{
-                        cursor: "pointer"
-                      }}>
-                        {alumno.nota2}
-                      </span>
-                    )}
-                </Table.Cell>
-                <Table.Cell>
-                    {editando === alumno.id ? (
-                      <TextInput 
-                        type="number"
-                        value={alumno.nota3}
-                        onChange={(e) => manejarCambio(alumno.id, e.target.value)}
-                        style={{
-                          cursor: "pointer"
-                        }}
-                      />
-                    ) : (
-                      <span onDoubleClick={() => manejarDobleClick(alumno.id)} style={{
-                        cursor: "pointer"
-                      }}>
-                        {alumno.nota3}
-                      </span>
-                    )}
-                </Table.Cell>
-                <Table.Cell>
-                    {editando === alumno.id ? (
-                      <TextInput 
-                        type="number"
-                        value={alumno.nota4}
-                        onChange={(e) => manejarCambio(alumno.id, e.target.value)}
-                        style={{
-                          cursor: "pointer"
-                        }}
-                      />
-                    ) : (
-                      <span onDoubleClick={() => manejarDobleClick(alumno.id)} style={{
-                        cursor: "pointer"
-                      }}>
-                        {alumno.nota4}
-                      </span>
-                    )}
-                </Table.Cell>
-              </Table.Row>
-            ))}
-          </Table.Body>
-        </Table>
+                  {alumno.notas.map((nota, index) => (
+                    <Table.Cell key={index}>
+                        <TextInput
+                            className="input_notas"
+                            type="number"
+                            min="0"
+                            max="20"
+                            value={nota ?? ""}
+                            onChange={(e) =>
+                                handleNotaChange(e, alumno.id_estudiante, index)
+                            }
+                        />
+                    </Table.Cell>
+                  ))}
+                </Table.Row>
+              ))}
+            </Table.Body>
+          </Table>
+        )}
         <Pagination
           itemsPerPage={itemsPerPage}
           totalItems={datos.length}
@@ -500,13 +423,13 @@ export function TablaInv({ innerRef, datos }) {
 }
 //-------------------------------------------------
 // tabla de clases
-export function TablaUsuario() {
+export function TablaClases() {
   const [datos, setDatos] = useState([]);
   const [currentPage, setCurrentPage] = useState(1); 
   const itemsPerPage = 10; 
 
   useEffect(() => {
-    ShowDepart();
+    ShowClass();
     const socket = socketIOClient(ServidorURL);
 
     socket.on('ActualizatTable', (nuevasAsistencias) => {
@@ -518,8 +441,8 @@ export function TablaUsuario() {
     };
   }, []);
 
-  const ShowDepart = async () => {
-    const res = await axios.get(`${ServidorURL}/signup`);
+  const ShowClass = async () => {
+    const res = await axios.get(`${ServidorURL}/clase`);
     setDatos(res.data);
   };
   // Calcula los elementos que se mostrarán en la página actual
@@ -545,19 +468,34 @@ export function TablaUsuario() {
             <Table.HeadCell>Mencion</Table.HeadCell>            
           </Table.Head>
           <Table.Body className="divide-y">
-              <Table.Row className="bg-white">
-                <Table.Cell className="whitespace-nowrap">juan</Table.Cell>
-                <Table.Cell>Matematica</Table.Cell>
-                <Table.Cell>1</Table.Cell>
-                <Table.Cell>A</Table.Cell>
-                <Table.Cell>Telematica</Table.Cell>
+            {currentItems.map((clases) => (
+              <Table.Row 
+                className="bg-white"
+                key={clases.id_clase}
+              >
+                <Table.Cell className="whitespace-nowrap">
+                  {[clases.cedula, " ",clases.p_nombre," ",clases.p_apellido]}
+                </Table.Cell>
+                <Table.Cell>
+                  {clases.materia}
+                </Table.Cell>
+                <Table.Cell>
+                  {clases.anno}
+                </Table.Cell>
+                <Table.Cell>
+                  {clases.seccion}
+                </Table.Cell>
+                <Table.Cell>
+                  {clases.mension}
+                </Table.Cell>
                 <Table.Cell>
                   <Button.Group>
-                    <EditarUsr />
-                    <EliminarUsr />
+                    <EditarClases id={clases.id_clase}/>
+                    <EliminarClases id={clases.id_clase}/>
                   </Button.Group>
                 </Table.Cell>
               </Table.Row>
+            ))}
           </Table.Body>
         </Table>
         <Pagination
@@ -572,13 +510,13 @@ export function TablaUsuario() {
 }
 //-------------------------------------------------
 // tabla de menciones
-export function TablaCategoria() {
+export function TablaMenciones() {
   const [data, setData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1); 
   const itemsPerPage = 10; 
 
   useEffect(() => {
-    ShowCategoria();
+    ShowMencion();
     const socket = socketIOClient(ServidorURL);
 
     socket.on('ActualizatTable', (nuevasAsistencias) => {
@@ -590,8 +528,8 @@ export function TablaCategoria() {
     };
   }, []);
   
-  const ShowCategoria = async () => {
-    const res = await axios.get(`${ServidorURL}/categoria`);
+  const ShowMencion = async () => {
+    const res = await axios.get(`${ServidorURL}/mencion`);
     setData(res.data);
   };
   // Calcula los elementos que se mostrarán en la página actual
@@ -614,18 +552,18 @@ export function TablaCategoria() {
             <Table.HeadCell></Table.HeadCell>
           </Table.Head>
           <Table.Body className="divide-y">
-            {currentItems.map((categorias) => (
+            {currentItems.map((mencion) => (
               // eslint-disable-next-line react/jsx-key
               <Table.Row className="bg-white">
                 <Table.Cell className="whitespace-nowrap">
-                  {categorias.categoria}
+                  {mencion.mension}
                 </Table.Cell>
                 <Table.Cell>
                   <Button.Group>
-                    <EditarCatg id={categorias.id_categoria} />
-                    <EliminarCatg
+                    <EditarMencion id={mencion.id_mension} />
+                    <EliminarMencion
                       className="left-4"
-                      id={categorias.id_categoria}
+                      id={mencion.id_mension}
                     />
                   </Button.Group>
                 </Table.Cell>
@@ -636,6 +574,93 @@ export function TablaCategoria() {
         <Pagination
           itemsPerPage={itemsPerPage}
           totalItems={data.length}
+          paginate={setCurrentPage}
+          currentPage={currentPage}
+        />
+      </div>
+    </Container>
+  );
+}
+//-------------------------------------------------
+// tabla de evaluacion
+export function TablaEvaluacion() {
+  const [datos, setDatos] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1); 
+  const itemsPerPage = 10; 
+
+  useEffect(() => {
+    ShowEvaluacion();
+    const socket = socketIOClient(`http://localhost:4000`, {
+      path: '/api/socket.io'
+    });
+
+    socket.on('ActualizarTable', (currentItems) => {
+      console.log("Datos recibidos del servidor:", currentItems);
+      if (JSON.stringify(datos) !== JSON.stringify(currentItems)) {
+          setDatos(currentItems);
+          console.log("Estado actualizado con nuevos datos:", currentItems);
+      } else {
+          console.log("Los datos no han cambiado, no se actualiza el estado.");
+      }
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
+
+  const ShowEvaluacion = async () => {
+    const res = await axios.get(`${ServidorURL}/evaluacion`);
+    setDatos(res.data);
+  };
+   // Calcula los elementos que se mostrarán en la página actual
+   const indexOfLastItem = currentPage * itemsPerPage;
+   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+   const currentItems = datos.slice(indexOfFirstItem, indexOfLastItem);
+ 
+  // Función para cambiar la página actual
+  const changePage = (event) => {
+    const pageNumber = Number(event.target.textContent);
+    setCurrentPage(pageNumber);
+  };
+  return (
+    <Container>
+      <div className="ContenedorTabla ">
+        <h1>Evaluacines:</h1>
+        <Table className="uppercase">
+          <Table.Head className="border-b-2 uppercase">
+            <Table.HeadCell>Evaluacion</Table.HeadCell>
+            <Table.HeadCell></Table.HeadCell>
+          </Table.Head>
+          <Table.Body className="divide-y">
+            {/* mostrar datos de bd en tabla */}
+            {currentItems.map((evaluacion) => (
+              <Table.Row
+                className="bg-white"
+                key={evaluacion.id_evaluacion}
+              >
+                <Table.Cell className="whitespace-nowrap">
+                  {evaluacion.evaluacion}
+                </Table.Cell>
+                <Table.Cell>
+                  <Button.Group>
+                    <EditarEvaluacion
+                      className="left-4"
+                      id={evaluacion.id_evaluacion}
+                    />
+                    <EliminarEvaluacion
+                      className="left-4"
+                      id={evaluacion.id_evaluacion}
+                    />
+                  </Button.Group>
+                </Table.Cell>
+              </Table.Row>
+            ))}
+          </Table.Body>
+        </Table>
+        <Pagination
+          itemsPerPage={itemsPerPage}
+          totalItems={datos.length}
           paginate={setCurrentPage}
           currentPage={currentPage}
         />

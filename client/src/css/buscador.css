@@ -1,12 +1,11 @@
 .content_search{
     display: flex;
-    width: 250px;
-    border-radius: 10px;
-    overflow: hidden;
+    width: 200px;
 }
 .input_search{
-    width: 220px;
-    border: none;
+    width: 100%;
+    border-radius: 10px;
+    border: 1px solid rgba(127, 146, 151, .6);
 }
 .buton_seach{
     width: 30px;

@@ -23,10 +23,16 @@ class UserService extends ServiceBase {
         const [result] = await pool.query<RowDataPacket[]>(sql, data);
         return result;
     }
-    // registrar un estudiante (transaccion)
+    // registrar un usuario (transaccion)
     async postServiceTransaction(data: any, connection: PoolConnection): Promise<any> {
         const sql = userSql.postUserQuery();
         const [result] = await connection.query<RowDataPacket[]>(sql, data);
+        return result;
+    }
+    // actualizar un usuario (transaccion)
+    async putServiceTransaction(data: any, id: string, connection: PoolConnection): Promise<any> {
+        const sql = userSql.putUserQuery();
+        const [result] = await connection.query<RowDataPacket[]>(sql, [data, id]);
         return result;
     }
     // actualizar un usuario

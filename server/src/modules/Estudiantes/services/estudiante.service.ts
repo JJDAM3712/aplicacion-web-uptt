@@ -51,6 +51,12 @@ class EstudianteService extends ServiceBase {
             return error;
         }
     }
+    // actualizar el estudiante (transaccion)
+    public async putServiceTransactin(data: any, id: string, Connection: PoolConnection): Promise<any> {
+        const sql = EstudiantesSQL.putEstudianteQuery();
+        const [result] = await Connection.query<RowDataPacket[]>(sql, [data, id]);
+        return result;
+    }
     // actualizar el estudiante
     public async putService(data: any, id: string): Promise<any> {
         const sql = EstudiantesSQL.putEstudianteQuery();
@@ -66,6 +72,12 @@ class EstudianteService extends ServiceBase {
     // borrar el estudiante
     public async deleteService(id: string): Promise<any> {
         const sql = EstudiantesSQL.deleteEstudianteQuery();
+        const [result] = await pool.query(sql, id);
+        return result;
+    }
+    // validar que usuario sea estudiante
+    public async UserIsAlum(id: string): Promise<any> {
+        const sql = EstudiantesSQL.UserIsAlumno();
         const [result] = await pool.query(sql, id);
         return result;
     }

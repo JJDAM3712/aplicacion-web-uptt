@@ -7,12 +7,28 @@ import estudiantesRoutes from "../modules/Estudiantes/routes/estudiante.routes";
 import profesorRoutes from "../modules/profesor/router/profesor.routes";
 import userRoutes from "../modules/usuarios/router/user.routes";
 import sessionRoutes from "../modules/session/routes/session.routes";
-import seccionRoutes from "../modules/seccion/routes/seccion.routes";
+import mencionRoutes from "../modules/mencion/routes/mencion.routes";
+import yearRoutes from "../modules/anno/routes/anno.routes";
+import lapsoRoutes from "../modules/lapso/routes/lapso.routes"
+import evaluacionRoutes from "../modules/evaluacion/routes/evaluacion.routes";
+import seccionRoutes from "../modules/seccion/routes/seccion.routes"
 
 const router = Router();
 
 // rutas
-const rutas = [materiasRoutes, notasRoutes, profesorRoutes, userRoutes, seccionRoutes, sessionRoutes, estudiantesRoutes];
+const rutas = [
+    materiasRoutes, 
+    notasRoutes, 
+    estudiantesRoutes, 
+    profesorRoutes, 
+    userRoutes, 
+    sessionRoutes,
+    mencionRoutes,
+    yearRoutes,
+    lapsoRoutes,
+    evaluacionRoutes,
+    seccionRoutes
+];
 
 router.use("/api", rutas);
 

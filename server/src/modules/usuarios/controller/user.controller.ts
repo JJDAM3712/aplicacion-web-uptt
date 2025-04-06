@@ -85,7 +85,7 @@ class UserController extends AppControllerBase {
 
             if (repeat.length > 0) {
                 if(repeat[0].cedula === data.cedula) {
-                    res.status(409).json({message: "Este nombre de usuario ya se encuentra en uso"});
+                    res.status(409).json({message: "Esta cedula ya se encuentra registrada"});
                     return; 
                 } else if (repeat[0].email === data.email) {
                     res.status(408).json({message: "Este email ya se encuentra en uso"});

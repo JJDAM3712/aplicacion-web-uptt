@@ -5,15 +5,23 @@ import { getDirname } from '../../utils/dirname';
 const __dirname = getDirname(import.meta.url);
 dotenv.config({ path: `${__dirname}/../../../.env` });
 
+const host: string | undefined = process.env.HOST_MAIL;
+const mail: string | undefined = process.env.USER_MAIL;
+const pass: string | undefined = process.env.PASS_MAIL;
+
+if (!host || !mail || !pass) {
+    throw new Error("Variables de entorno vacias")
+}
+
 // conexion con el servidor smtp/gmail
 const createTransporter = (): Transporter => {
     return nodemailer.createTransport({
-        host: process.env.HOST_MAIL,
+        host: host,
         port: 465,
         secure: true,
         auth: {
-            user: process.env.USER_MAIL,
-            pass: process.env.PASS_MAIL,
+            user: mail,
+            pass: pass,
         },
     });
 } 
@@ -24,7 +32,7 @@ export const EnviarMail = async (data: any): Promise<any> => {
         const transporter = createTransporter();
         const info = await transporter.sendMail({
             // correo de origen
-            from: `TEST ${process.env.USER_MAIL}`,
+            from: `TEST ${mail}`,
             // correo destino
             to: data.email,
             // nombre del mensajero

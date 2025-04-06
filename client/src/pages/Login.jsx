@@ -69,6 +69,7 @@ function Login() {
     <Container>
       <HomePage />
       <DivisionPag texto="Menciones" />
+      
      <div className="tarjetasDeMension">
       <TarjetaMension 
           estilo="rgb(51, 169, 204)" 
@@ -78,7 +79,7 @@ function Login() {
         />
       <TarjetaMension 
           estilo="red"
-          texto="Profesional  en  Deporte y Recreación" 
+          texto="Profesional  en  Salud y Recreación" 
           descripcion="El Profesional  en  Deporte y Recreación debe estar preparado para desempeñarse en diversos contextos educativos, promoviendo no solo la actividad física, sino también una cultura de salud y bienestar integral en la comunidad." 
           imag={Imagenes.imagen2}
         />

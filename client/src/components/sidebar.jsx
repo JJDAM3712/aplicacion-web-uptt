@@ -99,23 +99,28 @@ const linksArray = [
   {
     label: "Notas",
     icon: <AiOutlineProfile />,
-    to: "/app/inventario",
+    to: "/app/notas",
   },
   {
     label: "Materias",
     icon: <AiOutlineForm />,
-    to: "/app/departamentos",
+    to: "/app/materias",
   },
  
   {
     label: "Menciones",
     icon: <MdCategory />,
-    to: "/app/categoria",
+    to: "/app/menciones",
   },
   {
     label: "Clases",
     icon: <PiBankBold />,
-    to: "/app/usuario",
+    to: "/app/clases",
+  },
+  {
+    label: "Evaluacion",
+    icon: <AiOutlineForm />,
+    to: "/app/evaluacion",
   },
  
 ];

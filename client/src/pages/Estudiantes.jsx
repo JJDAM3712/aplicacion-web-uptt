@@ -4,33 +4,73 @@ import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { useDownloadExcel } from "react-export-table-to-excel";
 import { Datepicker, Button } from "flowbite-react";
-import { RegisAsist } from "../components/Modal";
+import { RegisEstudiante, FiltrarEstudiantes } from "../components/Modal";
 import { HiOutlineArrowRight } from "react-icons/hi";
 import socketIOClient from 'socket.io-client';
 import { ServidorURL } from "../config/config";
 import { Buscador } from "../components/buscador";
+import { alert } from "../utils/generic";
 
 
 export function Estudiantes() {
+  const [datos, setDatos] = useState([]); // Datos completos de estudiantes
+  const [datosFiltrados, setDatosFiltrados] = useState([]); // Datos después de aplicar filtros
+  const TablaAlumno = useRef(null);
+
+  // Descargar datos de la tabla a un archivo Excel
+  const { onDownload } = useDownloadExcel({
+    currentTableRef: TablaAlumno.current,
+    filename: "Estudiantes",
+    sheet: "Hoja 1",
+  });
+
+  // Obtener todos los datos iniciales de estudiantes al cargar
+  useEffect(() => {
+    setDatosFiltrados([]);
+    const fetchDatosEstudiantes = async () => {
+      try {
+        const res = await axios.get(`${ServidorURL}/estudiantes`);
+        setDatos(res.data);
+        setDatosFiltrados(res.data); // Inicialmente muestra todos los datos
+      } catch (error) {
+        console.error("Error al obtener datos de estudiantes:", error);
+      }
+    };
+
+    fetchDatosEstudiantes();
+  }, []);
+
+  // Función para manejar el filtro desde el componente FiltrarClases
+  const manejarFiltro = (filtrosAplicados) => {
+    if (!filtrosAplicados || filtrosAplicados.length === 0) {
+      setDatosFiltrados([]);
+      alert("No hay estudiantes!","No se encontraron estudiantes en esta clase.", "warning");
+      return;
+    }
+    setDatosFiltrados(filtrosAplicados || []);
+  };
+
   return (
     <Container>
       <h1>Estudiantes</h1>
-      <Container>
+      <div className="flex flex-wrap gap-4 mb-4">
+        {/* Componente de filtro */}
+        <FiltrarEstudiantes onFilter={manejarFiltro}/>
 
-          <form>
-            <div className="flex flex-wrap gap-2 mb-1">
-              <RegisAsist />
+        {/* Componente de registro */}
+        <RegisEstudiante />
 
-              <Button color="success" type="submit">
-                Generar Reporte
-                <HiOutlineArrowRight className="ml-2 h-5 w-5" />
-              </Button>
-              <Buscador />
-            </div>
-          </form>
+        {/* Botón para generar reporte */}
+        <Button color="success" onClick={onDownload}>
+          Generar Reporte
+        </Button>
 
-      </Container>
-      <TablaEstudiantes/>
+        {/* Componente de buscador */}
+        <Buscador datos={datos} setDatosFiltrados={setDatosFiltrados} />
+      </div>
+
+      {/* Tabla de notas */}
+      <TablaEstudiantes innerRef={TablaAlumno} datos={datosFiltrados} setDatos={setDatosFiltrados} />
     </Container>
   );
 }

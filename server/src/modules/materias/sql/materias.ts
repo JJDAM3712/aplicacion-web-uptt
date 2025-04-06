@@ -10,7 +10,7 @@ class MateriasSQL {
 
     // constructor con las consultas
     constructor() {
-        this.getMaterias = "SELECT * FROM materias";
+        this.getMaterias = "SELECT * FROM materias ORDER BY materia ASC";
         this.getMateriasById = "SELECT * FROM materias WHERE id_materia = ?";
         this.insertMaterias = "INSERT INTO materias SET ?";
         this.updateMaterias = "UPDATE materias SET ? WHERE id_materia = ?";
