@@ -3,6 +3,7 @@ import { Request, Response } from "express";
 import { AppControllerBase } from "../../../controller/app.controller";
 import userService from "../../usuarios/services/user.service";
 import { io } from "../../../app";
+import profesorService from "../service/profesor.service";
 
 
 class ProfesorController extends AppControllerBase {
@@ -69,7 +70,7 @@ class ProfesorController extends AppControllerBase {
         try {
             const {id} = req.params;
             // validar que el profesor exista
-            const exist = await ProfesorService.getServiceById(id);
+            const exist = await ProfesorService.getProfServiceById(id);
             
             if (exist.length === 0) {
                 res.status(404).json({ message: "El profesor no existe"});
@@ -210,6 +211,29 @@ class ProfesorController extends AppControllerBase {
                 anio,
                 secciones
             })
+        } catch (error) {
+            res.status(500).json({
+                message: "Error al obtener la clase",
+                error: error
+            })
+        }
+    }
+    // filtro de clases en notas
+    public async filterNotasController(req: Request, res: Response): Promise<void> {
+        try {
+            const {id} = req.params;
+
+            const filter = await profesorService.filterNotas(id);
+            if (filter.length === 0) {
+                res.status(404).json({
+                    message: "El profesor no tiene una clase"
+                });
+                return;
+            }
+            res.status(200).json({
+                message: filter
+            });
+
         } catch (error) {
             res.status(500).json({
                 message: "Error al obtener la clase",

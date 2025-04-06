@@ -141,6 +141,12 @@ class ProfesorService extends ServiceBase {
         const [result] = await pool.query<RowDataPacket[]>(sql, id);
         return result;
     }
+    // filtrar clases en notas
+    public async filterNotas(id:string): Promise<any> {
+        const sql = ProfesorSQL.FilterNotas();
+        const [result] = await pool.query<RowDataPacket[]>(sql, id);
+        return result;
+    }
 }
 
 export default new ProfesorService();

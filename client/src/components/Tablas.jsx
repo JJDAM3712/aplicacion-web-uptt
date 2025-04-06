@@ -28,7 +28,7 @@ import { ServidorURL } from "../config/config";
 
 //-------------------------------------------------
 // tabla profesores
-export function TablaProfesores({ innerRef, datos }) {
+export function TablaProfesores({ innerRef, datos, setDatos }) {
   const [currentPage, setCurrentPage] = useState(1); 
   const itemsPerPage = 10;
 
@@ -62,9 +62,9 @@ export function TablaProfesores({ innerRef, datos }) {
                 className="bg-white"
                 key={profesores.id_usuario}
               >
-              <Table.Cell>
-                <CheckboxVeri id={profesores.id_usuario}/>
-              </Table.Cell>
+                <Table.Cell>
+                  <CheckboxVeri id={profesores.id_usuario}/>
+                </Table.Cell>
                 <Table.Cell className="whitespace-nowrap font-medium text-gray-900 ">
                   {profesores.cedula}
                 </Table.Cell>
@@ -115,8 +115,11 @@ export function TablaEstudiantes({innerRef, datos, setDatos}) {
     <Container>
       <div className="ContenedorTabla">
         <h1>Estudiantes:</h1>
+        {(!currentItems || currentItems.length === 0) ? (
+          <p className="text-center">Selecciona una clase para filtrar los datos.</p>
+        ) : (
         <Table>
-          <Table.Head className="border-b-2 uppercase">
+          <Table.Head className="border-b-2 uppercase" ref={innerRef}>
             <Table.HeadCell>Activar</Table.HeadCell>
             <Table.HeadCell>Cedula</Table.HeadCell>
             <Table.HeadCell>Nombres</Table.HeadCell>
@@ -172,6 +175,7 @@ export function TablaEstudiantes({innerRef, datos, setDatos}) {
             ))}
           </Table.Body>
         </Table>
+        )}
         <Pagination
           itemsPerPage={itemsPerPage}
           totalItems={datos.length}
@@ -272,27 +276,53 @@ export function TablaMaterias() {
 }
 //-------------------------------------------------
 // tabla de notas
-export function TablaNotas({ innerRef, datos, setDatos }) {
-  const [alumnos, setAlumnos] = useState(() => 
-    datos.map((estudiantes) => ({
-      id_estudiante: estudiantes.id_estudiante,
-      cedula: estudiantes.cedula,
-      p_nombre: estudiantes.p_nombre,
-      p_apellido: estudiantes.p_apellido,
-      notas: [0, 0, 0, 0]
-    }))
-  );
+export function TablaNotas({ datos, setDatos, idLapso, idEvaluacion, idClase, onGuardarNotas}) {
+  const [alumnos, setAlumnos] = useState([]);
+  const [notasDatos, setNotasDatos] = useState([]);
   useEffect(() => {
-    setAlumnos(
-      datos.map((estudiantes) => ({
-        id_estudiante: estudiantes.id_estudiante,
-        cedula: estudiantes.cedula,
-        p_nombre: estudiantes.p_nombre,
-        p_apellido: estudiantes.p_apellido,
-        notas: [0, 0, 0, 0],
-      }))
-    );
+    if (datos && datos.length > 0) {
+      setAlumnos(
+        datos.map((estudiantes) => ({
+          id_estudiante: estudiantes.id_estudiante,
+          cedula: estudiantes.cedula,
+          p_nombre: estudiantes.p_nombre,
+          p_apellido: estudiantes.p_apellido,
+          notas: estudiantes.notas && estudiantes.notas.length === 4
+                ? estudiantes.notas
+                : [0, 0, 0, 0],
+        }))
+      );
+    } else {
+      setAlumnos([]);
+    }
   }, [datos]);
+
+  useEffect(() => {
+    const ShowNotas = async () => {
+      try {
+        const res = await axios.get(`${ServidorURL}/notas`);
+        const notasExistentes = res.data; // Asegúrate de que res.data contiene las notas correctas
+  
+        setAlumnos((prevAlumnos) =>
+          prevAlumnos.map((alumno) => {
+            const notasAlumno = notasExistentes.find(
+              (nota) => nota.id_estudiante === alumno.id_estudiante
+            );
+            return {
+              ...alumno,
+              notas: notasAlumno
+                ? [notasAlumno.nota1, notasAlumno.nota2, notasAlumno.nota3, notasAlumno.nota4]
+                : [0, 0, 0, 0], // Asignar valores predeterminados si no hay notas
+            };
+          })
+        );
+      } catch (error) {
+        console.error("Error al mostrar las notas:", error);
+      }
+    };
+  
+    ShowNotas();
+  }, []);
 
   const handleNotaChange = (e, estudianteId, indexNota) => {
     const { value } = e.target;
@@ -311,10 +341,17 @@ export function TablaNotas({ innerRef, datos, setDatos }) {
       );
     }
   };
+  // Enviar notas actualizadas al padre
+  useEffect(() => {
+    if (onGuardarNotas) {
+      // Envía las notas al padre
+      onGuardarNotas(alumnos); 
+    }
+  }, [alumnos]);
 
   // paginacion de la tabla
   const [currentPage, setCurrentPage] = useState(1); 
-  const itemsPerPage = 10; 
+  const itemsPerPage = 30; 
   // Calcula los elementos que se mostrarán en la página actual
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -323,48 +360,57 @@ export function TablaNotas({ innerRef, datos, setDatos }) {
   // Función para cambiar la página actual
   const changePage = (event) => {
     const pageNumber = Number(event.target.textContent);
-    setCurrentPage(pageNumber);
+    if (pageNumber >= 1 && pageNumber <= Math.ceil(alumnos.length / itemsPerPage)) {
+      setCurrentPage(pageNumber);
+    }
   };
   return (
     <Container>
       <div className="ContenedorTabla">
         <h1>Notas:</h1>
-        <Table className="uppercase" ref={innerRef}>
-          <Table.Head className="border-b-2">
-            <Table.HeadCell>Cedula</Table.HeadCell>
-            <Table.HeadCell>Nombres</Table.HeadCell>
-            <Table.HeadCell>Apellidos</Table.HeadCell>
-            <Table.HeadCell>1er Nota</Table.HeadCell>
-            <Table.HeadCell>2da Nota</Table.HeadCell>
-            <Table.HeadCell>3er Nota</Table.HeadCell>
-            <Table.HeadCell>4ta Nota</Table.HeadCell>
-            <Table.HeadCell></Table.HeadCell>
-          </Table.Head>
-          <Table.Body className="divide-y">
-            {currentItems.map((alumno) => (
-              <Table.Row className="bg-white" key={alumno.id_usuario}>
-                <Table.Cell className="whitespace-nowrap">{alumno.cedula}</Table.Cell>
-                <Table.Cell>{[alumno.p_nombre," ",alumno.s_nombre]}</Table.Cell>
-                <Table.Cell>{[alumno.p_apellido," ",alumno.s_apellido]}</Table.Cell>
+        {(!datos || datos.length === 0) ? (
+          <p className="text-center">Selecciona una clase para filtrar los datos.</p>
+        ) : (
+          <Table className="uppercase">
+            <Table.Head className="border-b-2">
+              <Table.HeadCell>Cedula</Table.HeadCell>
+              <Table.HeadCell>Nombres</Table.HeadCell>
+              <Table.HeadCell>Apellidos</Table.HeadCell>
+              <Table.HeadCell>1er Nota</Table.HeadCell>
+              <Table.HeadCell>2da Nota</Table.HeadCell>
+              <Table.HeadCell>3er Nota</Table.HeadCell>
+              <Table.HeadCell>4ta Nota</Table.HeadCell>
+              <Table.HeadCell></Table.HeadCell>
+            </Table.Head>
+            <Table.Body className="divide-y">
+              {currentItems.map((alumno) => (
+                <Table.Row 
+                  className={`bg-white ${alumno.modificadas ? "bg-yellow-100" : ""}`} 
+                  key={alumno.id_estudiante}
+                  >
+                  <Table.Cell className="whitespace-nowrap">{alumno.cedula}</Table.Cell>
+                  <Table.Cell>{[alumno.p_nombre," ",alumno.s_nombre]}</Table.Cell>
+                  <Table.Cell>{[alumno.p_apellido," ",alumno.s_apellido]}</Table.Cell>
 
-                {alumno.notas.map((nota, index) => (
-                  <Table.Cell key={index}>
-                      <TextInput
-                          className="input_notas"
-                          type="number"
-                          min="0"
-                          max="20"
-                          value={nota}
-                          onChange={(e) =>
-                              handleNotaChange(e, alumno.id_estudiante, index)
-                          }
-                      />
-                  </Table.Cell>
-                ))}
-              </Table.Row>
-            ))}
-          </Table.Body>
-        </Table>
+                  {alumno.notas.map((nota, index) => (
+                    <Table.Cell key={index}>
+                        <TextInput
+                            className="input_notas"
+                            type="number"
+                            min="0"
+                            max="20"
+                            value={nota ?? ""}
+                            onChange={(e) =>
+                                handleNotaChange(e, alumno.id_estudiante, index)
+                            }
+                        />
+                    </Table.Cell>
+                  ))}
+                </Table.Row>
+              ))}
+            </Table.Body>
+          </Table>
+        )}
         <Pagination
           itemsPerPage={itemsPerPage}
           totalItems={datos.length}

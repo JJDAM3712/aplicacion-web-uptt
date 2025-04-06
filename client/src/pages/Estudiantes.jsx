@@ -4,80 +4,73 @@ import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { useDownloadExcel } from "react-export-table-to-excel";
 import { Datepicker, Button } from "flowbite-react";
-import { FiltrarClases, RegisEstudiante } from "../components/Modal";
+import { RegisEstudiante, FiltrarEstudiantes } from "../components/Modal";
 import { HiOutlineArrowRight } from "react-icons/hi";
 import socketIOClient from 'socket.io-client';
 import { ServidorURL } from "../config/config";
 import { Buscador } from "../components/buscador";
+import { alert } from "../utils/generic";
 
 
 export function Estudiantes() {
-  const [datos, setDatos] = useState([]);
-  const [filteredData, setFilteredData] = useState(datos);
-  const [datosFiltrados, setDatosFiltrados] = useState([]);
+  const [datos, setDatos] = useState([]); // Datos completos de estudiantes
+  const [datosFiltrados, setDatosFiltrados] = useState([]); // Datos después de aplicar filtros
+  const TablaAlumno = useRef(null);
 
+  // Descargar datos de la tabla a un archivo Excel
+  const { onDownload } = useDownloadExcel({
+    currentTableRef: TablaAlumno.current,
+    filename: "Estudiantes",
+    sheet: "Hoja 1",
+  });
+
+  // Obtener todos los datos iniciales de estudiantes al cargar
   useEffect(() => {
-    ShowEstudiantes();
-    
-    const socket = socketIOClient(`http://localhost:4000`, {
-        path: '/api/socket.io'
-    });
-
-    socket.on('ActualizarTable', (nuevasAsistencias) => {
-      setDatos(nuevasAsistencias);
-    });
-
-    return () => {
-      socket.disconnect();
+    setDatosFiltrados([]);
+    const fetchDatosEstudiantes = async () => {
+      try {
+        const res = await axios.get(`${ServidorURL}/estudiantes`);
+        setDatos(res.data);
+        setDatosFiltrados(res.data); // Inicialmente muestra todos los datos
+      } catch (error) {
+        console.error("Error al obtener datos de estudiantes:", error);
+      }
     };
+
+    fetchDatosEstudiantes();
   }, []);
 
-  const ShowEstudiantes = async () => {
-    const res = await axios.get(`${ServidorURL}/estudiantes`);
-    setDatos(res.data);
-    setFilteredData(res.data);
-  }
-  const TablaPers = useRef(null);
-
-  const { onDownload } = useDownloadExcel({
-    currentTableRef: TablaPers.current,
-    filename: 'Profesores',
-    sheet: 'Hoja 1'
-  });
-  // Función para manejar filtros y actualizar datosFiltrados
-  const manejarFiltro = (filtros) => {
-    const resultados = datos.filter((estudiante) => {
-      // Verifica todos los filtros aplicados
-      return (
-        (!filtros.id_user || estudiante.id_user === filtros.id_user) &&
-        (!filtros.id_materias || estudiante.id_materias === filtros.id_materias) &&
-        (!filtros.id_anno || estudiante.id_anno === filtros.id_anno) &&
-        (!filtros.id_seccion || estudiante.id_seccion === filtros.id_seccion) &&
-        (!filtros.id_mension || estudiante.id_mension === filtros.id_mension)
-      );
-    });
-    setDatosFiltrados(resultados);
+  // Función para manejar el filtro desde el componente FiltrarClases
+  const manejarFiltro = (filtrosAplicados) => {
+    if (!filtrosAplicados || filtrosAplicados.length === 0) {
+      setDatosFiltrados([]);
+      alert("No hay estudiantes!","No se encontraron estudiantes en esta clase.", "warning");
+      return;
+    }
+    setDatosFiltrados(filtrosAplicados || []);
   };
-  
+
   return (
     <Container>
       <h1>Estudiantes</h1>
-      <Container>
+      <div className="flex flex-wrap gap-4 mb-4">
+        {/* Componente de filtro */}
+        <FiltrarEstudiantes onFilter={manejarFiltro}/>
 
-          <form>
-            <div className="flex flex-wrap gap-2 mb-1">
-              <RegisEstudiante />
-              <FiltrarClases onFilter={manejarFiltro} />
-              <Button color="success" type="submit">
-                Generar Reporte
-                <HiOutlineArrowRight className="ml-2 h-5 w-5" />
-              </Button>
-              <Buscador data={datos} onSearch={setFilteredData} />
-            </div>
-          </form>
+        {/* Componente de registro */}
+        <RegisEstudiante />
 
-      </Container>
-      <TablaEstudiantes innerRef={TablaPers} datos={filteredData}/>
+        {/* Botón para generar reporte */}
+        <Button color="success" onClick={onDownload}>
+          Generar Reporte
+        </Button>
+
+        {/* Componente de buscador */}
+        <Buscador datos={datos} setDatosFiltrados={setDatosFiltrados} />
+      </div>
+
+      {/* Tabla de notas */}
+      <TablaEstudiantes innerRef={TablaAlumno} datos={datosFiltrados} setDatos={setDatosFiltrados} />
     </Container>
   );
 }

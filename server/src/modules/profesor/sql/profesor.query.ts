@@ -17,6 +17,7 @@ class ProfesorSQL {
     public filterMencion: string;
     public filterAnios: string;
     public filterSeccion: string;
+    public filterNotas: string;
     
     // SELECT * FROM usuarios WHERE id_rol = 2 AND id_usuario =
 
@@ -93,7 +94,14 @@ class ProfesorSQL {
         this.filterMencion = "SELECT DISTINCT mn.id_mension, mn.mension FROM clases c JOIN mensiones mn ON c.id_mension = mn.id_mension WHERE c.id_user = ?";
         this.filterAnios = "SELECT DISTINCT y.id_anno, y.anno FROM clases c JOIN year y ON c.id_anno = y.id_anno WHERE c.id_user = ?";
         this.filterSeccion = "SELECT DISTINCT s.id_seccion, s.seccion FROM clases c JOIN secciones s ON c.id_seccion = s.id_seccion WHERE c.id_user = ?";
-
+        // consulta para filtrar clases en notas
+        this.filterNotas = `SELECT * FROM clases c
+                                JOIN usuarios u ON c.id_user = u.id_usuario
+                                JOIN materias m ON c.id_materias = m.id_materia
+                                JOIN year y ON c.id_anno = y.id_anno
+                                JOIN secciones s ON c.id_seccion = s.id_seccion
+                                JOIN mensiones mn ON c.id_mension = mn.id_mension
+                                WHERE c.id_user = ?`;
     }
     // mostrar todos los profesores con sus clases
     getProfClasesQuery() {return this.getProfesorClases}
@@ -128,6 +136,8 @@ class ProfesorSQL {
     FilterMenciones() {return this.filterMencion}
     FilterAnios() {return this.filterAnios}
     FilterSecciones() {return this.filterSeccion}
+    // querys para filtrar las clases en la nota
+    FilterNotas() {return this.filterNotas}
 }
 
 export default new ProfesorSQL();

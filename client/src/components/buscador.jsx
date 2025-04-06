@@ -1,4 +1,3 @@
-import {HiOutlineSearch } from "react-icons/hi";
 import "../css/buscador.css";
 import { useState } from "react";
 

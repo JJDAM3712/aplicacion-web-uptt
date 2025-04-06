@@ -16,22 +16,76 @@ import axios from "axios";
 import { alert, PeticionAxios } from "../utils/generic";
 import { ServidorURL } from "../config/config";
 import "../css/principal.css";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../auth/AuthProvided";
 
 // ---------------------------------------- 
-// login
+// login 69454----318141
 export function Login() {
   const [openModal, setOpenModal] = useState(false);
+  const [datos, setDatos] = useState({
+    cedula: "",
+    clave: "",
+  });
+  const navigate = useNavigate();
+  // accede a la funcion login de useAuth
+  const { authState, login } = useAuth();
 
+  // En tu componente de inicio de sesión
+  useEffect(() => {
+    if (authState.isAuthenticated) {
+      // Redirige cuando el estado de autenticación cambie a true
+      navigate("/app/*");
+    }
+  }, [authState.isAuthenticated, navigate]);
+
+  const handleChange = (e) => {
+    let names = e.target.name;
+    let value = e.target.value;
+    setDatos({ ...datos, [names]: value });
+  };
   // limpiar campos del formulario
   const limpiarCampos = () => {
     setData({
-      usuario: "",
-      password: ""
+      cedula: "",
+      clave: ""
     });
   };
   const handleCloseModal = () => {
     setOpenModal(false);
+    limpiarCampos();
   };
+  const handleSend = async (e) => {
+    e.preventDefault();
+
+    try {
+      if (datos.cedula.trim() === "" && datos.clave.trim() === "") {
+        alert("Campo vacio","Debes ingresar todos los datos","warning");
+      } else {
+        const res = await axios.post(`${ServidorURL}/sessionLogin`, datos, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        });
+        
+        if (res.status === 200) {
+          login(res.data.mensaje);
+          navigate("/app/*");
+        }
+      }
+    } catch (error) {
+      console.error('Error al iniciar sesión:', error.response);
+      if (error.response && error.response.status === 404) {
+        alert("Oops...",`Cedula o contraseña incorerctos!`,"error");
+      } else {
+        alert("Oops...",`Ha ocurrido un error! ${error}`,"error");
+      }
+      return console.log(error);
+    }
+  };
+
+
   return (
     <Container>
       <>
@@ -44,41 +98,38 @@ export function Login() {
           position="top-center"
         >
           <Modal.Body>
-            <form
-              className="flex flex-col gap-4 max-w-full uppercase"
-            >
-              <div className="flex items-center justify-center mb-4">
+            <form action="" className="flex flex-col gap-2 max-w-full" onSubmit={handleSend}>
+              <div className="flex justify-center">
                 <img src={logo} alt="Logo" className="w-24" />
               </div>
-              <div className="flex items-center justify-center">
-                <p className="heading text-center">Ingresar al Sistema</p>
-              </div>
-              <div>
-                <div className="mb-2 block">
-                  <Label htmlFor="usuario" value="Usuario:" />
-                </div>
-                <TextInput
-                  id="id_usuario"
+              <p className="heading flex justify-center">Iniciar sesión</p>
+              <div className="inputContainer">
+                <HiUser className="inputIcon" />
+                <input
                   type="text"
-                  placeholder="Ingrese el Usuario"
-                  name="usuario"
-                  shadow
-                  className="uppercase"
-                />
-                <div className="mb-2 block">
-                  <Label htmlFor="password" value="Contraseña:" />
-                </div>
-                <TextInput
-                  id="id_usuario"
-                  type="password"
-                  name="password"
-                  placeholder="Contraseña"
-                  inputMode="numeric"
-                  pattern="[0-9]*"
-                  shadow
+                  className="inputField"
+                  id="cedula"
+                  name="cedula"
+                  value={datos.cedula}
+                  placeholder="Cedula"
+                  onChange={handleChange}
                 />
               </div>
-              <Button className="boton-login">Ingresar</Button>
+
+              <div className="inputContainer">
+                <HiLockClosed className="inputIcon" />
+                <input
+                  type="password"
+                  className="inputField"
+                  id="clave"
+                  name="clave"
+                  value={datos.clave}
+                  onChange={handleChange}
+                  placeholder="Clave"
+                />
+              </div>
+
+              <button id="button">Ingresar</button>
             </form>
           </Modal.Body>
           <Modal.Footer>
@@ -570,12 +621,20 @@ export function EliminarProfesor({ id }) {
   const [openModal, setOpenModal] = useState(false);
   const deleteDepa = async () => {
     try {
-      await axios.delete(`${ServidorURL}/profesor/${id}`);
+      const res = await axios.delete(`${ServidorURL}/profesor/${id}`);
       alert("Profesor", "Eliminado exitosamente!", "success");
       setOpenModal(false);
     } catch (error) {
+      if (error.response && error.response.status === 404) {
+        alert(
+          "Profesor",
+          `El profesor no existe`,
+          "error"
+        );
+      } else {
+        alert("Profesor", "Error en la eliminación!", "error");
+      }
       console.error("error", error);
-      alert("Profesor", "Error en la eliminación!", "error");
       setOpenModal(false);
     }
   };
@@ -3624,14 +3683,9 @@ export function EditarEvaluacion({ id }) {
     </Container>
   );
 }
-
 // filtrar clases
-export function FiltrarClases({manejarFiltro}) {
+export function FiltrarClases({onFilter, dataClases, filteredData, materia, setMateria,}) {
   const [openModal, setOpenModal] = useState(false);
-  const [datosAnio, setDatosAnio] = useState([]);
-  const [datoSeccion, setDatoSeccion] = useState([]);
-  const [datosMencion, setDatosMencion] = useState([]);
-
   const [data, setData] = useState({
       id_anno: "Selecciona:",
       id_seccion: "Selecciona:",
@@ -3647,25 +3701,214 @@ export function FiltrarClases({manejarFiltro}) {
     onFilter([]); // Limpia los resultados en la tabla
   };
 
-  useEffect(() => {
-    // Obtener listas para los selectores (años, secciones y menciones)
-    const fetchFiltros = async () => {
+  // Manejar cambios en los selectores
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setData((prevData) => ({
+      ...prevData,
+      [name]: value
+    }));
+  };
+  // Solicitar los estudiantes filtrados al backend
+  const aplicarFiltro = async () => {
+    if (data.id_anno !== "Selecciona:" && data.id_seccion !== "Selecciona:" && data.id_mension !== "Selecciona:") {
       try {
-        const resAnio = await axios.get(`${ServidorURL}/anno`);
-        const resSeccion = await axios.get(`${ServidorURL}/seccion`);
-        const resMencion = await axios.get(`${ServidorURL}/mencion`);
-
-        console.log("año", resAnio.data)
-        setDatosAnio(resAnio.data);
-        setDatoSeccion(resSeccion.data);
-        setDatosMencion(resMencion.data);
+        const res = await axios.get(`${ServidorURL}/estudiantes?`, {
+          params: {
+            anno: data.id_anno,
+            seccion: data.id_seccion,
+            mension: data.id_mension,
+            _: new Date().getTime()
+          },
+          headers: {
+            "Content-Type": "application/json"
+          }
+        });
+        if (res.data.length === 0) {
+          alert(
+            "Campos Vacios!",
+            "No se encontraron estudiantes para los filtros seleccionados.", 
+            "warning"
+          );
+        }
+        onFilter(res.data); // Envía los estudiantes filtrados al componente padre
       } catch (error) {
-        console.error("Error al cargar los filtros:", error);
+        console.error("Error al aplicar el filtro:", error);
       }
-    };
+    } else {
+      alert("Por favor selecciona todos los filtros.");
+    }
+  };
 
-    fetchFiltros();
-  }, []);
+  return (
+    <Container>
+      <>
+        <Button onClick={() => setOpenModal(true)} className="m-auto">
+          Buscar Clase
+        </Button>
+        <Modal
+          show={openModal}
+          onClose={() => setOpenModal(false)}
+          position="top-center"
+        >
+          <Modal.Header>Seleccionar Clase</Modal.Header>
+          <Modal.Body>
+            <form className="flex flex-col gap-4">
+              {/* Selector de Materias */}
+              <div>
+                <Label htmlFor="id_materia" value="Materia:" />
+                <Select
+                  id="id_materia"
+                  name="id_materia"
+                  value={materia}
+                  onChange={(e) => {
+                    setMateria(e.target.value)
+                  }}
+                >
+                  <option value="Seleccionar:" disabled>Selecciona:</option>
+                  {
+                    dataClases.clases && dataClases.clases.length > 0 ? (
+                      dataClases.clases.map((clase, index) => (
+                      <option value={clase.id_materia} key={index}>
+                        {clase.materia}
+                      </option>
+                      ))
+                    ) : (
+                      <option disabled>No hay materias disponibles</option>
+                    )
+                  }
+                </Select>
+              </div>
+              {/* Selector de Año */}
+              <div>
+                <Label htmlFor="id_anno" value="Año:" />
+                <Select
+                  id="id_anno"
+                  name="id_anno"
+                  value={data.id_anno}
+                  onChange={handleChange}
+                >
+                  <option value="Selecciona:" disabled>Selecciona:</option>
+                  {
+                    filteredData.anio && filteredData.anio.length > 0 ? (
+                      filteredData.anio.map((clase, index) => (
+                      <option value={clase.id_anno} key={index}>
+                        {clase.anno}
+                      </option>
+                      ))
+                    ) : (
+                      <option disabled>No hay años disponibles</option>
+                    )
+                  }
+                </Select>
+              </div>
+              {/* Selector de Sección */}
+              <div>
+                <Label htmlFor="id_seccion" value="Sección:" />
+                <Select
+                  id="id_seccion"
+                  name="id_seccion"
+                  value={data.id_seccion}
+                  onChange={handleChange}
+                  disabled={data.id_seccion.length === 0}
+                >
+                  <option value="Selecciona:" disabled>Selecciona:</option>
+                  {
+                    filteredData.secciones && filteredData.secciones.length > 0 ? (
+                      filteredData.secciones.map((clase, index) => (
+                      <option value={clase.id_seccion} key={index}>
+                        {clase.seccion}
+                      </option>
+                      ))
+                    ) : (
+                      <option disabled>No hay años disponibles</option>
+                    )
+                  }
+                </Select>
+              </div>
+              {/* Selector de Mención */}
+              <div>
+                <Label htmlFor="id_mension" value="Mención:" />
+                <Select
+                  id="id_mension"
+                  name="id_mension"
+                  value={data.id_mension}
+                  onChange={handleChange}
+                  disabled={data.id_mension.length === 0}
+                >
+                  <option value="Selecciona:" disabled>Selecciona:</option>
+                  {
+                    filteredData.menciones && filteredData.menciones.length > 0 ? (
+                      filteredData.menciones.map((clase, index) => (
+                      <option value={clase.id_mension} key={index}>
+                        {clase.mension}
+                      </option>
+                      ))
+                    ) : (
+                      <option disabled>No hay años disponibles</option>
+                    )
+                  }
+                </Select>
+              </div>
+              {/* Botones de Aplicar y Limpiar */}
+              <div className="flex gap-4 justify-center">
+                <Button color="warning" onClick={aplicarFiltro}>
+                  Aplicar Filtro
+                </Button>
+                <Button color="dark" onClick={limpiarFiltros}>
+                  Limpiar Filtros
+                </Button>
+              </div>
+            </form>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button color="dark" onClick={() => setOpenModal(false)}>
+              Cerrar
+            </Button>
+          </Modal.Footer>
+        </Modal>
+      </>
+    </Container>
+  );
+}
+export function FiltrarEstudiantes({onFilter}) {
+  const [openModal, setOpenModal] = useState(false);
+  const [data, setData] = useState({
+      id_anno: "Selecciona:",
+      id_seccion: "Selecciona:",
+      id_mension: "Selecciona:"
+  });
+  const [dataSeccion, setDataSeccion] = useState([]);
+  const [dataAnno, setDataAnno] = useState([]);
+  const [dataMencion, setDataMencion] = useState([]);
+
+ useEffect(() => {
+     const fetchData = async () => {
+       try {
+         const [reccionRes, annoRes, mencionRes ] = await Promise.all([
+           axios.get(`${ServidorURL}/seccion`),
+           axios.get(`${ServidorURL}/anno`),
+           axios.get(`${ServidorURL}/mencion`)
+         ]);
+         setDataSeccion(reccionRes.data);
+         setDataAnno(annoRes.data);
+         setDataMencion(mencionRes.data);
+       } catch (error) {
+         console.error("Error al obtener datos iniciales:", error);
+       }
+     };
+     fetchData();
+   }, []);
+
+  const limpiarFiltros = () => {
+    setData({
+      id_anno: "Selecciona:",
+      id_seccion: "Selecciona:",
+      id_mension: "Selecciona:"
+    });
+    // Limpia los resultados en la tabla
+    onFilter([]);
+  };
 
   // Manejar cambios en los selectores
   const handleChange = (e) => {
@@ -3679,11 +3922,15 @@ export function FiltrarClases({manejarFiltro}) {
   const aplicarFiltro = async () => {
     if (data.id_anno !== "Selecciona:" && data.id_seccion !== "Selecciona:" && data.id_mension !== "Selecciona:") {
       try {
-        const res = await axios.get(`${ServidorURL}/estudiantes`, {
+        const res = await axios.get(`${ServidorURL}/estudiantes?`, {
           params: {
             anno: data.id_anno,
             seccion: data.id_seccion,
-            mension: data.id_mension
+            mension: data.id_mension,
+            _: new Date().getTime()
+          },
+          headers: {
+            "Content-Type": "application/json"
           }
         });
         onFilter(res.data); // Envía los estudiantes filtrados al componente padre
@@ -3699,76 +3946,78 @@ export function FiltrarClases({manejarFiltro}) {
     <Container>
       <>
         <Button onClick={() => setOpenModal(true)} className="m-auto">
-          Filtrar Clase
+          Buscar Clase
         </Button>
         <Modal
           show={openModal}
           onClose={() => setOpenModal(false)}
           position="top-center"
         >
-          <Modal.Header>Filtrar Clase</Modal.Header>
+          <Modal.Header>Seleccionar Clase</Modal.Header>
           <Modal.Body>
-          <form className="flex flex-col gap-4">
-            {/* Selector de Año */}
-            <div>
-              <Label htmlFor="id_anno" value="Año:" />
-              <Select
-                id="id_anno"
-                name="id_anno"
-                value={data.id_anno}
-                onChange={handleChange}
-              >
-                <option value="Selecciona:" disabled>Selecciona:</option>
-                {datosAnio.map((anio) => (
-                  <option value={anio.anno} key={anio.id_anno}>
-                    {anio.anno}
-                  </option>
-                ))}
-              </Select>
-            </div>
-            {/* Selector de Sección */}
-            <div>
-              <Label htmlFor="id_seccion" value="Sección:" />
-              <Select
-                id="id_seccion"
-                name="id_seccion"
-                value={data.id_seccion}
-                onChange={handleChange}
-              >
-                <option value="Selecciona:" disabled>Selecciona:</option>
-                {datoSeccion.map((seccion) => (
-                  <option value={seccion.seccion} key={seccion.id_seccion}>
-                    {seccion.seccion}
-                  </option>
-                ))}
-              </Select>
-            </div>
-            {/* Selector de Mención */}
-            <div>
-              <Label htmlFor="id_mension" value="Mención:" />
-              <Select
-                id="id_mension"
-                name="id_mension"
-                value={data.id_mension}
-                onChange={handleChange}
-              >
-                <option value="Selecciona:" disabled>Selecciona:</option>
-                {datosMencion.map((mencion) => (
-                  <option value={mencion.mension} key={mencion.id_mension}>
-                    {mencion.mension}
-                  </option>
-                ))}
-              </Select>
-            </div>
-            {/* Botones de Aplicar y Limpiar */}
-            <div className="flex gap-4">
-              <Button color="primary" onClick={aplicarFiltro}>
-                Aplicar Filtro
-              </Button>
-              <Button color="secondary" onClick={limpiarFiltros}>
-                Limpiar Filtros
-              </Button>
-            </div>
+            <form className="flex flex-col gap-4">
+              {/* Selector de Año */}
+              <div>
+                <Label htmlFor="id_anno" value="Año:" />
+                <Select
+                  id="id_anno"
+                  name="id_anno"
+                  value={data.id_anno}
+                  onChange={handleChange}
+                >
+                  <option value="Selecciona:" disabled>Selecciona:</option>
+                  {dataAnno.map((clase, index) => (
+                    <option value={clase.id_anno} key={index}>
+                      {clase.anno}
+                    </option>
+                  ))}
+                </Select>
+              </div>
+              {/* Selector de Sección */}
+              <div>
+                <Label htmlFor="id_seccion" value="Sección:" />
+                <Select
+                  id="id_seccion"
+                  name="id_seccion"
+                  value={data.id_seccion}
+                  onChange={handleChange}
+                  disabled={data.id_seccion.length === 0}
+                >
+                  <option value="Selecciona:" disabled>Selecciona:</option>
+                  {dataSeccion.map((clase, index) => (
+                    <option value={clase.id_seccion} key={index}>
+                      {clase.seccion}
+                    </option>
+                  ))}
+                </Select>
+              </div>
+              {/* Selector de Mención */}
+              <div>
+                <Label htmlFor="id_mension" value="Mención:" />
+                <Select
+                  id="id_mension"
+                  name="id_mension"
+                  value={data.id_mension}
+                  onChange={handleChange}
+                  disabled={data.id_mension.length === 0}
+                >
+                  <option value="Selecciona:" disabled>Selecciona:</option>
+                  {dataMencion.map((clase, index) => (
+                    <option value={clase.id_mension} key={index}>
+                      {clase.mension}
+                    </option>
+                  ))}
+                </Select>
+              </div>
+              {/* Botones de Aplicar y Limpiar */}
+              <div className="flex gap-4 justify-center">
+                <Button color="warning" onClick={aplicarFiltro}>
+                  Aplicar Filtro
+                </Button>
+                <Button color="dark" onClick={limpiarFiltros}>
+                  Limpiar Filtros
+                </Button>
+              </div>
             </form>
           </Modal.Body>
           <Modal.Footer>

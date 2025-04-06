@@ -16,9 +16,9 @@ class EstudiantesSQL {
                             JOIN year y ON al.id_year = y.id_anno
                             JOIN secciones s ON al.id_seccion = s.id_seccion
                             JOIN mensiones m ON al.id_mension = m.id_mension
-                            WHERE (? IS NULL OR y.anno = ?)
-                                    AND (? IS NULL OR s.seccion = ?)
-                                    AND (? IS NULL OR m.mension = ?)
+                            WHERE (? IS NULL OR y.id_anno = ?)
+                                    AND (? IS NULL OR s.id_seccion = ?)
+                                    AND (? IS NULL OR m.id_mension = ?)
                                     ORDER BY u.cedula ASC`;
         // mostrar un estudiante por id
         this.getStudentById = `SELECT * 
