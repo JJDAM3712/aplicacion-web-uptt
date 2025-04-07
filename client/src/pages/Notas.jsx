@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { Button, Label } from "flowbite-react";
-import { FiltrarClases } from "../components/Modal";
+import { FiltrarClases, RegistroNotas } from "../components/Modal";
 import axios from "axios";
 import { useState, useEffect } from "react";
 import { ServidorURL } from "../config/config";
@@ -39,16 +39,33 @@ export function Notas() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [profRes, lapRes, evalRes, estRes] = await Promise.all([
+        const [profRes, lapRes, evalRes, estRes,notRes] = await Promise.all([
           axios.get(`${ServidorURL}/profesor`),
           axios.get(`${ServidorURL}/lapso`),
           axios.get(`${ServidorURL}/evaluacion`),
-          axios.get(`${ServidorURL}/estudiantes`)
+          axios.get(`${ServidorURL}/estudiantes`),
+          axios.get(`${ServidorURL}/notas`)
         ]);
         setDataProf(profRes.data);
         setDataLap(lapRes.data.result);
         setDataEva(evalRes.data);
         setDatos(estRes.data);
+        // Combinar estudiantes y notas
+        const estudiantesConNotas = estRes.data.map((estudiante) => {
+          const notasEstudiante = notRes.data.filter(
+            (nota) => parseInt(nota.id_estudiante, 10) === parseInt(estudiante.id_estudiante, 10)
+          );
+          return {
+            ...estudiante,
+            notas: notasEstudiante.length > 0
+              ? notasEstudiante.map((nota) => ({
+                  nota: nota.nota, // Convierte la nota a número
+                }))
+              : [{ nota: n.notas || "Sin nota" }, { nota: "Sin nota" }, { nota: "Sin nota" }, { nota: "Sin nota" }],
+            };
+        });
+
+        setDatosFiltrados(estudiantesConNotas);
       } catch (error) {
         console.error("Error al obtener datos iniciales:", error);
       }
@@ -56,13 +73,12 @@ export function Notas() {
     fetchData();
   }, []);
 
+
   const claseSeleccionada = dataClases.clases.find(clase => clase.id_materias === parseInt(materia));
   if (!claseSeleccionada) {
     console.warn("No se encontró una clase válida para la materia seleccionada.");
   }
   // Obtener las clases asociadas al profesor seleccionado
-  
-  
   useEffect(() => {
     if (profesor !== "Seleccionar:") {
       setMateria("Seleccionar:");
@@ -122,58 +138,38 @@ export function Notas() {
         menciones: [],
         anio: [],
         secciones: []
-      }); // Reset filtered data if no subject selected
+      });
     }
   }, [materia, dataClases]);
 
-  useEffect(() => {
-    console.log("Clases asociadas al profesor seleccionado:", dataClases.clases);
-  }, [dataClases]);
-
-  const guardarNotas = async () => {
-    const alumnosModificados = notasAlumnos.filter((alumno) => alumno.modificadas);
-
-    if (!datosLapso.id_lapso || !datosLapso.id_evaluacion || !materia) {
-      alert(
-        "Datos incompletos",
-        "Debe seleccionar un lapso, evaluación y materia antes de guardar las notas.",
-        "error"
-      );
-      return;
-    }
-    try {
-      for (const alumno of notasAlumnos) {
-        const datosNota = alumno.notas.map((nota, index) => ({
-          nota,
-          estudiante: alumno.id_estudiante,
-          id_clase: dataClases.clases.find(clase => clase.id_materias === parseInt(materia))?.id_clase,
-          evaluacion: datosLapso.id_evaluacion,
-          id_lapso: datosLapso.id_lapso,
-        }));
-
-        for (const nota of datosNota) {
-          await axios.post(`${ServidorURL}/notas`, nota);
-        }
-      }
-      alert(
-        "Notas registradas",
-        "Las notas han sido registradas exitosamente.",
-        "success"
-      );
-    } catch (error) {
-      console.error("Error al guardar notas:", error);
-      alert(
-        "Problema al registrar",
-        "Hubo un error al guardar las notas.",
-        "error"
-      );
-    }
-  };
-
   // Función para manejar el filtro desde el componente FiltrarClases
   const manejarFiltro = (filtrosAplicados) => {
+    console.log("Datos recibidos por el padre:", filtrosAplicados);
     setDatosFiltrados(filtrosAplicados);
   };
+  const procesarNotas = (data) => {
+    return data.map((estudiante) => {
+      const notasArray = estudiante.evaluaciones.split(", ").map((evaluacion) => {
+        const [evaluacionNombre, nota] = evaluacion.split(" ");
+        return { evaluacion: evaluacionNombre, nota: parseInt(nota) }; // Devuelve nota como número
+      });
+  
+      return { ...estudiante, notas: notasArray }; // Agrega las notas procesadas al estudiante
+    });
+  };
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await axios.get(`${ServidorURL}/notas`);
+        const estudiantesConNotas = procesarNotas(res.data);
+        setDatosFiltrados(estudiantesConNotas); // Actualiza el estado con datos procesados
+      } catch (error) {
+        console.error("Error al obtener las notas:", error);
+      }
+    };
+  
+    fetchData();
+  }, []);
   return (
     <Container>
       <h1>Notas</h1>
@@ -186,9 +182,18 @@ export function Notas() {
           materia={materia}
           setMateria={setMateria}
         />
-        <Button color="warning" onClick={guardarNotas}>
-          Guardar Notas
-        </Button>
+        {datosFiltrados.length === 0 ? (
+          <Button disabled color="warning">
+            Registrar Nota
+          </Button>
+        ) : (
+          <RegistroNotas 
+            estudiantes={datosFiltrados}
+            idLapso={datosLapso.id_lapso}
+            idEvaluacion={datosLapso.id_evaluacion}
+            idClase={claseSeleccionada?.id_clase}
+          />
+        )}
         <Buscador datos={datos} setDatosFiltrados={setDatosFiltrados} />
       </div>
       <div className="flex flex-wrap gap-4 mb-4" >
@@ -265,8 +270,6 @@ export function Notas() {
           </select>
         </div> 
       </div>
-      
-
       <TablaNotas 
         datos={datosFiltrados}
         setDatos={setDatosFiltrados}
@@ -275,7 +278,6 @@ export function Notas() {
         idClase={claseSeleccionada?.id_clase}
         onGuardarNotas={setNotasAlumnos}
       />
-      
     </Container>
   );
 }

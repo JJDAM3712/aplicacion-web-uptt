@@ -142,44 +142,6 @@ export function Login() {
     </Container>
   );
 }
-`
-export function Login() {
-  return (
-    <form action="" className="form_main">
-            <div className="flex ">
-              <img src={logo} alt="Logo CNE" className="w-24" />
-            </div>
-            <p className="heading">Ingresar al Sistema</p>
-            <div className="inputContainer">
-              <HiUser className="inputIcon" />
-              <input
-                type="text"
-                className="inputField"
-                id="usuario"
-                name="usuario"
-                placeholder="Usuario"
-              />
-            </div>
-    
-            <div className="inputContainer">
-              <HiLockClosed className="inputIcon" />
-              <input
-                type="password"
-                className="inputField"
-                id="password"
-                name="password"
-                placeholder="Contraseña"
-              />
-            </div>
-    
-            <button id="button">Ingresar</button>
-            <a className="forgotLink" href="/forgot">
-              Olvidó su contraseña?
-            </a>
-          </form>
-  )
-}
-`
 // registrar profesor
 export function ModalRegis() {
   const [openModal, setOpenModal] = useState(false);
@@ -3731,6 +3693,7 @@ export function FiltrarClases({onFilter, dataClases, filteredData, materia, setM
             "warning"
           );
         }
+        console.log("Datos enviados desde FiltrarClases:", res.data);
         onFilter(res.data); // Envía los estudiantes filtrados al componente padre
       } catch (error) {
         console.error("Error al aplicar el filtro:", error);
@@ -4030,6 +3993,172 @@ export function FiltrarEstudiantes({onFilter}) {
     </Container>
   );
 }
+
+
+
+
+
+
+
+// registrar nota
+export function RegistroNotas({idLapso, idEvaluacion, idClase, estudiantes}) {
+  const [openModal, setOpenModal] = useState(false);
+  const [notas, setNotas] = useState([]);
+
+  useEffect(() => {
+    if (!openModal || estudiantes.length === 0) return;
+    console.log("Datos enviados al modal:", estudiantes);
+    console.log("id_clase",idClase);
+    setNotas(
+      estudiantes.map((estudiante) => ({
+        id_estudiante: estudiante.id_estudiante,
+        nota: estudiante.nota || "",
+      }))
+    );
+  }, [estudiantes, openModal]);
+  
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
+  };
+
+  const handleChange = (e, id_estudiante) => {
+    const nuevaNota = e.target.value;
+    setNotas((prevNotas) =>
+      prevNotas.map((item) =>
+        item.id_estudiante === id_estudiante ? { ...item, nota: nuevaNota } : item
+      )
+    );
+  };
+
+  const handleSubmit = async () => {
+    if (notas.some((nota) => nota.nota === "" || nota.nota < 0 || nota.nota > 20)){
+      alert(
+        "Notas vacias",
+        "Asegúrate de que todas las notas sean válidas (entre 0 y 20)",
+        "warning"
+      );
+      return;
+    } else if (idClase === "" || !idClase) {
+      alert(
+        "Clase vacia",
+        "Asegúrate de que escoger una clase",
+        "warning"
+      );
+      return;
+    } else if (idEvaluacion === "Seleccionar:" || !idEvaluacion) {
+      alert(
+        "Evaluacion vacia",
+        "Asegúrate de que escoger una evaluación",
+        "warning"
+      );
+      return;
+    } else if (idLapso === "Seleccionar:" || !idLapso) {
+      alert(
+        "Lapso vacio",
+        "Asegúrate de que escoger un lapso",
+        "warning"
+      );
+      return;
+    }
+    
+    try {
+      
+      for (const nota of notas) {
+        await axios.post(`${ServidorURL}/notas`, {
+          estudiante: nota.id_estudiante,
+          nota: nota.nota,
+          id_clase: parseInt(idClase, 10),
+          evaluacion: parseInt(idEvaluacion, 10),
+          id_lapso: parseInt(idLapso, 10)
+        });
+      }
+      alert(
+        "Registrado!",
+        "Notas registradas con éxito",
+        "success"
+      );
+      handleCloseModal();
+    } catch (error) {
+      console.error("Error al enviar las notas:", error);
+      alert(
+        "Error",
+        "Hubo un error al registrar las notas",
+        "error"
+      );
+    }
+  };
+
+  return (
+    <Container>
+      <>
+        <Button 
+          color="warning" 
+          onClick={() => setOpenModal(true)}
+        >
+          Registrar Nota
+        </Button>
+        <Modal
+          show={openModal}
+          onClose={handleCloseModal}
+          position="top-center"
+        >
+          <Modal.Header>Registrar Mencion</Modal.Header>
+          <Modal.Body>
+          {(!estudiantes || estudiantes.length === 0) ? (
+            <p className="text-center">Selecciona una clase para filtrar los datos.</p>
+          ) : (
+            <table className="w-full mb-4 border-collapse">
+              <thead>
+                <tr className="border-b">
+                  <th className="py-2 text-left">Estudiante</th>
+                  <th className="py-2 text-left">Nota</th>
+                </tr>
+              </thead>
+              <tbody>
+                {estudiantes.map((estudiante) => {
+                  // Buscamos en el array de "notas" la entrada correspondiente a este estudiante.
+                  const notaObj = notas.find(
+                    (nota) => nota.id_estudiante === estudiante.id_estudiante
+                  );
+                  return (
+                    <tr key={estudiante.id_estudiante} className="border-b">
+                      <td className="py-2">
+                        {estudiante.p_nombre} {estudiante.p_apellido}
+                      </td>
+                      <td className="py-2">
+                        <input
+                          type="number"
+                          min="0"
+                          max="20"
+                          value={notaObj ? notaObj.nota : ""}
+                          onChange={(e) =>
+                            handleChange(e, estudiante.id_estudiante)
+                          }
+                          className="border rounded px-2 py-1 w-full"
+                        />
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          )}
+          </Modal.Body>
+          <Modal.Footer>
+            <Button color="success" onClick={handleSubmit}>
+              Guardar Notas
+            </Button>
+            <Button color="dark" onClick={handleCloseModal}>
+              Cerrar
+            </Button>
+          </Modal.Footer>
+        </Modal>
+      </>
+    </Container>
+  );
+}
+
 
 const Container = styled.div`
 .Logocontent {

@@ -278,7 +278,6 @@ export function TablaMaterias() {
 // tabla de notas
 export function TablaNotas({ datos, setDatos, idLapso, idEvaluacion, idClase, onGuardarNotas}) {
   const [alumnos, setAlumnos] = useState([]);
-  const [notasDatos, setNotasDatos] = useState([]);
   useEffect(() => {
     if (datos && datos.length > 0) {
       setAlumnos(
@@ -286,10 +285,17 @@ export function TablaNotas({ datos, setDatos, idLapso, idEvaluacion, idClase, on
           id_estudiante: estudiantes.id_estudiante,
           cedula: estudiantes.cedula,
           p_nombre: estudiantes.p_nombre,
+          s_nombre: estudiantes.s_nombre || "",
           p_apellido: estudiantes.p_apellido,
-          notas: estudiantes.notas && estudiantes.notas.length === 4
-                ? estudiantes.notas
-                : [0, 0, 0, 0],
+          s_apellido: estudiantes.s_apellido || "",
+          nota: estudiantes.nota && estudiantes.nota.length > 4
+                ? estudiantes.nota
+                : [
+                    { nota: "Sin nota" }, 
+                    { nota: "Sin nota" }, 
+                    { nota: "Sin nota" }, 
+                    { nota: "Sin nota" }
+                  ],
         }))
       );
     } else {
@@ -297,50 +303,6 @@ export function TablaNotas({ datos, setDatos, idLapso, idEvaluacion, idClase, on
     }
   }, [datos]);
 
-  useEffect(() => {
-    const ShowNotas = async () => {
-      try {
-        const res = await axios.get(`${ServidorURL}/notas`);
-        const notasExistentes = res.data; // Asegúrate de que res.data contiene las notas correctas
-  
-        setAlumnos((prevAlumnos) =>
-          prevAlumnos.map((alumno) => {
-            const notasAlumno = notasExistentes.find(
-              (nota) => nota.id_estudiante === alumno.id_estudiante
-            );
-            return {
-              ...alumno,
-              notas: notasAlumno
-                ? [notasAlumno.nota1, notasAlumno.nota2, notasAlumno.nota3, notasAlumno.nota4]
-                : [0, 0, 0, 0], // Asignar valores predeterminados si no hay notas
-            };
-          })
-        );
-      } catch (error) {
-        console.error("Error al mostrar las notas:", error);
-      }
-    };
-  
-    ShowNotas();
-  }, []);
-
-  const handleNotaChange = (e, estudianteId, indexNota) => {
-    const { value } = e.target;
-    if (!isNaN(value) && value.length <= 2 && Number(value) <= 20){
-      setAlumnos((prevDatos) =>
-        prevDatos.map((estudiante) =>
-          estudiante.id_estudiante === estudianteId
-            ? {
-                ...estudiante,
-                notas: estudiante.notas.map((nota, index) =>
-                    index === indexNota ? Number(value) : nota
-                )
-              }
-            : estudiante
-        )
-      );
-    }
-  };
   // Enviar notas actualizadas al padre
   useEffect(() => {
     if (onGuardarNotas) {
@@ -380,33 +342,19 @@ export function TablaNotas({ datos, setDatos, idLapso, idEvaluacion, idClase, on
               <Table.HeadCell>2da Nota</Table.HeadCell>
               <Table.HeadCell>3er Nota</Table.HeadCell>
               <Table.HeadCell>4ta Nota</Table.HeadCell>
-              <Table.HeadCell></Table.HeadCell>
             </Table.Head>
             <Table.Body className="divide-y">
               {currentItems.map((alumno) => (
-                <Table.Row 
-                  className={`bg-white ${alumno.modificadas ? "bg-yellow-100" : ""}`} 
-                  key={alumno.id_estudiante}
-                  >
-                  <Table.Cell className="whitespace-nowrap">{alumno.cedula}</Table.Cell>
-                  <Table.Cell>{[alumno.p_nombre," ",alumno.s_nombre]}</Table.Cell>
-                  <Table.Cell>{[alumno.p_apellido," ",alumno.s_apellido]}</Table.Cell>
-
-                  {alumno.notas.map((nota, index) => (
+                <Table.Row key={alumno.id_estudiante} className="bg-white">
+                  <Table.Cell>{alumno.cedula}</Table.Cell>
+                  <Table.Cell>{`${alumno.p_nombre} ${alumno.s_nombre || ''}`}</Table.Cell>
+                  <Table.Cell>{`${alumno.p_apellido} ${alumno.s_apellido || ''}`}</Table.Cell>
+                  {alumno.nota.map((notas, index) => (
                     <Table.Cell key={index}>
-                        <TextInput
-                            className="input_notas"
-                            type="number"
-                            min="0"
-                            max="20"
-                            value={nota ?? ""}
-                            onChange={(e) =>
-                                handleNotaChange(e, alumno.id_estudiante, index)
-                            }
-                        />
+                      {`${notas.nota}`}
                     </Table.Cell>
                   ))}
-                </Table.Row>
+              </Table.Row>
               ))}
             </Table.Body>
           </Table>

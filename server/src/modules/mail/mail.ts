@@ -1,15 +1,14 @@
 import nodemailer, {Transporter} from 'nodemailer';
 import dotenv from 'dotenv';
-import { getDirname } from '../../utils/dirname';
 
-const __dirname = getDirname(import.meta.url);
-dotenv.config({ path: `${__dirname}/../../../.env` });
+
+dotenv.config();
 
 const host: string | undefined = process.env.HOST_MAIL;
 const mail: string | undefined = process.env.USER_MAIL;
 const pass: string | undefined = process.env.PASS_MAIL;
 
-if (!host || !mail || !pass) {
+if (!host || !mail) {
     throw new Error("Variables de entorno vacias")
 }
 
