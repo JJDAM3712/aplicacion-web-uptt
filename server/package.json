@@ -1,7 +1,7 @@
 {
-  "name": "aplicacion-web-uptt",
+  "name": "aplicacion-web",
   "version": "1.0.0",
-  "description": "Estanislao carrillo",
+  "description": "aplicacion web para la gestion de la Escuela Tecnica Monseñor Estanislao Carrillo",
   "main": "index.js",
   "type": "module",
   "scripts": {

@@ -1,0 +1,55 @@
+{
+  "name": "aplicacion-web",
+  "version": "1.0.0",
+  "description": "aplicacion web para la gestion de la Escuela Tecnica Monseñor Estanislao Carrillo",
+  "main": "main.js",
+  "scripts": {
+    "start-client": "cd client && npm start",
+    "build-client": "cd client && npm run build",
+    "start-server": "cd server && npm start",
+    "build-server": "cd server && npm run build",
+    "start-electron": "electron .",
+    "electron-dev": "concurrently \"npm run start-client\" \"npm run start-server\" \"npm run start-electron\"",
+    "electron-build": "npm run build-client && npm run build-server && npm run start-electron",
+    "electron-pack": "npm run build-client && electron-builder --win"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JJDAM3712/ET.estanislao_carrillo.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/JJDAM3712/ET.estanislao_carrillo/issues"
+  },
+  "homepage": "https://github.com/JJDAM3712/ET.estanislao_carrillo#readme",
+  "devDependencies": {
+    "concurrently": "^9.1.2",
+    "electron": "^35.1.4"
+  },
+  "dependencies": {
+    "electron-builder": "^26.0.12"
+  },
+  "build": {
+    "productName": "Monseñor Estanislao Carrillo",
+    "copyright": "Copyright © 2025 Escuela Técnica Monseñor Estanislao Carrillo", 
+    "asar": true,
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "client/dist/**/*",
+      "main.js",
+      "preload.js",
+      "package.json",
+      "server/dist/**/*"
+    ],
+    "win": {
+      "target": [
+        "nsis"
+      ]
+    }
+  }
+}

@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { createHashRouter, RouterProvider } from "react-router-dom";
 import Login from "./pages/Login.jsx";
 import App from "./App";
 import "./css/index.css";
@@ -9,7 +9,7 @@ import { AuthProv } from "./auth/AuthProvided.tsx";
 import Forgot from "./pages/forgot.jsx";
 import { ResUser } from "./pages/ForgotPages/ResUser.jsx";
 
-const router = createBrowserRouter([
+const router = createHashRouter([
   {
     path: "/",
     element: <Login />,

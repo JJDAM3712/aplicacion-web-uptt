@@ -14,7 +14,7 @@ export const tokenValidate = async (req: Request, res: Response, next: NextFunct
         const token = authHeader.split(' ')[1];
         // Llamar a la función tokenVerify
         const decoded = await sessionService.validateToken(token);
-        req.user = decoded;
+       // req.user = decoded;
         next();
     } catch (error) {
         console.error(error);
