@@ -1,0 +1,19 @@
+{
+  "name": "app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.ts",
+  "type": "module",
+  "scripts": {
+    "start": "tsc && electron .",
+    "build": "tsc"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^22.14.0",
+    "electron": "^35.1.4",
+    "typescript": "^5.8.3"
+  }
+}

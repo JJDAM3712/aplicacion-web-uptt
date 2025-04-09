@@ -1,0 +1,12 @@
+{
+    "compilerOptions": {
+        "target": "ESNext",
+        "module": "ESNext",
+        "strict": true,
+        "esModuleInterop": true,
+        "moduleResolution": "node",
+        "outDir": "./dist",    // Archivos compilados
+        "rootDir": "./src"     // Archivos fuente
+    },
+    //"include": ["src/*", "main.ts"]
+}
