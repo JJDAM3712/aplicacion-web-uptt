@@ -1,6 +1,7 @@
 import { app, BrowserWindow } from 'electron';
 import path from 'path';
-import { getDirname } from './src/utils/dirname';
+import { getDirname } from './src/utils/dirname.js';
+
 const __dirname = getDirname(import.meta.url);
 let mainWindow = null;
 app.on('ready', () => {

@@ -8,5 +8,11 @@
         "outDir": "./dist",    // Archivos compilados
         "rootDir": "./src"     // Archivos fuente
     },
-    //"include": ["src/*", "main.ts"]
+    "include": [
+        "src/**/*" // Busca archivos en la carpeta src y subdirectorios
+    ],
+    "exclude": [
+        "dist",    // Excluye archivos de salida
+        "node_modules" // Excluye dependencias
+    ]
 }
