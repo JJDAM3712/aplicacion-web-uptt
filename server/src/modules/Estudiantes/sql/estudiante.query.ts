@@ -10,16 +10,26 @@ class EstudiantesSQL {
 
     constructor() {
         // mostrar todos los estudiantes   
-        this.getStudent = `SELECT *
-                            FROM estudiantes al
-                            JOIN usuarios u ON al.id_user = u.id_usuario
-                            JOIN year y ON al.id_year = y.id_anno
-                            JOIN secciones s ON al.id_seccion = s.id_seccion
-                            JOIN mensiones m ON al.id_mension = m.id_mension
-                            WHERE (? IS NULL OR y.id_anno = ?)
-                                    AND (? IS NULL OR s.id_seccion = ?)
-                                    AND (? IS NULL OR m.id_mension = ?)
-                                    ORDER BY u.cedula ASC`;
+        this.getStudent = `SELECT *, 
+            GROUP_CONCAT(n.nota ORDER BY n.nota SEPARATOR ', ') AS notas,
+            GROUP_CONCAT(n.id_lapso ORDER BY n.id_notas SEPARATOR ',') AS lapsos,
+			GROUP_CONCAT(n.evaluacion ORDER BY n.id_notas SEPARATOR ',') AS evaluaciones
+            FROM estudiantes al
+				JOIN usuarios u ON al.id_user = u.id_usuario
+				JOIN year y ON al.id_year = y.id_anno
+				JOIN secciones s ON al.id_seccion = s.id_seccion
+				JOIN mensiones m ON al.id_mension = m.id_mension
+				LEFT JOIN notas n ON al.id_estudiante = n.estudiante
+			    JOIN lapso l ON l.id_lapso = n.id_lapso
+                JOIN evaluaciones e ON e.id_evaluacion = n.evaluacion
+            WHERE 
+    			(? IS NULL OR y.id_anno = ?)
+    			AND (? IS NULL OR s.id_seccion = ?)
+    			AND (? IS NULL OR m.id_mension = ?)
+			GROUP BY 
+    			u.id_usuario, u.p_nombre, u.p_apellido, u.cedula, y.anno, s.seccion, m.mension
+			ORDER BY 
+    			u.cedula ASC`;
         // mostrar un estudiante por id
         this.getStudentById = `SELECT * 
                   				FROM usuarios

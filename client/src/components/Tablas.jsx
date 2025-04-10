@@ -278,30 +278,7 @@ export function TablaMaterias() {
 // tabla de notas
 export function TablaNotas({ datos, setDatos, idLapso, idEvaluacion, idClase, onGuardarNotas}) {
   const [alumnos, setAlumnos] = useState([]);
-  useEffect(() => {
-    if (datos && datos.length > 0) {
-      setAlumnos(
-        datos.map((estudiantes) => ({
-          id_estudiante: estudiantes.id_estudiante,
-          cedula: estudiantes.cedula,
-          p_nombre: estudiantes.p_nombre,
-          s_nombre: estudiantes.s_nombre || "",
-          p_apellido: estudiantes.p_apellido,
-          s_apellido: estudiantes.s_apellido || "",
-          nota: estudiantes.nota && estudiantes.nota.length > 4
-                ? estudiantes.nota
-                : [
-                    { nota: "Sin nota" }, 
-                    { nota: "Sin nota" }, 
-                    { nota: "Sin nota" }, 
-                    { nota: "Sin nota" }
-                  ],
-        }))
-      );
-    } else {
-      setAlumnos([]);
-    }
-  }, [datos]);
+  console.log("Lapso seleccionado:", idLapso);
 
   // Enviar notas actualizadas al padre
   useEffect(() => {
@@ -310,6 +287,57 @@ export function TablaNotas({ datos, setDatos, idLapso, idEvaluacion, idClase, on
       onGuardarNotas(alumnos); 
     }
   }, [alumnos]);
+
+  useEffect(() => {
+    let alumnosFiltrados;
+
+    if (idLapso && idLapso !== "Seleccionar:") {
+      // Filtrar por lapso
+      alumnosFiltrados = datos.map((estudiante) => {
+        const lapsosArray = estudiante.lapsos
+          ? estudiante.lapsos.split(',').map(lapso => parseInt(lapso, 10))
+          : [];
+
+        const notasArray = estudiante.notas
+          ? estudiante.notas.split(',').map(nota => parseInt(nota, 10))
+          : [];
+
+        const evaluacionesArray = estudiante.evaluaciones
+          ? estudiante.evaluaciones.split(',').map(evaluacion => parseInt(evaluacion, 10))
+          : [];
+
+        // Filtrar las notas por lapso y evaluación
+        const notasFiltradas = lapsosArray.length > 0
+          ? notasArray.filter((_, index) => {
+              const perteneceALapso = lapsosArray[index] === parseInt(idLapso, 10);
+              const perteneceAEvaluacion = idEvaluacion && idEvaluacion !== "Seleccionar:"
+                ? evaluacionesArray[index] === parseInt(idEvaluacion, 10)
+                : true; // Mostrar todas las notas si no hay evaluación seleccionada
+              return perteneceALapso && perteneceAEvaluacion;
+            })
+          : [];
+
+        const promedio = notasFiltradas.length > 0
+          ? (notasFiltradas.reduce((acc, nota) => acc + nota, 0) / notasFiltradas.length).toFixed(2)
+          : "Sin notas";
+
+        return {
+          ...estudiante,
+          notasFiltradas,
+          promedio,
+        };
+      });
+    } else {
+      // No se selecciona lapso: mostrar "Sin nota"
+      alumnosFiltrados = datos.map((estudiante) => ({
+        ...estudiante,
+        notasFiltradas: ["Sin nota", "Sin nota", "Sin nota", "Sin nota"], // Celdas vacías
+        promedio: "Sin notas", // Promedio vacío
+      }));
+    }
+
+    setAlumnos(alumnosFiltrados);
+  }, [idLapso, idEvaluacion, datos]);
 
   // paginacion de la tabla
   const [currentPage, setCurrentPage] = useState(1); 
@@ -342,20 +370,30 @@ export function TablaNotas({ datos, setDatos, idLapso, idEvaluacion, idClase, on
               <Table.HeadCell>2da Nota</Table.HeadCell>
               <Table.HeadCell>3er Nota</Table.HeadCell>
               <Table.HeadCell>4ta Nota</Table.HeadCell>
+              <Table.HeadCell>Promedio</Table.HeadCell>
             </Table.Head>
-            <Table.Body className="divide-y">
-              {currentItems.map((alumno) => (
-                <Table.Row key={alumno.id_estudiante} className="bg-white">
-                  <Table.Cell>{alumno.cedula}</Table.Cell>
-                  <Table.Cell>{`${alumno.p_nombre} ${alumno.s_nombre || ''}`}</Table.Cell>
-                  <Table.Cell>{`${alumno.p_apellido} ${alumno.s_apellido || ''}`}</Table.Cell>
-                  {alumno.nota.map((notas, index) => (
-                    <Table.Cell key={index}>
-                      {`${notas.nota}`}
-                    </Table.Cell>
-                  ))}
-              </Table.Row>
-              ))}
+            <Table.Body>
+            {currentItems.map((estudiante) => {
+                const notas = estudiante.notasFiltradas || [];
+                const nota1 = notas[0] || "Sin nota";
+                const nota2 = notas[1] || "Sin nota";
+                const nota3 = notas[2] || "Sin nota";
+                const nota4 = notas[3] || "Sin nota";
+                const promedio = estudiante.promedio || "Sin notas";
+
+                return (
+                  <Table.Row key={estudiante.id_estudiante}>
+                    <Table.Cell>{estudiante.cedula}</Table.Cell>
+                    <Table.Cell>{`${estudiante.p_nombre} ${estudiante.s_nombre}`}</Table.Cell>
+                    <Table.Cell>{`${estudiante.p_apellido} ${estudiante.s_apellido}`}</Table.Cell>
+                    <Table.Cell>{nota1}</Table.Cell>
+                    <Table.Cell>{nota2}</Table.Cell>
+                    <Table.Cell>{nota3}</Table.Cell>
+                    <Table.Cell>{nota4}</Table.Cell>
+                    <Table.Cell>{promedio}</Table.Cell>
+                  </Table.Row>
+                );
+              })}
             </Table.Body>
           </Table>
         )}

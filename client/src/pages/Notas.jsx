@@ -6,7 +6,6 @@ import { useState, useEffect } from "react";
 import { ServidorURL } from "../config/config";
 import { Buscador } from "../components/buscador";
 import { TablaNotas } from "../components/Tablas";
-import { alert } from "../utils/generic";
 import "../css/st.css";
 
 export function Notas() {
@@ -39,40 +38,23 @@ export function Notas() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [profRes, lapRes, evalRes, estRes,notRes] = await Promise.all([
+        const [profRes, lapRes, evalRes, estRes] = await Promise.all([
           axios.get(`${ServidorURL}/profesor`),
           axios.get(`${ServidorURL}/lapso`),
           axios.get(`${ServidorURL}/evaluacion`),
-          axios.get(`${ServidorURL}/estudiantes`),
-          axios.get(`${ServidorURL}/notas`)
+          axios.get(`${ServidorURL}/estudiantes?`)
         ]);
         setDataProf(profRes.data);
         setDataLap(lapRes.data.result);
         setDataEva(evalRes.data);
         setDatos(estRes.data);
-        // Combinar estudiantes y notas
-        const estudiantesConNotas = estRes.data.map((estudiante) => {
-          const notasEstudiante = notRes.data.filter(
-            (nota) => parseInt(nota.id_estudiante, 10) === parseInt(estudiante.id_estudiante, 10)
-          );
-          return {
-            ...estudiante,
-            notas: notasEstudiante.length > 0
-              ? notasEstudiante.map((nota) => ({
-                  nota: nota.nota, // Convierte la nota a número
-                }))
-              : [{ nota: n.notas || "Sin nota" }, { nota: "Sin nota" }, { nota: "Sin nota" }, { nota: "Sin nota" }],
-            };
-        });
-
-        setDatosFiltrados(estudiantesConNotas);
       } catch (error) {
         console.error("Error al obtener datos iniciales:", error);
       }
     };
+    
     fetchData();
   }, []);
-
 
   const claseSeleccionada = dataClases.clases.find(clase => clase.id_materias === parseInt(materia));
   if (!claseSeleccionada) {
@@ -107,25 +89,25 @@ export function Notas() {
     // Filter sections, years, and mentions based on the selected subject
     if (materia !== "Seleccionar:" && materia) {
       const filteredSecciones = dataClases.clases
-      .filter((clase) => clase.id_materias === parseInt(materia)) // Cambia 'id_materias' si es necesario
-      .map((clase) => ({
-        id_seccion: clase.id_seccion,
-        seccion: clase.seccion
-      }));
+        .filter((clase) => clase.id_materias === parseInt(materia)) // Cambia 'id_materias' si es necesario
+        .map((clase) => ({
+          id_seccion: clase.id_seccion,
+          seccion: clase.seccion
+        }));
 
-    const filteredAnios = dataClases.clases
-      .filter((clase) => clase.id_materias === parseInt(materia))
-      .map((clase) => ({
-        id_anno: clase.id_anno,
-        anno: clase.anno
-      }));
+      const filteredAnios = dataClases.clases
+        .filter((clase) => clase.id_materias === parseInt(materia))
+        .map((clase) => ({
+          id_anno: clase.id_anno,
+          anno: clase.anno
+        }));
 
-    const filteredMenciones = dataClases.clases
-      .filter((clase) => clase.id_materias === parseInt(materia))
-      .map((clase) => ({
-        id_mension: clase.id_mension,
-        mension: clase.mension
-      }));
+      const filteredMenciones = dataClases.clases
+        .filter((clase) => clase.id_materias === parseInt(materia))
+        .map((clase) => ({
+          id_mension: clase.id_mension,
+          mension: clase.mension
+        }));
 
       setFilteredData({
         menciones: filteredMenciones,
@@ -142,34 +124,24 @@ export function Notas() {
     }
   }, [materia, dataClases]);
 
+  useEffect(() => {
+    if (datosLapso.id_lapso !== "Seleccionar:") {
+      console.log("Lapso seleccionado:", datosLapso.id_lapso);
+      // Aquí puedes agregar lógica adicional, como cargar datos específicos de ese lapso
+    }
+  }, [datosLapso.id_lapso]);
+  useEffect(() => {
+    if (datosLapso.id_evaluacion !== "Seleccionar:") {
+      console.log("Lapso seleccionado:", datosLapso.id_evaluacion);
+      // Aquí puedes agregar lógica adicional, como cargar datos específicos de ese lapso
+    }
+  }, [datosLapso.id_evaluacion]);
+  
   // Función para manejar el filtro desde el componente FiltrarClases
   const manejarFiltro = (filtrosAplicados) => {
-    console.log("Datos recibidos por el padre:", filtrosAplicados);
     setDatosFiltrados(filtrosAplicados);
   };
-  const procesarNotas = (data) => {
-    return data.map((estudiante) => {
-      const notasArray = estudiante.evaluaciones.split(", ").map((evaluacion) => {
-        const [evaluacionNombre, nota] = evaluacion.split(" ");
-        return { evaluacion: evaluacionNombre, nota: parseInt(nota) }; // Devuelve nota como número
-      });
   
-      return { ...estudiante, notas: notasArray }; // Agrega las notas procesadas al estudiante
-    });
-  };
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await axios.get(`${ServidorURL}/notas`);
-        const estudiantesConNotas = procesarNotas(res.data);
-        setDatosFiltrados(estudiantesConNotas); // Actualiza el estado con datos procesados
-      } catch (error) {
-        console.error("Error al obtener las notas:", error);
-      }
-    };
-  
-    fetchData();
-  }, []);
   return (
     <Container>
       <h1>Notas</h1>
@@ -231,11 +203,11 @@ export function Notas() {
             name="id_lapso"
             value={datosLapso.id_lapso}
             onChange={(e) => {
-              setDatosLapso((prev) => ({ ...prev, id_lapso: e.target.value }))
+              setDatosLapso((prev) => ({ ...prev, id_lapso: e.target.value })); // Actualiza el estado al seleccionar un lapso
             }}
             className="border rounded px-2 py-1"
           >
-            <option value="Seleccionar:" disabled>Seleccionar:</option>
+            <option value="Seleccionar:">Seleccionar:</option>
             {dataLap.map((lapsos) => (
               <option 
                 value={lapsos.id_lapso}
@@ -258,7 +230,7 @@ export function Notas() {
             }}
             className="border rounded px-2 py-1"
           >
-            <option value="Seleccionar:" disabled>Seleccionar:</option>
+            <option value="Seleccionar:">Seleccionar:</option>
             {dataEva.map((Evaluacines) => (
               <option 
                 value={Evaluacines.id_evaluacion}
