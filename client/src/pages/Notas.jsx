@@ -1,10 +1,9 @@
 import styled from "styled-components";
 import { Button, Label } from "flowbite-react";
-import { FiltrarClases, RegistroNotas } from "../components/Modal";
+import { FiltrarClases, RegistroNotas, EliminarNotas, EliminarNotasClase } from "../components/Modal";
 import axios from "axios";
 import { useState, useEffect } from "react";
 import { ServidorURL } from "../config/config";
-import { Buscador } from "../components/buscador";
 import { TablaNotas } from "../components/Tablas";
 import "../css/st.css";
 
@@ -142,9 +141,88 @@ export function Notas() {
     setDatosFiltrados(filtrosAplicados);
   };
   
+  
   return (
     <Container>
       <h1>Notas</h1>
+      <div className="flex justify-between items-center gap-4 mb-4" >
+        <div className="flex flex-wrap gap-4 mb-4">
+          {/* SELECT DE PROFESORES */}
+          <div className="flex flex-col gap-2">
+            <Label htmlFor="profesor" value="Profesor:" />
+            <select 
+              id="profesor"
+              name="profesor"
+              value={profesor}
+              onChange={(e) => setProfesor(e.target.value)}
+              className="border rounded px-2 py-1"
+            >
+              <option value="Seleccionar:" disabled>Seleccionar:</option>
+              {dataProf.map((profesores) => (
+                <option 
+                  value={profesores.id_usuario}
+                  key={profesores.id_usuario}
+                >
+                  {[
+                    profesores.cedula," ",
+                    profesores.p_nombre," ",
+                    profesores.p_apellido
+                  ]}
+                </option>
+              ))}
+              
+            </select>
+          </div>
+          {/* SELECT DE LAPSOS */}
+          <div className="flex flex-col gap-2">
+            <Label htmlFor="id_lapso" value="Lapso:" />
+            <select 
+              id="id_lapso"
+              name="id_lapso"
+              value={datosLapso.id_lapso}
+              onChange={(e) => {
+                setDatosLapso((prev) => ({ ...prev, id_lapso: e.target.value })); // Actualiza el estado al seleccionar un lapso
+              }}
+              className="border rounded px-2 py-1"
+            >
+              <option value="Seleccionar:">Seleccionar:</option>
+              {dataLap.map((lapsos) => (
+                <option 
+                  value={lapsos.id_lapso}
+                  key={lapsos.id_lapso}
+                >
+                  {lapsos.lapso}
+                </option>
+              ))}
+            </select>
+          </div>
+          {/* SELECT DE EVALUACION */}
+          <div className="flex flex-col gap-2">
+            <Label htmlFor="id_evaluacion" value="Evaluación:" />
+            <select 
+              id="id_evaluacion"
+              name="id_evaluacion"
+              value={datosLapso.id_evaluacion}
+              onChange={(e) => {
+                setDatosLapso((prev) => ({ ...prev, id_evaluacion: e.target.value }))
+              }}
+              className="border rounded px-2 py-1"
+            >
+              <option value="Seleccionar:">Seleccionar:</option>
+              {dataEva.map((Evaluacines) => (
+                <option 
+                  value={Evaluacines.id_evaluacion}
+                  key={Evaluacines.id_evaluacion}
+                >
+                  {Evaluacines.evaluacion}
+                </option>
+              ))}
+            </select>
+          </div> 
+        </div>
+        {/* eliminar notas de la base de datos */}
+        <EliminarNotas />
+      </div>
       <div className="flex flex-wrap gap-4 mb-4" >
         {/* FILTRO CLASES */}
         <FiltrarClases 
@@ -166,82 +244,22 @@ export function Notas() {
             idClase={claseSeleccionada?.id_clase}
           />
         )}
-        <Buscador datos={datos} setDatosFiltrados={setDatosFiltrados} />
+        {/* ELIMINAR NOTAS DE UNA CLASE Y LAPSO */}
+        {datosFiltrados.length === 0 ? (
+          <Button disabled color="failure">
+            Eliminar Notas
+          </Button>
+        ) : (
+          <EliminarNotasClase
+            idLapso={datosLapso.id_lapso}
+            idClase={claseSeleccionada?.id_clase}
+            datos={datosFiltrados}
+            setDatos={setDatosFiltrados}
+          />
+        )}
+        
       </div>
-      <div className="flex flex-wrap gap-4 mb-4" >
-        {/* SELECT DE PROFESORES */}
-        <div className="flex flex-col gap-2">
-          <Label htmlFor="profesor" value="Profesor:" />
-          <select 
-            id="profesor"
-            name="profesor"
-            value={profesor}
-            onChange={(e) => setProfesor(e.target.value)}
-            className="border rounded px-2 py-1"
-          >
-            <option value="Seleccionar:" disabled>Seleccionar:</option>
-            {dataProf.map((profesores) => (
-              <option 
-                value={profesores.id_usuario}
-                key={profesores.id_usuario}
-              >
-                {[
-                  profesores.cedula," ",
-                  profesores.p_nombre," ",
-                  profesores.p_apellido
-                ]}
-              </option>
-            ))}
-            
-          </select>
-        </div>
-        {/* SELECT DE LAPSOS */}
-        <div className="flex flex-col gap-2">
-          <Label htmlFor="id_lapso" value="Lapso:" />
-          <select 
-            id="id_lapso"
-            name="id_lapso"
-            value={datosLapso.id_lapso}
-            onChange={(e) => {
-              setDatosLapso((prev) => ({ ...prev, id_lapso: e.target.value })); // Actualiza el estado al seleccionar un lapso
-            }}
-            className="border rounded px-2 py-1"
-          >
-            <option value="Seleccionar:">Seleccionar:</option>
-            {dataLap.map((lapsos) => (
-              <option 
-                value={lapsos.id_lapso}
-                key={lapsos.id_lapso}
-              >
-                {lapsos.lapso}
-              </option>
-            ))}
-          </select>
-        </div>
-        {/* SELECT DE EVALUACION */}
-        <div className="flex flex-col gap-2">
-          <Label htmlFor="id_evaluacion" value="Evaluación:" />
-          <select 
-            id="id_evaluacion"
-            name="id_evaluacion"
-            value={datosLapso.id_evaluacion}
-            onChange={(e) => {
-              setDatosLapso((prev) => ({ ...prev, id_evaluacion: e.target.value }))
-            }}
-            className="border rounded px-2 py-1"
-          >
-            <option value="Seleccionar:">Seleccionar:</option>
-            {dataEva.map((Evaluacines) => (
-              <option 
-                value={Evaluacines.id_evaluacion}
-                key={Evaluacines.id_evaluacion}
-              >
-                {Evaluacines.evaluacion}
-              </option>
-            ))}
-          </select>
-        </div> 
-      </div>
+      
       <TablaNotas 
         datos={datosFiltrados}
         setDatos={setDatosFiltrados}

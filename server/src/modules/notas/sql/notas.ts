@@ -4,6 +4,7 @@ class NotasSQL {
     public postNotas: string;
     public putNotas: string;
     public deleteNotas:string;
+    public deleteNotasClase: string;
 
 
     constructor() {
@@ -24,7 +25,8 @@ class NotasSQL {
         this.getNotasById = 'SELECT * FROM notas WHERE id_notas = ?';
         this.postNotas = 'INSERT INTO notas SET ?';
         this.putNotas = 'UPDATE notas SET ? WHERE id_notas = ?';
-        this.deleteNotas = 'DELETE FROM notas WHERE id_notas = ?';
+        this.deleteNotas = 'DELETE FROM notas';
+        this.deleteNotasClase = `DELETE FROM notas WHERE id_clase = ? AND id_lapso = ?;`;
     }
 
     getNotasQuery(){return this.getNotas;}
@@ -32,6 +34,7 @@ class NotasSQL {
     postNotasQuery() {return this.postNotas;}
     putNotasQuery() {return this.putNotas;}
     deleteNotasQuery() {return this.deleteNotas;}
+    deleteNotasClaseQuery() {return this.deleteNotasClase;}
 }
 
 export default new NotasSQL();

@@ -20,8 +20,8 @@ class EstudiantesSQL {
 				JOIN secciones s ON al.id_seccion = s.id_seccion
 				JOIN mensiones m ON al.id_mension = m.id_mension
 				LEFT JOIN notas n ON al.id_estudiante = n.estudiante
-			    JOIN lapso l ON l.id_lapso = n.id_lapso
-                JOIN evaluaciones e ON e.id_evaluacion = n.evaluacion
+			    LEFT JOIN lapso l ON l.id_lapso = n.id_lapso
+                LEFT JOIN evaluaciones e ON e.id_evaluacion = n.evaluacion
             WHERE 
     			(? IS NULL OR y.id_anno = ?)
     			AND (? IS NULL OR s.id_seccion = ?)
