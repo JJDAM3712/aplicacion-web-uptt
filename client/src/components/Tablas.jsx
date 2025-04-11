@@ -276,7 +276,7 @@ export function TablaMaterias() {
 }
 //-------------------------------------------------
 // tabla de notas
-export function TablaNotas({ datos, setDatos, idLapso, idEvaluacion, idClase, onGuardarNotas}) {
+export function TablaNotas({ datos, setDatos, idLapso, idEvaluacion, idClase, onGuardarNotas, innerRef}) {
   const [alumnos, setAlumnos] = useState([]);
   console.log("Lapso seleccionado:", idLapso);
 
@@ -361,7 +361,7 @@ export function TablaNotas({ datos, setDatos, idLapso, idEvaluacion, idClase, on
         {(!datos || datos.length === 0) ? (
           <p className="text-center">Selecciona una clase para filtrar los datos.</p>
         ) : (
-          <Table className="uppercase">
+          <Table className="uppercase" ref={innerRef}>
             <Table.Head className="border-b-2">
               <Table.HeadCell>Cedula</Table.HeadCell>
               <Table.HeadCell>Nombres</Table.HeadCell>

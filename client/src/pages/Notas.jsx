@@ -2,10 +2,11 @@ import styled from "styled-components";
 import { Button, Label } from "flowbite-react";
 import { FiltrarClases, RegistroNotas, EliminarNotas, EliminarNotasClase } from "../components/Modal";
 import axios from "axios";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { ServidorURL } from "../config/config";
 import { TablaNotas } from "../components/Tablas";
 import "../css/st.css";
+import { useDownloadExcel } from 'react-export-table-to-excel';
 
 export function Notas() {
   const [datos, setDatos] = useState([]);
@@ -141,6 +142,13 @@ export function Notas() {
     setDatosFiltrados(filtrosAplicados);
   };
   
+  const TablaPers = useRef(null);
+  
+  const { onDownload } = useDownloadExcel({
+    currentTableRef: TablaPers.current,
+    filename: `Clase ${claseSeleccionada?.seccion} ${claseSeleccionada?.anno} ${claseSeleccionada?.mension}`,
+    sheet: 'Hoja 1'
+  });
   
   return (
     <Container>
@@ -244,6 +252,16 @@ export function Notas() {
             idClase={claseSeleccionada?.id_clase}
           />
         )}
+        {/* --- exportar excel */}
+        {datosFiltrados.length === 0 ? (
+          <Button disabled color="success">
+            Generar Informe
+          </Button>
+        ) : (
+          <Button color="success" onClick={onDownload}>
+            Generar Informe
+          </Button>
+        )}
         {/* ELIMINAR NOTAS DE UNA CLASE Y LAPSO */}
         {datosFiltrados.length === 0 ? (
           <Button disabled color="failure">
@@ -267,6 +285,7 @@ export function Notas() {
         idEvaluacion={datosLapso.id_evaluacion}
         idClase={claseSeleccionada?.id_clase}
         onGuardarNotas={setNotasAlumnos}
+        innerRef={TablaPers}
       />
     </Container>
   );
