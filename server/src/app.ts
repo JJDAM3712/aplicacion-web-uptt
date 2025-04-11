@@ -9,11 +9,6 @@ import cookieParser from 'cookie-parser';
 
 // importando rutas
 import router  from "./routes/routes";
-import { getDirname } from "./utils/dirname";
-
-// configuracion de dirname
-const __dirname = getDirname(import.meta.url);
-dotenv.config({ path: `${__dirname}/../.env` });
 
 // Inicializaciones
 dotenv.config();

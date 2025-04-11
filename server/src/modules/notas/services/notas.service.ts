@@ -45,14 +45,20 @@ class NotasService extends ServiceBase {
         }
     }
     // eliminar una nota
-    public async deleteService(id:string) {
+    public async deleteNotaService() {
         try {
             const sql = NotasSQL.deleteNotasQuery();
-            const [result] = await pool.query<RowDataPacket[]>(sql, [id]);
+            const [result] = await pool.query<RowDataPacket[]>(sql);
             return result;
         } catch (error) {
             return error;
         }
+    }
+    // eliminar notas de una clase y lapso
+    public async deleteNotaClaseService(clase:string, lapso: string) {
+        const sql = NotasSQL.deleteNotasClaseQuery();
+        const [result] = await pool.query<RowDataPacket[]>(sql, [clase, lapso]);
+        return result;
     }
 }
 

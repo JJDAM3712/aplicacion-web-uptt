@@ -1,9 +1,7 @@
 import { createPool, Pool } from 'mysql2/promise';
 import dotenv from 'dotenv';
-import { getDirname } from '../utils/dirname';
 
-const __dirname = getDirname(import.meta.url);
-dotenv.config({ path: `${__dirname}/../../.env` });
+dotenv.config();
 
 // variables de entorno
 const host: string | undefined = process.env.HOST;

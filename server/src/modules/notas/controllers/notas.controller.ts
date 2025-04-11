@@ -61,14 +61,17 @@ class NotasController extends AppControllerBase {
     // eliminar notas
     public async deleteController(req:Request, res:Response) : Promise<void>{
         try {
-            //valida si la nota existe
-            const validacion = await NotasService.getServiceById(req.params.id) as RowDataPacket[];
-
-            if(validacion.length == 0) {
-                res.status(404).json({message: "Nota no encontrada"});
-                return;
-            }
-            const result = await NotasService.deleteService(req.params.id);
+            const result = await NotasService.deleteNotaService();
+            res.status(200).json({message: "Nota eliminada correctamente", data: result});
+        } catch (error) {
+            res.status(500).json({message: error});
+        }
+    }
+    // eliminar notas de una clase y lapso
+    public async deleteNotasClase(req:Request, res:Response): Promise<void> {
+        try {
+            const {id_clase, id_lapso} = req.body;
+            const result = await NotasService.deleteNotaClaseService(id_clase, id_lapso);
             res.status(200).json({message: "Nota eliminada correctamente", data: result});
         } catch (error) {
             res.status(500).json({message: error});

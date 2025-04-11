@@ -1,12 +1,10 @@
 import styled from "styled-components";
 import { Button, Label } from "flowbite-react";
-import { FiltrarClases } from "../components/Modal";
+import { FiltrarClases, RegistroNotas, EliminarNotas, EliminarNotasClase } from "../components/Modal";
 import axios from "axios";
 import { useState, useEffect } from "react";
 import { ServidorURL } from "../config/config";
-import { Buscador } from "../components/buscador";
 import { TablaNotas } from "../components/Tablas";
-import { alert } from "../utils/generic";
 import "../css/st.css";
 
 export function Notas() {
@@ -43,7 +41,7 @@ export function Notas() {
           axios.get(`${ServidorURL}/profesor`),
           axios.get(`${ServidorURL}/lapso`),
           axios.get(`${ServidorURL}/evaluacion`),
-          axios.get(`${ServidorURL}/estudiantes`)
+          axios.get(`${ServidorURL}/estudiantes?`)
         ]);
         setDataProf(profRes.data);
         setDataLap(lapRes.data.result);
@@ -53,6 +51,7 @@ export function Notas() {
         console.error("Error al obtener datos iniciales:", error);
       }
     };
+    
     fetchData();
   }, []);
 
@@ -61,8 +60,6 @@ export function Notas() {
     console.warn("No se encontró una clase válida para la materia seleccionada.");
   }
   // Obtener las clases asociadas al profesor seleccionado
-  
-  
   useEffect(() => {
     if (profesor !== "Seleccionar:") {
       setMateria("Seleccionar:");
@@ -91,25 +88,25 @@ export function Notas() {
     // Filter sections, years, and mentions based on the selected subject
     if (materia !== "Seleccionar:" && materia) {
       const filteredSecciones = dataClases.clases
-      .filter((clase) => clase.id_materias === parseInt(materia)) // Cambia 'id_materias' si es necesario
-      .map((clase) => ({
-        id_seccion: clase.id_seccion,
-        seccion: clase.seccion
-      }));
+        .filter((clase) => clase.id_materias === parseInt(materia)) // Cambia 'id_materias' si es necesario
+        .map((clase) => ({
+          id_seccion: clase.id_seccion,
+          seccion: clase.seccion
+        }));
 
-    const filteredAnios = dataClases.clases
-      .filter((clase) => clase.id_materias === parseInt(materia))
-      .map((clase) => ({
-        id_anno: clase.id_anno,
-        anno: clase.anno
-      }));
+      const filteredAnios = dataClases.clases
+        .filter((clase) => clase.id_materias === parseInt(materia))
+        .map((clase) => ({
+          id_anno: clase.id_anno,
+          anno: clase.anno
+        }));
 
-    const filteredMenciones = dataClases.clases
-      .filter((clase) => clase.id_materias === parseInt(materia))
-      .map((clase) => ({
-        id_mension: clase.id_mension,
-        mension: clase.mension
-      }));
+      const filteredMenciones = dataClases.clases
+        .filter((clase) => clase.id_materias === parseInt(materia))
+        .map((clase) => ({
+          id_mension: clase.id_mension,
+          mension: clase.mension
+        }));
 
       setFilteredData({
         menciones: filteredMenciones,
@@ -122,61 +119,110 @@ export function Notas() {
         menciones: [],
         anio: [],
         secciones: []
-      }); // Reset filtered data if no subject selected
+      });
     }
   }, [materia, dataClases]);
 
   useEffect(() => {
-    console.log("Clases asociadas al profesor seleccionado:", dataClases.clases);
-  }, [dataClases]);
-
-  const guardarNotas = async () => {
-    const alumnosModificados = notasAlumnos.filter((alumno) => alumno.modificadas);
-
-    if (!datosLapso.id_lapso || !datosLapso.id_evaluacion || !materia) {
-      alert(
-        "Datos incompletos",
-        "Debe seleccionar un lapso, evaluación y materia antes de guardar las notas.",
-        "error"
-      );
-      return;
+    if (datosLapso.id_lapso !== "Seleccionar:") {
+      console.log("Lapso seleccionado:", datosLapso.id_lapso);
+      // Aquí puedes agregar lógica adicional, como cargar datos específicos de ese lapso
     }
-    try {
-      for (const alumno of notasAlumnos) {
-        const datosNota = alumno.notas.map((nota, index) => ({
-          nota,
-          estudiante: alumno.id_estudiante,
-          id_clase: dataClases.clases.find(clase => clase.id_materias === parseInt(materia))?.id_clase,
-          evaluacion: datosLapso.id_evaluacion,
-          id_lapso: datosLapso.id_lapso,
-        }));
-
-        for (const nota of datosNota) {
-          await axios.post(`${ServidorURL}/notas`, nota);
-        }
-      }
-      alert(
-        "Notas registradas",
-        "Las notas han sido registradas exitosamente.",
-        "success"
-      );
-    } catch (error) {
-      console.error("Error al guardar notas:", error);
-      alert(
-        "Problema al registrar",
-        "Hubo un error al guardar las notas.",
-        "error"
-      );
+  }, [datosLapso.id_lapso]);
+  useEffect(() => {
+    if (datosLapso.id_evaluacion !== "Seleccionar:") {
+      console.log("Lapso seleccionado:", datosLapso.id_evaluacion);
+      // Aquí puedes agregar lógica adicional, como cargar datos específicos de ese lapso
     }
-  };
-
+  }, [datosLapso.id_evaluacion]);
+  
   // Función para manejar el filtro desde el componente FiltrarClases
   const manejarFiltro = (filtrosAplicados) => {
     setDatosFiltrados(filtrosAplicados);
   };
+  
+  
   return (
     <Container>
       <h1>Notas</h1>
+      <div className="flex justify-between items-center gap-4 mb-4" >
+        <div className="flex flex-wrap gap-4 mb-4">
+          {/* SELECT DE PROFESORES */}
+          <div className="flex flex-col gap-2">
+            <Label htmlFor="profesor" value="Profesor:" />
+            <select 
+              id="profesor"
+              name="profesor"
+              value={profesor}
+              onChange={(e) => setProfesor(e.target.value)}
+              className="border rounded px-2 py-1"
+            >
+              <option value="Seleccionar:" disabled>Seleccionar:</option>
+              {dataProf.map((profesores) => (
+                <option 
+                  value={profesores.id_usuario}
+                  key={profesores.id_usuario}
+                >
+                  {[
+                    profesores.cedula," ",
+                    profesores.p_nombre," ",
+                    profesores.p_apellido
+                  ]}
+                </option>
+              ))}
+              
+            </select>
+          </div>
+          {/* SELECT DE LAPSOS */}
+          <div className="flex flex-col gap-2">
+            <Label htmlFor="id_lapso" value="Lapso:" />
+            <select 
+              id="id_lapso"
+              name="id_lapso"
+              value={datosLapso.id_lapso}
+              onChange={(e) => {
+                setDatosLapso((prev) => ({ ...prev, id_lapso: e.target.value })); // Actualiza el estado al seleccionar un lapso
+              }}
+              className="border rounded px-2 py-1"
+            >
+              <option value="Seleccionar:">Seleccionar:</option>
+              {dataLap.map((lapsos) => (
+                <option 
+                  value={lapsos.id_lapso}
+                  key={lapsos.id_lapso}
+                >
+                  {lapsos.lapso}
+                </option>
+              ))}
+            </select>
+          </div>
+          {/* SELECT DE EVALUACION */}
+          <div className="flex flex-col gap-2">
+            <Label htmlFor="id_evaluacion" value="Evaluación:" />
+            <select 
+              id="id_evaluacion"
+              name="id_evaluacion"
+              value={datosLapso.id_evaluacion}
+              onChange={(e) => {
+                setDatosLapso((prev) => ({ ...prev, id_evaluacion: e.target.value }))
+              }}
+              className="border rounded px-2 py-1"
+            >
+              <option value="Seleccionar:">Seleccionar:</option>
+              {dataEva.map((Evaluacines) => (
+                <option 
+                  value={Evaluacines.id_evaluacion}
+                  key={Evaluacines.id_evaluacion}
+                >
+                  {Evaluacines.evaluacion}
+                </option>
+              ))}
+            </select>
+          </div> 
+        </div>
+        {/* eliminar notas de la base de datos */}
+        <EliminarNotas />
+      </div>
       <div className="flex flex-wrap gap-4 mb-4" >
         {/* FILTRO CLASES */}
         <FiltrarClases 
@@ -186,87 +232,34 @@ export function Notas() {
           materia={materia}
           setMateria={setMateria}
         />
-        <Button color="warning" onClick={guardarNotas}>
-          Guardar Notas
-        </Button>
-        <Buscador datos={datos} setDatosFiltrados={setDatosFiltrados} />
-      </div>
-      <div className="flex flex-wrap gap-4 mb-4" >
-        {/* SELECT DE PROFESORES */}
-        <div className="flex flex-col gap-2">
-          <Label htmlFor="profesor" value="Profesor:" />
-          <select 
-            id="profesor"
-            name="profesor"
-            value={profesor}
-            onChange={(e) => setProfesor(e.target.value)}
-            className="border rounded px-2 py-1"
-          >
-            <option value="Seleccionar:" disabled>Seleccionar:</option>
-            {dataProf.map((profesores) => (
-              <option 
-                value={profesores.id_usuario}
-                key={profesores.id_usuario}
-              >
-                {[
-                  profesores.cedula," ",
-                  profesores.p_nombre," ",
-                  profesores.p_apellido
-                ]}
-              </option>
-            ))}
-            
-          </select>
-        </div>
-        {/* SELECT DE LAPSOS */}
-        <div className="flex flex-col gap-2">
-          <Label htmlFor="id_lapso" value="Lapso:" />
-          <select 
-            id="id_lapso"
-            name="id_lapso"
-            value={datosLapso.id_lapso}
-            onChange={(e) => {
-              setDatosLapso((prev) => ({ ...prev, id_lapso: e.target.value }))
-            }}
-            className="border rounded px-2 py-1"
-          >
-            <option value="Seleccionar:" disabled>Seleccionar:</option>
-            {dataLap.map((lapsos) => (
-              <option 
-                value={lapsos.id_lapso}
-                key={lapsos.id_lapso}
-              >
-                {lapsos.lapso}
-              </option>
-            ))}
-          </select>
-        </div>
-        {/* SELECT DE EVALUACION */}
-        <div className="flex flex-col gap-2">
-          <Label htmlFor="id_evaluacion" value="Evaluación:" />
-          <select 
-            id="id_evaluacion"
-            name="id_evaluacion"
-            value={datosLapso.id_evaluacion}
-            onChange={(e) => {
-              setDatosLapso((prev) => ({ ...prev, id_evaluacion: e.target.value }))
-            }}
-            className="border rounded px-2 py-1"
-          >
-            <option value="Seleccionar:" disabled>Seleccionar:</option>
-            {dataEva.map((Evaluacines) => (
-              <option 
-                value={Evaluacines.id_evaluacion}
-                key={Evaluacines.id_evaluacion}
-              >
-                {Evaluacines.evaluacion}
-              </option>
-            ))}
-          </select>
-        </div> 
+        {datosFiltrados.length === 0 ? (
+          <Button disabled color="warning">
+            Registrar Nota
+          </Button>
+        ) : (
+          <RegistroNotas 
+            estudiantes={datosFiltrados}
+            idLapso={datosLapso.id_lapso}
+            idEvaluacion={datosLapso.id_evaluacion}
+            idClase={claseSeleccionada?.id_clase}
+          />
+        )}
+        {/* ELIMINAR NOTAS DE UNA CLASE Y LAPSO */}
+        {datosFiltrados.length === 0 ? (
+          <Button disabled color="failure">
+            Eliminar Notas
+          </Button>
+        ) : (
+          <EliminarNotasClase
+            idLapso={datosLapso.id_lapso}
+            idClase={claseSeleccionada?.id_clase}
+            datos={datosFiltrados}
+            setDatos={setDatosFiltrados}
+          />
+        )}
+        
       </div>
       
-
       <TablaNotas 
         datos={datosFiltrados}
         setDatos={setDatosFiltrados}
@@ -275,7 +268,6 @@ export function Notas() {
         idClase={claseSeleccionada?.id_clase}
         onGuardarNotas={setNotasAlumnos}
       />
-      
     </Container>
   );
 }
