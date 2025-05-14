@@ -20,8 +20,8 @@ const httpServer = createServer(app);
 export const io = new Server(httpServer, {
     path: '/api/socket.io',
     cors: {
-        origin: process.env.CORS_ORIGIN,
-        methods: process.env.CORS_METHODS,
+        origin: "",
+        methods: ['GET','POST','PUT','DELETE'],
         credentials: true
     }
 });
@@ -39,7 +39,7 @@ io.on('connection', (socket) => {
     })
 });
 app.use(cors({
-    origin: 'http://localhost:5173',
+    origin: '',
     methods: process.env.CORS_METHODS,
     credentials: true
 }))

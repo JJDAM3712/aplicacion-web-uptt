@@ -23,7 +23,7 @@ export const initPool = () => {
         pool = createPool({
             host: host,
             user: user,
-            password: "",
+            password: "MySQLite_2712",
             database: database,
         });
         console.log("Conexión a la base de datos exitosa");
